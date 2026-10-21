@@ -1,61 +1,1007 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>[11차시] 2050년 기온예측 / 강수량 시각화</title>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[11차시] 2050년 기온예측 / 강수량 시각화</title><meta name="data-notion-page-icon" content="🌡️"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%8C%A1%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style>
 <style>
   html, body { background: #fff; }
   body {
     margin: 0 auto;
     max-width: 900px;
-    padding: 16px 16px 64px;
+    padding: 0 24px 80px;
     font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
     color: rgb(55, 53, 47);
   }
-  nav { margin-bottom: 12px; }
-  nav a { color: rgb(55, 53, 47); }
-  h1 { font-size: 1.7rem; line-height: 1.3; margin: 0 0 20px; }
-  img { width: 100%; height: auto; display: block; margin: 0 0 16px; background: #fafafa; }
+  .page-cover-image {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-left: -24px;
+    display: block;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .page-header-icon { font-size: 78px; line-height: 1; margin-top: -42px; position: relative; }
+  .simple-table { width: 100%; }
+  .simple-table td, .simple-table th { min-width: 0; }
+  pre, code { font-family: Consolas, "Malgun Gothic", monospace; }
+  @media (max-width: 720px) {
+    .column-list { flex-direction: column; gap: 12px; }
+  }
 </style>
-</head>
-<body>
-<nav><a href="../">수업 목록</a></nav>
-<h1>[11차시] 2050년 기온예측 / 강수량 시각화</h1>
-  <img src="images/page-01.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 1쪽">
-  <img src="images/page-02.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 2쪽">
-  <img src="images/page-03.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 3쪽">
-  <img src="images/page-04.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 4쪽">
-  <img src="images/page-05.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 5쪽">
-  <img src="images/page-06.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 6쪽">
-  <img src="images/page-07.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 7쪽">
-  <img src="images/page-08.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 8쪽">
-  <img src="images/page-09.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 9쪽">
-  <img src="images/page-10.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 10쪽">
-  <img src="images/page-11.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 11쪽">
-  <img src="images/page-12.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 12쪽">
-  <img src="images/page-13.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 13쪽">
-  <img src="images/page-14.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 14쪽">
-  <img src="images/page-15.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 15쪽">
-  <img src="images/page-16.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 16쪽">
-  <img src="images/page-17.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 17쪽">
-  <img src="images/page-18.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 18쪽">
-  <img src="images/page-19.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 19쪽">
-  <img src="images/page-20.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 20쪽">
-  <img src="images/page-21.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 21쪽">
-  <img src="images/page-22.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 22쪽">
-  <img src="images/page-23.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 23쪽">
-  <img src="images/page-24.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 24쪽">
-  <img src="images/page-25.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 25쪽">
-  <img src="images/page-26.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 26쪽">
-  <img src="images/page-27.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 27쪽">
-  <img src="images/page-28.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 28쪽">
-  <img src="images/page-29.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 29쪽">
-  <img src="images/page-30.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 30쪽">
-  <img src="images/page-31.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 31쪽">
-  <img src="images/page-32.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 32쪽">
-  <img src="images/page-33.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 33쪽">
-  <img src="images/page-34.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 34쪽">
-  <img src="images/page-35.jpg" alt="[11차시] 2050년 기온예측 / 강수량 시각화 35쪽">
-</body>
-</html>
+</head><body><nav style="margin:16px 0;font-family:Malgun Gothic,sans-serif"><a href="../" style="color:rgb(55,53,47)">수업 목록</a></nav><article id="3bcddb6c-37bb-80d0-8e3e-fb34202476e5" class="page sans" data-notion-page-icon="🌡️"><header><img class="page-cover-image" src="images/cover.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="🌡️"></span></div><h1 class="page-title" dir="auto">[11차시] 2050년 기온예측 / 강수량 시각화</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><h1 id="3bcddb6c-37bb-800e-ac35-de4f63cbcdc2" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto"><strong>1. 기온데이터로 서울의 평균기온 예측</strong></h1><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d1ddb6c-37bb-80b1-b363-f1829348cbd3" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3bcddb6c-37bb-8012-918a-f9b67fa587f1" class="bulleted-list" dir="auto"><li style="list-style-type:disc">주제: 연도에 따른 서울의 평균기온 변화를 예측하기</li></ul><ul id="3bcddb6c-37bb-80de-962c-cacb8de2e800" class="bulleted-list" dir="auto"><li style="list-style-type:disc">기상자료개방포털(<a href="https://data.kma.go.kr/cmmn/main.do">https://data.kma.go.kr/cmmn/main.do</a>) </li></ul><ul id="3d1ddb6c-37bb-8087-a8ce-c448fb77f980" class="bulleted-list" dir="auto"><li style="list-style-type:disc">기후통계분석 - 기온분석 - 검색조건에서 자료구분, 기간, 지역 지정 후 검색 - CSV 파일</li></ul><ul id="3bcddb6c-37bb-8006-b293-c413ae9b06d4" class="bulleted-list" dir="auto"><li style="list-style-type:disc">자료구분: 연간</li></ul><ul id="3bcddb6c-37bb-8010-9023-f15a6e6763b0" class="bulleted-list" dir="auto"><li style="list-style-type:disc">기간: 1907년 - 2020년</li></ul><ul id="3bcddb6c-37bb-807b-8410-eb869cad587f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">지역: 서울</li></ul><figure id="3bcddb6c-37bb-800f-9e22-cb75b580c891" dir="ltr"><div class="block-color-yellow_background source" data-notion-highlight="yellow_background"><a href="seoul_temp_year.csv" data-notion-file="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/seoul_temp_year.csv" data-notion-file-alias="seoul_temp_year.csv">seoul_temp_year.csv</a></div></figure></div></aside><h2 id="3bcddb6c-37bb-80cb-b238-f35a34f47b42" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.1. </strong>scikit-learn(사이킷런: sklearn)<strong> 불러오기</strong></h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3d2ddb6c-37bb-8013-87a5-c25af3e2fa39" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">scikit-learn(sklearn)은 파이썬을 대표하는 머신러닝 라이브러리</li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="3e9ddb6c-37bb-8054-9a75-e102d0b0c2fe" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">데이터 전처리, 모델 학습, 평가, 파이프라인 구축 등 데이터 분석 및 예측 모델링 전 과정 지원함.</li></ul></div><figure id="3d2ddb6c-37bb-8019-aebf-fa1d04f2fc31" class="image" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image.png" dir="ltr"><a href="images/image.png"><img style="width:704px" src="images/image.png"/></a></figure><table id="3d2ddb6c-37bb-8015-a0f5-f2abe9eb5c9b" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3d2ddb6c-37bb-80d9-b285-f8b34ff6df88" dir="ltr"><th id="{k~F" class="simple-table-header-color simple-table-header" style="width:53px"><strong>구분</strong></th><th id="fWne" class="simple-table-header-color simple-table-header" style="width:632px"><strong>주요 내용</strong></th></tr></thead><tbody><tr id="3d2ddb6c-37bb-8018-9890-fad8757a4bf1" dir="ltr"><td id="{k~F" class="" style="width:53px"><strong>어원</strong></td><td id="fWne" class="" style="width:632px">• <strong>SciPy Toolkits (Scikits):</strong> 파이썬 수치 계산 패키지 SciPy의 확장 라이브러리<br/>• <strong>learn:</strong> 머신러닝(Machine Learning) 전용 패키지</td></tr><tr id="3d2ddb6c-37bb-803b-9b96-cdd6c378975b" dir="ltr"><td id="{k~F" class="" style="width:53px"><strong>역사</strong></td><td id="fWne" class="" style="width:632px">• <strong>2007년:</strong> 다비드 다비드 쿠르나포(David Cournapeau)가 구글 서머 오브 코드(GSoC) 프로젝트로 개발<br/>• <strong>2010년:</strong> 프랑스 국립디지털과학기술연구소(INRIA)에서 첫 공식 버전 공개<br/>• 파편화된 머신러닝 알고리즘 코드를 일관된 인터페이스로 통합하여 생태계 표준화 주도</td></tr><tr id="3d2ddb6c-37bb-802e-8d1f-c16b312681bc" dir="ltr"><td id="{k~F" class="" style="width:53px"><strong>특징</strong></td><td id="fWne" class="" style="width:632px">• <strong>일관된 API 구조:</strong> 모든 모델이 <code>fit()</code>, <code>predict()</code>, <code>transform()</code> 메서드 패턴 공유<br/>• <strong>생태계 호환성:</strong> NumPy 배열, Pandas DataFrame, SciPy 와 완벽한 연동</td></tr></tbody></table><div id="3e9ddb6c-37bb-8025-bc60-d23b6c9eb878" class="column-list" data-notion-column-list="" dir="auto"><div id="3e9ddb6c-37bb-8093-9a6c-c4f9027b3e72" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><table id="3e9ddb6c-37bb-801c-9bbb-f7691a54d777" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-8055-8e92-d728bed7030f" dir="ltr"><th id="TXOp" class="simple-table-header-color simple-table-header" style="width:50px"><strong>항목</strong></th><th id="UYCV" class="simple-table-header-color simple-table-header" style="width:489px"><strong>내용</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-80ad-8659-fb20be5838a4" dir="ltr"><td id="TXOp" class="" style="width:50px"><strong>이름</strong></td><td id="UYCV" class="" style="width:489px"><strong>다비드 쿠르나포 (David Cournapeau) </strong></td></tr><tr id="3e9ddb6c-37bb-800b-b47e-cb698e07fd52" dir="ltr"><td id="TXOp" class="" style="width:50px"><strong>국적</strong></td><td id="UYCV" class="" style="width:489px">프랑스</td></tr><tr id="3e9ddb6c-37bb-8057-b846-cd101b51eb3e" dir="ltr"><td id="TXOp" class="" style="width:50px"><strong>직업</strong></td><td id="UYCV" class="" style="width:489px">데이터 과학자, 머신러닝 엔지니어, 엔지니어링 매니저</td></tr><tr id="3e9ddb6c-37bb-80b6-8d7d-e6316693e191" dir="ltr"><td id="TXOp" class="" style="width:50px"><strong>업적</strong></td><td id="UYCV" class="" style="width:489px">• 파이썬 대표 머신러닝 라이브러리 <strong><a href="https://en.wikipedia.org/wiki/Scikit-learn">scikit-learn</a></strong><strong> 최초 개발 (2007년)</strong><br/>• NumPy 및 SciPy 핵심 기여자(Core Contributor)</td></tr><tr id="3e9ddb6c-37bb-8077-82af-f9f166fdb971" dir="ltr"><td id="TXOp" class="" style="width:50px"><strong>학력</strong></td><td id="UYCV" class="" style="width:489px">• 프랑스 텔레콤 파리테크 전기공학 석사<br/>• 일본 교토 대학 컴퓨터과학 박사 (음성 인식 전공)</td></tr><tr id="3e9ddb6c-37bb-806a-ac38-e86983070be7" dir="ltr"><td id="TXOp" class="" style="width:50px"><strong>현재</strong></td><td id="UYCV" class="" style="width:489px"><strong>Amazon</strong> 응용과학 엔지니어링 매니저</td></tr></tbody></table></div><div id="3e9ddb6c-37bb-80f5-94ff-de3d7921cde8" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="3e9ddb6c-37bb-8075-9c1c-cf692bafa33a" class="image" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%201.png" dir="ltr"><a href="images/image 1.png"><img style="width:288px" src="images/image 1.png"/></a></figure></div></div><table id="3d2ddb6c-37bb-8021-8a85-f972ee072113" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3d2ddb6c-37bb-8090-806b-f2523f87eca8" dir="ltr"><th id="~=A;" class="simple-table-header-color simple-table-header" style="width:74px"><strong>구분</strong></th><th id="}PiB" class="simple-table-header-color simple-table-header" style="width:160.0681915283203px"><strong>NumPy</strong></th><th id="?k&lt;@" class="simple-table-header-color simple-table-header" style="width:231.13636779785156px"><strong>Pandas</strong></th><th id="~^{I" class="block-color-yellow_background simple-table-header" style="width:231.0833282470703px"><strong>scikit-learn (sklearn)</strong></th></tr></thead><tbody><tr id="3d2ddb6c-37bb-8028-9d04-d4302d85b10c" dir="ltr"><td id="~=A;" class="" style="width:74px"><strong>주요 역할</strong></td><td id="}PiB" class="" style="width:160.0681915283203px">수치 계산<br/>다차원 배열 연산</td><td id="?k&lt;@" class="" style="width:231.13636779785156px">구조화된 데이터 전처리</td><td id="~^{I" class="block-color-yellow_background" style="width:231.0833282470703px">머신러닝 알고리즘  <br/>데이터 예측·평가</td></tr><tr id="3d2ddb6c-37bb-8044-a050-f071ffed69c8" dir="ltr"><td id="~=A;" class="" style="width:74px"><strong>핵심 구조</strong></td><td id="}PiB" class="" style="width:160.0681915283203px"><code>ndarray</code> (다차원)</td><td id="?k&lt;@" class="" style="width:231.13636779785156px"><code>DataFrame</code> (2차원), <code>Series</code> (1차원)</td><td id="~^{I" class="block-color-yellow_background" style="width:231.0833282470703px">NumPy, Pandas 호환</td></tr><tr id="3d2ddb6c-37bb-806c-802a-c1b560d65e4b" dir="ltr"><td id="~=A;" class="" style="width:74px"><strong>주요 특징</strong></td><td id="}PiB" class="" style="width:160.0681915283203px">수치 연산에 최적화<br/>빠른 연산 속도</td><td id="?k&lt;@" class="" style="width:231.13636779785156px">행(열) 라벨링 지원<br/>서로 다른 자료형 혼용 가능</td><td id="~^{I" class="block-color-yellow_background" style="width:231.0833282470703px">회귀, 분류, 군집화<br/>모델 평가, 교차검증</td></tr><tr id="3d2ddb6c-37bb-8005-aa08-f1f4c302393e" dir="ltr"><td id="~=A;" class="" style="width:74px"><strong>제공 기능</strong></td><td id="}PiB" class="" style="width:160.0681915283203px">행렬 연산, 통계 함수</td><td id="?k&lt;@" class="" style="width:231.13636779785156px">데이터 변환, 결측치 처리</td><td id="~^{I" class="block-color-yellow_background" style="width:231.0833282470703px"><code>fit()</code>, <code>predict()</code>, <code>transform()</code> </td></tr><tr id="3d2ddb6c-37bb-80be-9a3e-f9427b1e6f8a" dir="ltr"><td id="~=A;" class="" style="width:74px"><strong>사용 시점</strong></td><td id="}PiB" class="" style="width:160.0681915283203px">대규모 수치 데이터 처리</td><td id="?k&lt;@" class="" style="width:231.13636779785156px">엑셀 형태의 데이터 분석</td><td id="~^{I" class="block-color-yellow_background" style="width:231.0833282470703px">머신러닝 모델</td></tr></tbody></table><table id="3d1ddb6c-37bb-80bb-b7fb-d678e82d411f" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3d1ddb6c-37bb-8061-b145-f973e91602d6" dir="ltr"><th id="xm`X" class="simple-table-header-color simple-table-header" style="width:127px"><strong>모듈명</strong></th><th id="^rO^" class="simple-table-header-color simple-table-header" style="width:210px"><strong>주요 기능 및 역할</strong></th><th id="]_vJ" class="simple-table-header-color simple-table-header" style="width:509px"><strong>핵심 클래스 및 함수</strong></th></tr></thead><tbody><tr id="3d1ddb6c-37bb-809e-9c26-f56ecce16c50" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>preprocessing</strong></code></td><td id="^rO^" class="" style="width:210px">데이터 <strong>전처리</strong>, 스케일링, 인코딩</td><td id="]_vJ" class="" style="width:509px"><code>StandardScaler</code>, <code>MinMaxScaler</code>, <code>OneHotEncoder</code>, <code>LabelEncoder</code></td></tr><tr id="3d1ddb6c-37bb-8058-bc70-ef66d5d04a98" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>model_selection</strong></code></td><td id="^rO^" class="" style="width:210px">데이터 분할, 교차 검증, 튜닝</td><td id="]_vJ" class="" style="width:509px"><code>train_test_split</code>, <code>KFold</code>, <code>GridSearchCV</code>, <code>RandomizedSearchCV</code></td></tr><tr id="3d1ddb6c-37bb-80f2-8ccd-f0dfa17bc089" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>linear_model</strong></code></td><td id="^rO^" class="" style="width:210px"><strong>선형</strong> 기반 회귀, 분류</td><td id="]_vJ" class="" style="width:509px"><code>LinearRegression</code>, <code>Ridge</code>, <code>Lasso</code>, <code>LogisticRegression</code></td></tr><tr id="3d1ddb6c-37bb-8038-8943-e705f21a2fd2" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>tree</strong></code></td><td id="^rO^" class="" style="width:210px"><strong>의사결정트리</strong> 기반 분류, 회귀</td><td id="]_vJ" class="" style="width:509px"><code>DecisionTreeClassifier</code>, <code>DecisionTreeRegressor</code>, <code>export_graphviz</code></td></tr><tr id="3d1ddb6c-37bb-804e-9e97-d964ee22f09e" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>ensemble</strong></code></td><td id="^rO^" class="" style="width:210px"><strong>앙상블</strong> 학습</td><td id="]_vJ" class="" style="width:509px"><code>RandomForestClassifier</code>, <code>GradientBoostingClassifier</code>, <code>VotingClassifier</code></td></tr><tr id="3d1ddb6c-37bb-804a-9fe8-d5365230fe52" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>cluster</strong></code></td><td id="^rO^" class="" style="width:210px">비지도 기반 <strong>군집</strong>화</td><td id="]_vJ" class="" style="width:509px"><code>KMeans</code>, <code>DBSCAN</code>, <code>AgglomerativeClustering</code></td></tr><tr id="3d1ddb6c-37bb-80fa-93a7-fce79626d412" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>decomposition</strong></code></td><td id="^rO^" class="" style="width:210px"><strong>차원 축소</strong> 및 특성 추출</td><td id="]_vJ" class="" style="width:509px"><code>PCA</code>, <code>TruncatedSVD</code>, <code>NMF</code></td></tr><tr id="3d1ddb6c-37bb-80ce-83ff-cf4494ca063d" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>metrics</strong></code></td><td id="^rO^" class="" style="width:210px">모델 <strong>성능 평가</strong></td><td id="]_vJ" class="" style="width:509px"><code>accuracy_score</code>, <code>confusion_matrix</code>, <code>roc_auc_score</code>, <code>mean_squared_error</code></td></tr><tr id="3d1ddb6c-37bb-80df-a2aa-e80e0bbd2fad" dir="ltr"><td id="xm`X" class="" style="width:127px"><code><strong>pipeline</strong></code></td><td id="^rO^" class="" style="width:210px">단일 파이프라인</td><td id="]_vJ" class="" style="width:509px"><code>Pipeline</code>, <code>make_pipeline</code></td></tr></tbody></table><table id="3d2ddb6c-37bb-801d-8b87-d1d15b35a04a" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3d2ddb6c-37bb-80b4-9e99-fd358674cf38" dir="ltr"><th id="&gt;FuX" class="simple-table-header-color simple-table-header" style="width:127px"><strong>모듈명</strong></th><th id="yZsc" class="simple-table-header-color simple-table-header" style="width:203.3181915283203px"><strong>핵심 클래스/함수</strong></th><th id="`iqR" class="simple-table-header-color simple-table-header" style="width:547px"><strong>쉬운 설명 및 활용 목적</strong></th></tr></thead><tbody><tr id="3d2ddb6c-37bb-80ec-b8ba-cfb128bcd04d" dir="ltr"><td id="&gt;FuX" rowspan="4" class="" style="width:127px"><code><strong>preprocessing</strong></code><br/>(데이터 전처리)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>StandardScaler</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>평균을 0, 표준편차를 1</strong>로 맞추어 데이터를 표준정규분포 형태로 스케일링</td></tr><tr id="3d2ddb6c-37bb-80f0-9335-eec560051cac" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>MinMaxScaler</strong></code></td><td id="`iqR" class="" style="width:547px">모든 데이터 값을 <strong>0과 1 사이의 범위로 변환</strong>하여 스케일 조정</td></tr><tr id="3d2ddb6c-37bb-802b-b262-f8208798baa5" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>OneHotEncoder</strong></code></td><td id="`iqR" class="" style="width:547px">범주형 데이터(예: 과일명, 지역명)를 <strong>0과 1(One-Hot)로 변환</strong></td></tr><tr id="3d2ddb6c-37bb-80e6-924c-c173ca9906cb" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>LabelEncoder</strong></code></td><td id="`iqR" class="" style="width:547px">범주형 데이터의 각 클래스를 0, 1, 2... 와 같은 정수 숫자로 변환</td></tr><tr id="3d2ddb6c-37bb-803c-914e-cf4f3bdae4ae" dir="ltr"><td id="&gt;FuX" rowspan="4" class="" style="width:127px"><code><strong>model_selection</strong></code><br/>(데이터 분할/튜닝)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>train_test_split</strong></code></td><td id="`iqR" class="" style="width:547px">전체 데이터를 <strong>학습용(Train)과 평가용(Test) 데이터셋</strong>으로 손쉽게 나누는 함수</td></tr><tr id="3d2ddb6c-37bb-80d4-a297-e205b8aa2b43" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>KFold</strong></code></td><td id="`iqR" class="" style="width:547px">데이터를<strong> K개의 조각</strong>으로 나누어 교차 검증(Cross Validation)을 수행하도록 분할</td></tr><tr id="3d2ddb6c-37bb-803f-8d48-c8b14411a55f" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>GridSearchCV</strong></code></td><td id="`iqR" class="" style="width:547px">하이퍼파라미터 후보 조합을 모두 탐색해 최적의 모델 매개변수를 찾음</td></tr><tr id="3d2ddb6c-37bb-80f6-85a1-f5b15a41b563" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>RandomizedSearchCV</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>무작위로 샘플링</strong>하여 빠르게 최적 파라미터를 탐색</td></tr><tr id="3d2ddb6c-37bb-80ae-a111-c544b0a48754" dir="ltr"><td id="&gt;FuX" rowspan="4" class="" style="width:127px"><code><strong>linear_model</strong></code><br/>(선형 기반 모델)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>LinearRegression</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>기본 선형 회귀 알고리즘</strong>으로 수치형 데이터를 예측하는 기본 모델</td></tr><tr id="3d2ddb6c-37bb-8080-9223-eb73e1cc4682" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>Ridge</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>L2 규제를 추가</strong>하여 <strong>과적합을 방지</strong>하는 선형 회귀 모델</td></tr><tr id="3d2ddb6c-37bb-80f6-a5f3-c97da4d8d4f4" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>Lasso</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>L1 규제를 추가</strong>하여 <strong>불필요한 특성의 가중치를 0</strong>으로 만들어 과적합을 방지하는 회귀 모델</td></tr><tr id="3d2ddb6c-37bb-80fd-9c04-e6ac2009cf87" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>LogisticRegression</strong></code></td><td id="`iqR" class="" style="width:547px">선형 회귀에 시그모이드 함수를 적용한 예측하는 분류 모델</td></tr><tr id="3d2ddb6c-37bb-80ff-a5c9-ef77d950d0bc" dir="ltr"><td id="&gt;FuX" rowspan="3" class="" style="width:127px"><code><strong>tree</strong></code><br/>(의사결정트리)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>DecisionTreeClassifier</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>나무(Tree) 구조의 조건문</strong> 스무고개 방식으로 데이터를 분류하는 모델</td></tr><tr id="3d2ddb6c-37bb-805d-8579-f7c385702c74" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>DecisionTreeRegressor</strong></code></td><td id="`iqR" class="" style="width:547px">나무 구조 조건문을 바탕으로 <strong>연속된 수치형 결과값을 예측</strong>하는 회귀 모델</td></tr><tr id="3d2ddb6c-37bb-80c0-9653-da8bf703d6c1" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>export_graphviz</strong></code></td><td id="`iqR" class="" style="width:547px">학습된 의사결정나무 모델을 시각화할 수 있는 Graphviz 형식(텍스트로 관계 설명)</td></tr><tr id="3d2ddb6c-37bb-80b2-af41-eff9b51086ee" dir="ltr"><td id="&gt;FuX" rowspan="3" class="" style="width:127px"><code><strong>ensemble</strong></code><br/>(앙상블 학습)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>RandomForestClassifier</strong></code></td><td id="`iqR" class="" style="width:547px">수많은 의사결정나무를 만들고 <strong>다수결 투표 방식</strong>으로 예측력을 높인 대표적 앙상블 모델</td></tr><tr id="3d2ddb6c-37bb-806c-9c24-db62849d8781" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>GradientBoostingClassifier</strong></code></td><td id="`iqR" class="" style="width:547px">이전에 만든 나무의 오차를 다음 나무가 보완해 나가는 부스팅(Boosting) 방식 분류 모델</td></tr><tr id="3d2ddb6c-37bb-80d8-99e3-c5c9f8ca376c" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>VotingClassifier</strong></code></td><td id="`iqR" class="" style="width:547px">서로 다른 여러 개 알고리즘 모델의 예측 결과를 투표(Voting)를 통해 최종 결합</td></tr><tr id="3d2ddb6c-37bb-8098-af04-f3a9d4a2f699" dir="ltr"><td id="&gt;FuX" rowspan="3" class="" style="width:127px"><code><strong>cluster</strong></code><br/>(비지도 군집화)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>KMeans</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>K개의 중심점을 기준</strong>으로 가까운 거리끼리 묶어주는 가장 대표적인 군집화 알고리즘</td></tr><tr id="3d2ddb6c-37bb-80e9-957d-c55ee4e59fca" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>DBSCAN</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>밀도(Density) 기반</strong>으로 기하학적 형태의 군집을 찾고 노이즈(이상치)를 구분</td></tr><tr id="3d2ddb6c-37bb-80f7-b433-cbcfd36f548c" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>AgglomerativeClustering</strong></code></td><td id="`iqR" class="" style="width:547px">가까운 것끼리 계층적으로 차근차근 묶어 나가는 <strong>상향식 군집화</strong></td></tr><tr id="3d2ddb6c-37bb-80ac-9146-c9c35ca91a09" dir="ltr"><td id="&gt;FuX" rowspan="3" class="" style="width:127px"><code><strong>decomposition</strong></code><br/>(차원 축소)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>PCA</strong></code></td><td id="`iqR" class="" style="width:547px">고차원 데이터를 <strong>저차원으로 축소</strong></td></tr><tr id="3d2ddb6c-37bb-80d6-abf5-dd2894522c0b" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>TruncatedSVD</strong></code></td><td id="`iqR" class="" style="width:547px">단일값 분해 방식의 <strong>차원 축소 모델</strong></td></tr><tr id="3d2ddb6c-37bb-808b-99ec-f216425fa322" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>NMF</strong></code></td><td id="`iqR" class="" style="width:547px">텍스트, 이미지를 음수 미포함 자원으로 분해하는 <strong>차원 축소 기법</strong></td></tr><tr id="3d2ddb6c-37bb-80dd-b472-f81f2db92a7d" dir="ltr"><td id="&gt;FuX" rowspan="4" class="" style="width:127px"><code><strong>metrics</strong></code><br/>(모델 성능 평가)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>accuracy_score</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>정확도</strong>를 계산하는 함수</td></tr><tr id="3d2ddb6c-37bb-8045-b186-c58f5bbb5315" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>confusion_matrix</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>혼동 행렬</strong>로 표기해 주는 함수</td></tr><tr id="3d2ddb6c-37bb-8007-938c-c7d7c1de120e" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>roc_auc_score</strong></code></td><td id="`iqR" class="" style="width:547px">ROC 곡선 <strong>아래 면적(AUC) 점수</strong>를 산출해 주는 평가 함수</td></tr><tr id="3d2ddb6c-37bb-80cd-8674-eb4f94897034" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>mean_squared_error</strong></code></td><td id="`iqR" class="" style="width:547px"><strong>오차 제곱 평균(MSE)</strong>을 구하는 평가 함수</td></tr><tr id="3d2ddb6c-37bb-801d-b753-d67434b91bdb" dir="ltr"><td id="&gt;FuX" rowspan="2" class="" style="width:127px"><code><strong>pipeline</strong></code><br/>(파이프라인)</td><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>Pipeline</strong></code></td><td id="`iqR" class="" style="width:547px">전처리 단계와 모델 학습 단계를 하나로 연결해 묶어주는 클래스</td></tr><tr id="3d2ddb6c-37bb-80c6-ab7d-f8320b6a737f" dir="ltr"><td id="yZsc" class="block-color-pink" style="width:203.3181915283203px"><code><strong>make_pipeline</strong></code></td><td id="`iqR" class="" style="width:547px">파이프라인 생성해 주는 함수</td></tr></tbody></table><h3 id="3d7ddb6c-37bb-8006-894d-ef2311e3dda6" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_01</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><pre id="3bcddb6c-37bb-80c7-a9ed-ecb1673302a4" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">!pip install koreanize-matplotlib
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import koreanize_matplotlib 
+
+# 선형회귀 알고리즘 사용하기
+from sklearn.linear_model import LinearRegression
+
+# 학습 데이터와 테스트 데이터 분리하기
+from sklearn.model_selection import train_test_split
+
+# 회귀모델 성능 평가
+from sklearn.metrics import mean_squared_error, r2_score</code></pre><h2 id="3bcddb6c-37bb-8015-bf0e-dbffc04578f6" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.2. 기온 데이터(seoul_temp_year.csv): 샘플 5개 출력</strong></h2><ul id="3bcddb6c-37bb-80f3-a804-f9a129fb0541" class="bulleted-list" dir="auto"><li style="list-style-type:disc">encoding=’<strong>euc-kr’ 또는 ‘cp949’ 또는 ‘UTF-8’로 인코딩 설정</strong>하지 않으면 한글 코드가 깨짐.</li></ul><ul id="3bcddb6c-37bb-80a3-b0e5-f6d22a9ff3f1" class="bulleted-list" dir="auto"><li style="list-style-type:disc">df라는 이름의 데이터프레임에 저장한 후 출력하기</li></ul><h3 id="3d7ddb6c-37bb-807e-ad28-f97631a75b51" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_02</h3><figure id="3e2ddb6c-37bb-8098-a716-fd591eeabcd2" class="image" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%202.png" dir="ltr"><a href="images/image 2.png"><img style="width:703.859375px" src="images/image 2.png"/></a></figure><figure id="3d7ddb6c-37bb-80bb-bb37-d2c10508d914" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/a058778a-3109-406f-a57f-0214c13aa3b3.png" dir="ltr"><a href="images/a058778a-3109-406f-a57f-0214c13aa3b3.png"><img style="width:432px" src="images/a058778a-3109-406f-a57f-0214c13aa3b3.png"/></a></figure><h2 id="3bcddb6c-37bb-80e7-8a94-cf23536c24dd" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.3. 데이터 프레임의 정보 확인하기</strong></h2><h3 id="3d7ddb6c-37bb-80e3-97ca-cb0d432daf8b" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_03</h3><figure id="3e2ddb6c-37bb-80ff-a8a1-c630399e8274" class="image" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%203.png" dir="ltr"><a href="images/image 3.png"><img style="width:703.96875px" src="images/image 3.png"/></a></figure><figure id="3d7ddb6c-37bb-8073-a42c-e3f11fe90754" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%204.png" dir="ltr"><a href="images/image 4.png"><img style="width:432px" src="images/image 4.png"/></a></figure><h2 id="3bcddb6c-37bb-8060-8651-c90b40d03204" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.4. 결측치 데이터를 값으로 채워 샘플 5개 출력</strong></h2><h3 id="3bcddb6c-37bb-801d-bae6-d42550019fa1" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.4.1. 결측치 </strong>dropna 함수로 <strong>처리</strong></h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-8047-9d63-f860ef6b34c2" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-807e-a93e-e4fff3c2d70f" class="" dir="auto"><strong>dropna: Drop</strong>+ <strong>NA</strong></p><ul id="3d2ddb6c-37bb-8016-a205-e9f3eea41259" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Drop (버리다 / Drop out):</strong> 필요 없는 요소 제거</li></ul><ul id="3d2ddb6c-37bb-8015-b26e-c699145e7cd9" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>NA (Not Available / Not Applicable):</strong> &#x27;결측치(데이터 없음)&#x27;</li></ul></div></aside><ul id="3bcddb6c-37bb-807e-b129-e626e02b0869" class="bulleted-list" dir="auto"><li style="list-style-type:disc">dropna함수로 결측치가 포함된 행 삭제하기 ex) df = df.dropna()</li></ul><ul id="3bcddb6c-37bb-80ae-bdbc-cf8c0751b56d" class="bulleted-list" dir="auto"><li style="list-style-type:disc">결측치 데이터를 <strong>다음 값</strong>으로 채우기 ex) df = df.fillna(method=&#x27;<strong>bfill</strong>&#x27;) </li></ul><ul id="3bcddb6c-37bb-8079-98e2-c8e4ec2a7fce" class="bulleted-list" dir="auto"><li style="list-style-type:disc">결측치 데이터를 <strong>이전 값</strong>으로 채우기 ex) df = df.fillna(method=&#x27;<strong>ffill</strong>&#x27;)</li></ul><ul id="3bcddb6c-37bb-8089-b8ef-dd978c6dc0f5" class="bulleted-list" dir="auto"><li style="list-style-type:disc">결측치 데이터를 <strong>임의의 값(0)</strong>으로 대체하기 ex) df[&#x27;평균기온&#x27;].fillna(<strong>0</strong>,inplace=True)</li></ul><ul id="3bcddb6c-37bb-8007-b45f-ea1828d837ba" class="bulleted-list" dir="auto"><li style="list-style-type:disc">결측치 데이터를 <strong>평균값</strong>으로 대체하기 ex) df[&#x27;평균기온&#x27;].fillna(df[&#x27;평균기온&#x27;].<strong>mean</strong>( ),inplace=True)</li></ul><h3 id="3d7ddb6c-37bb-8042-bb0f-ea4c428afff5" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_04</h3><figure id="3d7ddb6c-37bb-800e-a676-d6ca8d8f75b8" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/7f883250-3d07-4702-84d0-c49b9b28059b.png" dir="ltr"><a href="images/7f883250-3d07-4702-84d0-c49b9b28059b.png"><img style="width:432px" src="images/7f883250-3d07-4702-84d0-c49b9b28059b.png"/></a></figure><figure id="3d7ddb6c-37bb-80fc-a43c-d8faf7cff192" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%205.png" dir="ltr"><a href="images/image 5.png"><img style="width:432px" src="images/image 5.png"/></a></figure><h3 id="3d7ddb6c-37bb-8010-95bb-f2e60115d0e8" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_05</h3><figure id="3d7ddb6c-37bb-80ad-8e1a-ee9895969998" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/3f89340c-9cf9-4454-b902-f9613249f002.png" dir="ltr"><a href="images/3f89340c-9cf9-4454-b902-f9613249f002.png"><img style="width:528px" src="images/3f89340c-9cf9-4454-b902-f9613249f002.png"/></a></figure><figure id="3d7ddb6c-37bb-803c-97dc-ea6bd7767c88" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%206.png" dir="ltr"><a href="images/image 6.png"><img style="width:511.9750061035156px" src="images/image 6.png"/></a></figure><h2 id="3bcddb6c-37bb-80fb-af02-c0147f2bd097" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.5. seaborn의 lineplot 함수로 시각화</strong></h2><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-8070-b66e-fedce1aeb738" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-808b-a3a2-f841e8d87d63" class="" dir="auto"><strong>seaborn </strong><code><strong>sns.lineplot()</strong></code><strong>의 장점:</strong> 동일한 X축 위치에 여러 개의 Y 값이 존재할 경우, 데이터의 평균선(실선)과 함께 신뢰구간(기본적으로 95% 신뢰구간을 뜻하는 옅은 그림자 영역)을 자동으로 계산하여 깔끔하게 그려줌.</p></div></aside><h3 id="3d7ddb6c-37bb-80d9-917d-d87cb3dda9cf" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_05</h3><pre id="3e2ddb6c-37bb-800f-aa13-ffda05a72417" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">plt.figure(figsize=(20, 3), dpi=300)
+sns.lineplot(data=df, x=&#x27;년&#x27;, y=&#x27;최저기온&#x27;, color=&#x27;blue&#x27;, label = &#x27;최저기온&#x27;)
+sns.lineplot(data=df, x=&#x27;년&#x27;, y=&#x27;최고기온&#x27;, color=&#x27;red&#x27;, label = &#x27;최고기온&#x27;)
+sns.lineplot(data=df, x=&#x27;년&#x27;, y=&#x27;평균기온&#x27;, color=&#x27;green&#x27;, label = &#x27;평균기온&#x27;)
+plt.title(&#x27;선그래프로 나타낸 서울의 기온 분포&#x27;)
+plt.legend()</code></pre><figure id="3bcddb6c-37bb-803b-b578-c22f283cdcbf" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%207.png" dir="ltr"><a href="images/image 7.png"><img style="width:480px" src="images/image 7.png"/></a></figure><h2 id="3bcddb6c-37bb-8054-862b-f3b8b952fb13" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.6. seaborn의 regplot 함수: 데이터간 상관관계를 시각화하기</strong></h2><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-8078-8eb4-c7b34e46038c" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-806e-b210-fac4b3329cf1" class="" dir="auto">seaborn 선형 회귀 시각화 함수<mark class="highlight-red" data-notion-highlight="red"><strong>(regression plot)</strong></mark><br/>• 두 연속형 변수 간의 관계(양의 상관관계, 음의 상관관계 등)를 직관적으로 파악할 수 있음.<br/>• 데이터를 기반으로 최적의 <span data-notion-inline-equation="y = ax + b" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span></span> 직선을 알아서 계산하여 그려줌.<br/>• 회귀선 주변에 옅은 반투명 영역으로 95% 신뢰구간을 기본으로 표시함.</p></div></aside><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d1ddb6c-37bb-80fc-9b9f-df6860247214" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h4 id="3d1ddb6c-37bb-80a6-a38a-cec049f6e5fb" class="" dir="auto">fig, axs, ax의 관계</h4><ul id="3d1ddb6c-37bb-80da-b797-ce40e879a684" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>fig</strong></code> (Figure): 전체 차트의 창(2x2)</li></ul><ul id="3d1ddb6c-37bb-8082-861c-ce7693126259" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>axs</strong></code>: <code>plt.subplots()</code>로 그래프를 생성할 때,  <code>ax</code>를 담고 있는 N차원 배열</li></ul><ul id="3d1ddb6c-37bb-80f9-be75-cfcbe41a430e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>ax</strong></code> (Axes): <code>axs</code> 배열 안에 들어 있는 개별 서브플롯 하나하나</li></ul></div></aside><h3 id="3d7ddb6c-37bb-805a-a014-f2458bd2ee89" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_06</h3><pre id="3e2ddb6c-37bb-8063-80dc-db3618f3a4b2" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">fig, axs = plt.subplots(figsize=(16, 8), nrows=2, ncols=2)
+
+# 1행 1열 (왼쪽 위): 지점
+sns.regplot(data=df, x=&#x27;지점&#x27;, y=&#x27;년&#x27;, ax=axs[0][0])
+
+# 1행 2열 (오른쪽 위): 평균기온
+sns.regplot(data=df, x=&#x27;평균기온&#x27;, y=&#x27;년&#x27;, ax=axs[0][1])
+
+# 2행 1열 (왼쪽 아래): 최저기온
+sns.regplot(data=df, x=&#x27;최저기온&#x27;, y=&#x27;년&#x27;, ax=axs[1][0])
+
+# 2행 2열 (오른쪽 아래): 최고기온
+sns.regplot(data=df, x=&#x27;최고기온&#x27;, y=&#x27;년&#x27;, ax=axs[1][1])
+
+plt.tight_layout() # 그래프 간격 정리</code></pre><figure id="3bcddb6c-37bb-80e9-a6e5-e03554b2d1f4" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%208.png" dir="ltr"><a href="images/image 8.png"><img style="width:768px" src="images/image 8.png"/></a></figure><table id="3d2ddb6c-37bb-8000-9db8-e66d7568c2f0" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3d2ddb6c-37bb-8086-a045-e56019adcc2d" dir="ltr"><th id="h[Hu" class="simple-table-header-color simple-table-header"><strong>구분</strong></th><th id="t^lP" class="simple-table-header-color simple-table-header" style="width:161.47727966308594px"><strong>왼쪽 (열 = 0)</strong></th><th id="_&lt;AW" class="simple-table-header-color simple-table-header" style="width:179.78408813476562px"><strong>오른쪽 (열 = 1)</strong></th></tr></thead><tbody><tr id="3d2ddb6c-37bb-805e-99db-e5ea5b90fe26" dir="ltr"><td id="h[Hu" class=""><strong>위쪽 (행 = 0)</strong></td><td id="t^lP" class="" style="width:161.47727966308594px"><code><strong>axs[0][0]</strong></code> (1행 1열)</td><td id="_&lt;AW" class="" style="width:179.78408813476562px"><code><strong>axs[0][1]</strong></code> (1행 2열)</td></tr><tr id="3d2ddb6c-37bb-803c-96ce-ce52282c5f34" dir="ltr"><td id="h[Hu" class=""><strong>아래쪽 (행 = 1)</strong></td><td id="t^lP" class="" style="width:161.47727966308594px"><code><strong>axs[1][0]</strong></code> (2행 1열)</td><td id="_&lt;AW" class="" style="width:179.78408813476562px"><code><strong>axs[1][1]</strong></code> (2행 2열)</td></tr></tbody></table><h3 id="3d7ddb6c-37bb-80e7-ad28-e628583973d4" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_07</h3><figure id="3e2ddb6c-37bb-8025-aeac-c37454ff3d2c" class="image" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/7d05b171-fb04-43cf-916e-cbe3c373c749.png" dir="ltr"><a href="images/7d05b171-fb04-43cf-916e-cbe3c373c749.png"><img style="width:720px" src="images/7d05b171-fb04-43cf-916e-cbe3c373c749.png"/></a></figure><figure id="3d7ddb6c-37bb-8093-ad7c-e86a9032ff77" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%209.png" dir="ltr"><a href="images/image 9.png"><img style="width:384px" src="images/image 9.png"/></a></figure><h2 id="3bcddb6c-37bb-80ff-896b-edc9c47d56a7" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.7. </strong>drop( ) 함수</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3bcddb6c-37bb-80ca-8319-fc892450384a" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>drop( )의 axis=0은 행(row), axis=1은 열(column)을 삭제</strong>한다는 의미임.</li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="3bcddb6c-37bb-801d-9131-fac8ed0e35c7" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><code>inplace=False</code> (기본값) : 사본을 만들어 수정하기</li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="3bcddb6c-37bb-80bc-835a-d82c22e5f8d8" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><code>inplace=True</code> : ‘원본 서류에 직접 화이트로 지우기’</li></ul></div><h3 id="3d7ddb6c-37bb-8085-bfe1-cc4744ff6f72" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_08</h3><figure id="3d7ddb6c-37bb-80b8-8529-f625c85d396b" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/19d9a3f4-8ab4-46f9-bd04-7b2382c1a11d.png" dir="ltr"><a href="images/19d9a3f4-8ab4-46f9-bd04-7b2382c1a11d.png"><img style="width:576px" src="images/19d9a3f4-8ab4-46f9-bd04-7b2382c1a11d.png"/></a></figure><figure id="3d7ddb6c-37bb-80fd-99ae-fd5452044d64" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2010.png" dir="ltr"><a href="images/image 10.png"><img style="width:221.9875030517578px" src="images/image 10.png"/></a></figure><h2 id="3bcddb6c-37bb-8099-a222-fbcf9194e61d" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.8. 피처(훈련) 데이터와 레이블(정답) 데이터 분리하기</strong></h2><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-8091-b806-cada1f75928a" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-8025-9066-f0c37e93b59c" class="" dir="auto"><strong>피처(훈련) 데이터만 따로 빼내는 이유</strong></p><ul id="3d2ddb6c-37bb-80bc-a4fb-c9dc28363daa" class="bulleted-list" dir="auto"><li style="list-style-type:disc">지도학습 알고리즘(<code>fit()</code> 메서드)은<span data-notion-inline-equation="X" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span></span>(문제)를 넣었을 때 <span data-notion-inline-equation="y" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span>(정답)가 나오도록 학습함. </li></ul><ul id="3d2ddb6c-37bb-80ee-8099-f6c661d0d613" class="bulleted-list" dir="auto"><li style="list-style-type:disc">피처와 레이블이 섞여 있으면 무엇을 기반으로 하는지 알고리즘이 인식할 수 없음.</li></ul><ul id="3d2ddb6c-37bb-805f-9737-c34d64e5c418" class="bulleted-list" dir="auto"><li style="list-style-type:disc">정답 정보(레이블)가 입력 데이터(피처)에 섞여 들어가면, 시험을 치르기도 전에 답안지를 보여주는 꼴이 되어 모델이 과적합되거나 실제 상황에서 제대로 예측하지 못하게 됨.</li></ul></div></aside><h3 id="3d7ddb6c-37bb-8055-9d0a-f66705eb9377" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_09</h3><figure id="3d7ddb6c-37bb-80b0-9263-c7a501d1e6bb" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/3100f460-2240-4de0-831c-465d879d8857.png" dir="ltr"><a href="images/3100f460-2240-4de0-831c-465d879d8857.png"><img style="width:384px" src="images/3100f460-2240-4de0-831c-465d879d8857.png"/></a></figure><figure id="3d7ddb6c-37bb-80a4-9b3d-c5c3f6c1f4aa" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2011.png" dir="ltr"><a href="images/image 11.png"><img style="width:116.98750305175781px" src="images/image 11.png"/></a></figure><h3 id="3d7ddb6c-37bb-8036-972d-cdc8d3194674" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_10</h3><figure id="3d7ddb6c-37bb-80b7-b739-cb8ae74e504f" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/0f821d4d-427e-453d-ab01-50e0f002997e.png" dir="ltr"><a href="images/0f821d4d-427e-453d-ab01-50e0f002997e.png"><img style="width:432px" src="images/0f821d4d-427e-453d-ab01-50e0f002997e.png"/></a></figure><figure id="3d7ddb6c-37bb-80b8-8b44-c061fa041164" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2012.png" dir="ltr"><a href="images/image 12.png"><img style="width:170.9875030517578px" src="images/image 12.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-80e6-8205-eb3a89b93327" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-8009-8fa5-d183dc3ac19e" class="" dir="auto"><code><strong>temp_label = df[&#x27;평균기온&#x27;]</strong></code> <strong>정답지(Label)를 1차원 데이터로 따로 추출</strong>하는 과정</p><ul id="3d2ddb6c-37bb-8011-997a-c8e27408f11a" class="bulleted-list" dir="auto"><li style="list-style-type:disc">지도학습 모델은 <code>model.fit(X, y)</code> 형태로 학습하는데, 피처(<span data-notion-inline-equation="X" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span></span>)는 2차원 문제지, 레이블(<span data-notion-inline-equation="y" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span>)은 1차원 정답지여야 하므로 정답 열만 따로 떼어냄.</li></ul><ul id="3d2ddb6c-37bb-806b-b166-eedeb2b4efb9" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>df[&#x27;평균기온&#x27;]</code>으로 가져오면 1차원 Series 객체로 추출되어 이 규격에 딱 맞음.</li></ul><ul id="3d2ddb6c-37bb-8028-8cff-f6c5121e6706" class="bulleted-list" dir="auto"><li style="list-style-type:disc">예측하고자 하는 목적 값(&#x27;평균기온&#x27;)을 별도 변수에 보관해 두어야, 나중에 모델이 예측한 값(<code>y_pred</code>)과 실제 정답(<code>y_true</code>)을 비교하여 정확도나 오차(MSE 등)를 평가할 수 있음.</li></ul></div></aside><h2 id="3bcddb6c-37bb-802b-8d48-cea3f3515ad3" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.9. 학습 데이터와 테스트 데이터 분리하기</strong></h2><h3 id="3bcddb6c-37bb-80be-a481-f8edd1d4feed" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.9.1. train_test_split</strong></h3><ul id="3bcddb6c-37bb-8006-b24d-dcd7c2fcc4b8" class="bulleted-list" dir="auto"><li style="list-style-type:disc">test_size=0.2: 학습 데이터: 80%, 테스트 데이터: 20%</li></ul><ul id="3bcddb6c-37bb-803d-99fa-f00e6d223462" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>X_train</strong>: 학습용 피처 데이터, <strong>X_test</strong>: 테스트용 피처 데이터</li></ul><ul id="3d1ddb6c-37bb-8096-a523-e627cb30caf8" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>y_train</strong>: 학습용 결정값,<strong> y_test</strong>: 테스트용 결정값</li></ul><ul id="3bcddb6c-37bb-800a-9412-d6cf96f4f7ac" class="bulleted-list" dir="auto"><li style="list-style-type:disc">random_state=156: 무작위로 데이터를 분리하므로 수행결과가 항상 일치하기 위한 난수</li></ul><h3 id="3d7ddb6c-37bb-8079-912e-ee2342aeed0a" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_11</h3><pre id="3e9ddb6c-37bb-807e-8807-e1538ae2ec30" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">X_train, X_test, y_train, y_test = train_test_split(temp_feature, temp_label, test_size = 0.2, random_state = 156)</code></pre><h2 id="3bcddb6c-37bb-80a2-8ac1-fa5974141f5d" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.10. 학습용 </strong><mark class="highlight-red" data-notion-highlight="red"><strong>피처</strong></mark><strong> 데이터 샘플 5개 출력하기</strong></h2><h3 id="3d7ddb6c-37bb-8045-8b3f-ce1b7acbed9c" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_12</h3><figure id="3d7ddb6c-37bb-80ce-89e0-d6d3acd645e4" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2013.png" dir="ltr"><a href="images/image 13.png"><img style="width:192px" src="images/image 13.png"/></a></figure><figure id="3d7ddb6c-37bb-801c-ba11-c196ad6dcb4c" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2014.png" dir="ltr"><a href="images/image 14.png"><img style="width:144px" src="images/image 14.png"/></a></figure><h2 id="3bcddb6c-37bb-8051-a84a-c2bbaae52f39" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.11. 학습용 </strong><mark class="highlight-red" data-notion-highlight="red"><strong>결정값</strong></mark><strong> 데이터 샘플 5개를 출력하기</strong></h2><h3 id="3d7ddb6c-37bb-80e8-9c6c-fc9d0fd9e65d" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_13</h3><figure id="3d7ddb6c-37bb-8043-bf88-fe480588b38c" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2015.png" dir="ltr"><a href="images/image 15.png"><img style="width:221.9875030517578px" src="images/image 15.png"/></a></figure><figure id="3d7ddb6c-37bb-8034-9abf-d989253117e4" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2016.png" dir="ltr"><a href="images/image 16.png"><img style="width:185.9875030517578px" src="images/image 16.png"/></a></figure><h2 id="3bcddb6c-37bb-8087-a614-fa511324c2b3" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.12. 선형 회귀(LinearRegression)</strong></h2><h3 id="3d7ddb6c-37bb-8068-a7cc-f9b445b593bb" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_14</h3><figure id="3d7ddb6c-37bb-800d-8bd0-fbdb0d09e32a" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/008f8472-3389-41fd-a560-681785e36441.png" dir="ltr"><a href="images/008f8472-3389-41fd-a560-681785e36441.png"><img style="width:384px" src="images/008f8472-3389-41fd-a560-681785e36441.png"/></a></figure><h2 id="3bcddb6c-37bb-80b7-ad4e-d23d496f6890" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.13. fit 함수</strong></h2><ul id="3bcddb6c-37bb-80b9-bd90-dcb7bc717ef8" class="bulleted-list" dir="auto"><li style="list-style-type:disc">학습용 피처 데이터와 학습용 결정값을 가지고 학습 수행하기</li></ul><h3 id="3d7ddb6c-37bb-8084-aada-fd50837b2066" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_15</h3><figure id="3d7ddb6c-37bb-80cb-b369-cd846dcd6c7f" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2017.png" dir="ltr"><a href="images/image 17.png"><img style="width:359.9624938964844px" src="images/image 17.png"/></a></figure><figure id="3d7ddb6c-37bb-80b7-960a-f3e541e86ec5" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2018.png" dir="ltr"><a href="images/image 18.png"><img style="width:308.9750061035156px" src="images/image 18.png"/></a></figure><h2 id="3bcddb6c-37bb-80a3-961c-e78d81e2fd92" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.14. predict 함수</strong></h2><ul id="3bcddb6c-37bb-809e-8cc6-c65d6679d7c2" class="bulleted-list" dir="auto"><li style="list-style-type:disc">학습이 완료된 테스트용 피처 데이터로 예측을 수행 후 예측 결과를 반환함.</li></ul><ul id="3bcddb6c-37bb-8037-8e90-c1855f85062d" class="bulleted-list" dir="auto"><li style="list-style-type:disc">predict(테스트용 피처 데이터(2차원))</li></ul><h3 id="3d7ddb6c-37bb-805f-b19d-de8bcce759ff" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_16</h3><figure id="3d7ddb6c-37bb-8061-a0ed-c338ba50dc04" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2019.png" dir="ltr"><a href="images/image 19.png"><img style="width:528px" src="images/image 19.png"/></a></figure><h2 id="3bcddb6c-37bb-8022-bd19-cf9eca9403cb" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.15. MSE, RMSE, </strong><span data-notion-inline-equation="R^2" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><strong>score</strong></h2><h3 id="3d7ddb6c-37bb-80e7-ae9c-dd7d740be219" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_17</h3><pre id="3e9ddb6c-37bb-8007-8089-cfd752c134a7" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">mse = mean_squared_error(y_test, pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, pred)
+print(f&#x27;MSE : {mse:.3f} , RMSE : {rmse:.3f}, r2_score : {r2:.3f}&#x27;)</code></pre><p id="3bcddb6c-37bb-80b6-bd95-d59628c79e0b" class="" dir="auto"><code>MSE : 0.356 , RMSE : 0.596, r2_score : 0.583</code><strong><br/></strong></p><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d1ddb6c-37bb-80eb-9aa2-dd44795b3747" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d1ddb6c-37bb-807f-af7e-fb9b1af4bcd2" class="" dir="auto"><strong>MSE (Mean Squared Error): 0.356</strong><br/>• <strong>의미:</strong> 예측값과 실제값 차이(오차)를 제곱하여 평균낸 값<br/>• <strong>해석:</strong> 이 수치는 <strong>0에 가까울수록 모델의 성능이 좋다</strong>는 뜻. 다만, 오차를 제곱했기 때문에 실제 데이터의 단위보다 부풀려져 있어 직관적으로 &#x27;얼마나 틀렸나&#x27;를 느끼기엔 조금 어려움.</p><p id="3d2ddb6c-37bb-8075-9649-c01327d5114d" class="" dir="auto"><strong><br/>RMSE (Root Mean Squared Error): 0.596</strong><br/>• <strong>의미:</strong> MSE에 루트를 씌운 값<br/>• <strong>해석:</strong> 제곱으로 부풀려졌던 오차를 다시 원래 데이터와 비슷한 단위로 맞춘 것으로, &quot;이 모델은 예측할 때 평균적으로 약 0.596 정도의 오차를 내고 있다&quot;고 해석할 수 있음. </p><p id="3d1ddb6c-37bb-8034-b01f-c4cad8f02d09" class="" dir="auto"><strong><br/></strong><span data-notion-inline-equation="R^2" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><strong>score (결정계수, </strong><span data-notion-inline-equation="R^2" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span><strong>): 0.583</strong><br/>• <strong>의미:</strong> 모델이 데이터의 변동성을 얼마나 잘 설명하는지를 나타내는 지표. (0~1 사이 값)<br/>• <strong>해석:</strong> 0.583(이 모델이 전체 데이터의 흐름을 약 58% 정도 설명하고 있음.)<br/>    ◦ <strong>1.0:</strong> 완벽한 예측<br/>    ◦ <strong>0.7 이상:</strong> 꽤 괜찮은 모델<br/>    ◦ <strong>0.5~0.6:</strong> 나쁘진 않지만, 개선의 여지가 많은 모델 (현재 상태)</p><p id="3d1ddb6c-37bb-8053-8e6e-e80fbafefa87" class="" dir="auto"><strong><br/>종합 평가</strong><br/>이 모델은 데이터의 전체적인 경향을 <strong>절반 조금 넘게(58%) 설명</strong>하고 있으며, 예측 시 <strong>평균적으로 0.6 미만의 오차</strong>를 보일 수 있음.</p></div></aside><h2 id="3bcddb6c-37bb-8053-b541-cb45c1ecac02" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>1.16. predict함수로 미래 예측</strong></h2><ul id="3bcddb6c-37bb-80cc-9f0d-d8dc9a16df4e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><mark class="highlight-red" data-notion-highlight="red"><strong>2050년도까지</strong></mark> 평균기온 예측하기</li></ul><h3 id="3d7ddb6c-37bb-8055-a9c2-ee34844c9e6f" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_18</h3><figure id="3d7ddb6c-37bb-80da-b553-ff93a318978b" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2020.png" dir="ltr"><a href="images/image 20.png"><img style="width:151.9875030517578px" src="images/image 20.png"/></a></figure><figure id="3d7ddb6c-37bb-802d-a2fc-c9ef42a6b970" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2021.png" dir="ltr"><a href="images/image 21.png"><img style="width:241.9875030517578px" src="images/image 21.png"/></a></figure><h3 id="3bcddb6c-37bb-8005-a6a1-e3714ca10745" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.16.1. 그래프 그리기</strong></h3><h3 id="3d7ddb6c-37bb-8011-aa6a-ca8c32d22441" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_19</h3><figure id="3d7ddb6c-37bb-8010-957c-fabbe9577108" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2022.png" dir="ltr"><a href="images/image 22.png"><img style="width:384px" src="images/image 22.png"/></a></figure><figure id="3bcddb6c-37bb-80b0-b19d-e5844effd872" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2023.png" dir="ltr"><a href="images/image 23.png"><img style="width:432px" src="images/image 23.png"/></a></figure><h3 id="3bcddb6c-37bb-80e7-b712-f567df1bfa4f" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.16.2. 학습, 테스트 데이터로 그래프로 그리기</strong></h3><h3 id="3d7ddb6c-37bb-80fa-94fc-f1eb1db60167" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_20</h3><figure id="3d7ddb6c-37bb-80b9-a73c-e80414f7800a" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2024.png" dir="ltr"><a href="images/image 24.png"><img style="width:288px" src="images/image 24.png"/></a></figure><figure id="3bcddb6c-37bb-80aa-9dd2-de97b9fc8617" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2025.png" dir="ltr"><a href="images/image 25.png"><img style="width:384px" src="images/image 25.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-8049-9198-c2550de058d7" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-8008-9e56-e18a97dfdfd6" class="" dir="auto">Matplotlib에서 별도로 색상을 지정하지 않고 <code>plt.scatter()</code>나 <code>plt.plot()</code>을 연달아 실행하면, <strong>첫 번째는 파란색(tab:blue)</strong>,<strong> 두 번째는 주황/노랑색(tab:orange)</strong>을 자동 부여함.</p></div></aside><h3 id="3bcddb6c-37bb-8018-b2ac-cf4495b41f43" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.16.3. 추세선 그리기</strong></h3><h3 id="3d7ddb6c-37bb-80d9-be00-f224a9e5a64d" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_21</h3><figure id="3d7ddb6c-37bb-80fd-a08f-dedf1b784f05" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2026.png" dir="ltr"><a href="images/image 26.png"><img style="width:336px" src="images/image 26.png"/></a></figure><figure id="3bcddb6c-37bb-8024-ad3d-f3ccd6813d95" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2027.png" dir="ltr"><a href="images/image 27.png"><img style="width:432px" src="images/image 27.png"/></a></figure><h3 id="3bcddb6c-37bb-8064-8ef1-fe4de10c7aa2" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.16.4. 2050년까지 서울의 평균기온 ‘확장 예측’ </strong></h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d1ddb6c-37bb-8044-81ac-f4da955da07c" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><table id="3d1ddb6c-37bb-8040-80e0-e98f077f2f7d" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3d1ddb6c-37bb-8021-9205-f1d824d98542" dir="ltr"><th id="Qw;l" class="simple-table-header-color simple-table-header"><strong>슬라이싱 문법</strong></th><th id="XVVC" class="simple-table-header-color simple-table-header"><strong>의미</strong></th><th id="tDOl" class="simple-table-header-color simple-table-header"><strong>예시 적용 연도</strong></th></tr></thead><tbody><tr id="3d1ddb6c-37bb-80d1-b7f2-fc95854c5c14" dir="ltr"><td id="Qw;l" class=""><code><strong>new_Y[-1]</strong></code></td><td id="XVVC" class="">가장 마지막(맨 뒤) 데이터 1개</td><td id="tDOl" class="">2050년 기온 예측값</td></tr><tr id="3d1ddb6c-37bb-8045-8023-cdd1bcbb0da7" dir="ltr"><td id="Qw;l" class=""><code><strong>new_Y[-20:]</strong></code></td><td id="XVVC" class="">뒤에서 20번째부터 끝까지 (총 20개)</td><td id="tDOl" class=""><strong>2031년 ~ 2050년 기온 예측값</strong></td></tr></tbody></table></div></aside><h3 id="3d7ddb6c-37bb-800c-a1fc-c3b6bcd32314" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_22</h3><pre id="3e9ddb6c-37bb-80e9-902a-d29f42ab0473" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all"># np.arange(1907, 2051)의 연도 데이터
+new_X = np.arange(1907, 2051)
+
+# 1차원 ndarray를 2차원 DataFrame으로 변환
+col_name=[&#x27;년&#x27;]
+new_X = pd.DataFrame(new_X, columns=col_name)
+
+# 예측수행 후 그래프로 그리기
+new_Y = lr.predict(new_X)
+plt.plot(temp_feature, temp_label)
+plt.plot(new_X,new_Y)
+plt.show()</code></pre><figure id="3bcddb6c-37bb-8036-862b-fcd9c8f44270" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2028.png" dir="ltr"><a href="images/image 28.png"><img style="width:432px" src="images/image 28.png"/></a></figure><h3 id="3bcddb6c-37bb-80aa-b698-d22ca45c9256" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.16.5. 마지막 20개 선형 회귀 모델이 예측한 평균기온을 숫자로 출력하기</strong></h3><h3 id="3d7ddb6c-37bb-805b-8422-fb3742e3068b" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_23</h3><figure id="3d7ddb6c-37bb-8011-afab-d5b6b5e360ca" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2029.png" dir="ltr"><a href="images/image 29.png"><img style="width:244.96250915527344px" src="images/image 29.png"/></a></figure><pre id="3bcddb6c-37bb-808d-b032-e64e564d371d" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">array([13.28402211, 13.30852394, 13.33302576, 13.35752759, 13.38202942,
+       13.40653124, 13.43103307, 13.4555349 , 13.48003672, 13.50453855,
+       13.52904037, 13.5535422 , 13.57804403, 13.60254585, 13.62704768,
+       13.6515495 , 13.67605133, 13.70055316, 13.72505498, 13.74955681])</code></pre><h3 id="3bcddb6c-37bb-8045-b53b-c478858af1f4" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.16.6. 기울기와 절편 출력</strong></h3><div data-notion-highlight="gray_background" dir="auto"><ul id="3bcddb6c-37bb-807f-a47e-d824c6646bcb" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">기울기: 1개, 절편: 1개</li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="3bcddb6c-37bb-804e-82cd-e87f84fe31e5" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">회귀 계수: np.round 함수를 이용하여 소수 셋째자리까지 반올림해서 표현</li></ul></div><h3 id="3d7ddb6c-37bb-804b-b338-e692cca1185d" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_24</h3><figure id="3d7ddb6c-37bb-8005-9f40-ebed4c7a24dc" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2030.png" dir="ltr"><a href="images/image 30.png"><img style="width:576px" src="images/image 30.png"/></a></figure><p id="3bcddb6c-37bb-8036-a53c-d10f3ebd19b3" class="" dir="auto">[0.025]  -35.479</p><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-809b-a605-c6f1b6ec1714" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-80db-9987-e7b17d1cd82c" class="" dir="auto"><strong>결과값 해석</strong><br/></p><ul id="3d2ddb6c-37bb-8030-8496-c472231514a6" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>기울기 (Slope / </strong><code><strong>lr.coef_</strong></code><strong>): </strong><code><strong>0.025</strong></code><ul id="3d2ddb6c-37bb-805b-bf0c-f65b61470bcc" class="bulleted-list" dir="auto"><li style="list-style-type:circle">독립변수(<span data-notion-inline-equation="X" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span></span>, <strong>&#x27;년도&#x27;</strong>)가 <strong>1년마다 </strong>종속변수(<span data-notion-inline-equation="y" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span>, 즉 <strong>&#x27;평균기온&#x27;</strong>)가 <strong>약 0.025도씩 상승</strong>한다는 의미임.</li></ul><ul id="3d2ddb6c-37bb-80a7-a672-fb4390e982f4" class="bulleted-list" dir="auto"><li style="list-style-type:circle">양수(+)이므로 시간이 흐를수록 기온이 지속적으로 오른 오름세를 나타냄.</li></ul></li></ul><ul id="3d2ddb6c-37bb-804d-a0ad-ec4850ff2c6d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>절편 (Intercept / </strong><code><strong>lr.intercept_</strong></code><strong>): </strong><code><strong>-35.479</strong></code><ul id="3d2ddb6c-37bb-8067-84a4-ce4ed3ac8c6a" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><span data-notion-inline-equation="X" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span></span></span></span></span>가 0일 때의 <span data-notion-inline-equation="y" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span></span>값, 즉 <strong>0년(기원전)의 이론적 평균기온</strong></li></ul><ul id="3d2ddb6c-37bb-804b-a79e-f552977ff755" class="bulleted-list" dir="auto"><li style="list-style-type:circle">수학적인 회귀선을 그리기 위한 기준점</li></ul></li></ul><p id="3d2ddb6c-37bb-80b2-befe-fc52e8194c44" class="" dir="auto"><strong><br/>예측 방정식</strong></p><ul id="3d2ddb6c-37bb-80a0-8a7d-d676c777570b" class="bulleted-list" dir="auto"><li style="list-style-type:disc">이 두 값을 종합하면 머신러닝 모델이 완성한 <strong>기온 예측 공식</strong>은 다음과 같음.<figure id="3d2ddb6c-37bb-80ca-9286-c2e0f2c75e90" class="equation" data-notion-equation="\text{평균기온}(y) = 0.025 \times \text{년}(X) - 35.479" dir="auto"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord hangul_fallback">평균기온</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.025</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord hangul_fallback">년</span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">35.479</span></span></span></span></span></div></figure></li></ul><ul id="3d2ddb6c-37bb-80da-9dee-f81decc98cc4" class="bulleted-list" dir="auto"><li style="list-style-type:disc">실제 예측 적용 예시 (2026년 기준)<figure id="3d2ddb6c-37bb-80ae-b40a-e41b741016de" class="equation" data-notion-equation="0.025 \times 2026 - 35.479 = 50.65 - 35.479 = 15.171^\circ\text{C}" dir="auto"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.025</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2026</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">35.479</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">50.65</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">35.479</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7241em;"></span><span class="mord">15.17</span><span class="mord"><span class="mord">1</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7241em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∘</span></span></span></span></span></span></span></span><span class="mord text"><span class="mord">C</span></span></span></span></span></span></div></figure></li></ul></div></aside><h3 id="3bcddb6c-37bb-8062-b302-e23fd30475bd" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1.16.7. 예측(Predict) 수행하기</strong></h3><h3 id="3d7ddb6c-37bb-8041-960f-f00f09838ddd" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_25</h3><figure id="3d7ddb6c-37bb-8064-b153-c4a7c76d80ec" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2031.png" dir="ltr"><a href="images/image 31.png"><img style="width:528px" src="images/image 31.png"/></a></figure><figure id="3d7ddb6c-37bb-8032-af81-fb59900b8588" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2032.png" dir="ltr"><a href="images/image 32.png"><img style="width:624px" src="images/image 32.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3d2ddb6c-37bb-80a4-a4b1-c07baf574746" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3d2ddb6c-37bb-80be-b628-ea31debc1463" class="" dir="auto"><code><strong>answer = year - 1907</strong></code><strong> (인덱스 변환)</strong></p><ul id="3d2ddb6c-37bb-8021-8588-e4b2b255863f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">데이터의 시작 연도가 1907년(인덱스 0번)이므로, 입력받은 연도를 인덱스 번호로 계산함.<br/>• 예: 1907년 입력 → 1907 - 1907 = 0 (0번 인덱스 조회)<br/>• 예: 2026년 입력 → 2026 - 1907 = 119 (119번 인덱스 조회)</li></ul><p id="3d2ddb6c-37bb-80bd-9e57-e317ce6b58b5" class="" dir="auto"><code><strong>print(round(new_Y[answer], 1))</strong></code></p><ul id="3d2ddb6c-37bb-805c-9043-e57ebe02c1b9" class="bulleted-list" dir="auto"><li style="list-style-type:disc">계산된 인덱스 위치의 예측 기온값을 소수점 둘째 자리에서 반올림(<code>round(..., 1)</code>)함.</li></ul></div></aside><h4 id="3d4ddb6c-37bb-8011-96f5-e606f0ff0daf" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">[추가 과제-선택적 활동] 본인의 학번에 해당하는 과제를 추가로 해결하고 코랩에 담아서 제출하시오.</h4><h3 id="3d7ddb6c-37bb-80aa-bd2a-ce8ead345a99" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드 입력_26</h3><table id="3d4ddb6c-37bb-804a-b0bf-d5737cd7f027" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3d4ddb6c-37bb-8068-bd79-c0e65a368f42" dir="ltr"><th id="NIiJ" class="simple-table-header-color simple-table-header" style="width:52px"><strong>학번</strong></th><th id="iqV;" class="simple-table-header-color simple-table-header" style="width:88px"><strong>문제 유형</strong></th><th id="}iIV" class="simple-table-header-color simple-table-header" style="width:719px"><strong>추가 실습 과제</strong></th><th id="O~tt" class="simple-table-header-color simple-table-header" style="width:419px"><strong>예상 실행 코드</strong></th></tr></thead><tbody><tr id="3d4ddb6c-37bb-80bd-a059-e534f062b342" dir="ltr"><td id="NIiJ" class="" style="width:52px">01</td><td id="iqV;" class="" style="width:88px">시각화</td><td id="}iIV" class="" style="width:719px"><code>lineplot</code>에서 <strong>최고기온</strong> 선의 색상을 빨강(<code>red</code>)에서 주황(<code>orange</code>)으로 변경하고 선 두께(<code>linewidth=2</code>) 설정하기</td><td id="O~tt" class="" style="width:419px"><code>sns.lineplot(..., color=&#x27;orange&#x27;, linewidth=2)</code></td></tr><tr id="3d4ddb6c-37bb-8023-aab2-cbdcff67b7ca" dir="ltr"><td id="NIiJ" class="" style="width:52px">02</td><td id="iqV;" class="" style="width:88px">시각화</td><td id="}iIV" class="" style="width:719px"><code>regplot</code> 서브플롯에서 <code>최저기온</code>과 <code>년</code>의 관계 그래프 위치를 1행 1열(<code>ax=axs[0][0]</code>)로 변경해 그리기</td><td id="O~tt" class="" style="width:419px"><code>sns.regplot(data=df, x=&#x27;최저기온&#x27;, y=&#x27;년&#x27;, ax=axs[0][0])</code></td></tr><tr id="3d4ddb6c-37bb-801d-9653-fd679ae90e75" dir="ltr"><td id="NIiJ" class="" style="width:52px">03</td><td id="iqV;" class="" style="width:88px">전처리</td><td id="}iIV" class="" style="width:719px"><code>drop()</code> 함수를 사용해 <code><strong>지점</strong></code><strong> 열만 삭제</strong>하고 나머지 기온 데이터 유지하기</td><td id="O~tt" class="" style="width:419px"><code>df.drop([&#x27;지점&#x27;], axis=1, inplace=True)</code></td></tr><tr id="3d4ddb6c-37bb-80bb-9694-de6d4b8d3fcc" dir="ltr"><td id="NIiJ" class="" style="width:52px">04</td><td id="iqV;" class="" style="width:88px">데이터분할</td><td id="}iIV" class="" style="width:719px"><code>train_test_split</code>의 테스트 데이터 비율(<code>test_size</code>)을 <strong>0.2에서 0.3으로 변경</strong>해 학습 세트 크기 확인하기</td><td id="O~tt" class="" style="width:419px"><code>train_test_split(..., test_size=0.3, random_state=156)</code></td></tr><tr id="3d4ddb6c-37bb-80c5-8fdd-efa46c54caa5" dir="ltr"><td id="NIiJ" class="" style="width:52px">05</td><td id="iqV;" class="" style="width:88px">데이터확인</td><td id="}iIV" class="" style="width:719px">학습용 피처 데이터(<code>X_train</code>) 샘플을 <strong>5개가 아닌 10개</strong> 출력하여 인덱스 확인하기</td><td id="O~tt" class="" style="width:419px"><code>X_train.head(10)</code></td></tr><tr id="3d4ddb6c-37bb-80b9-ba17-f8cae185b9e4" dir="ltr"><td id="NIiJ" class="" style="width:52px">06</td><td id="iqV;" class="" style="width:88px">평가지표</td><td id="}iIV" class="" style="width:719px">평가 지표 출력 시 <strong>MSE와 RMSE의 소수점 표현을 3자리에서 4자리로 변경</strong>하여 출력하기</td><td id="O~tt" class="" style="width:419px"><code>print(&#x27;MSE : {0:.4f}, RMSE : {1:.4f}&#x27;.format(mse, rmse))</code></td></tr><tr id="3d4ddb6c-37bb-80eb-9c49-e473dbc6aac3" dir="ltr"><td id="NIiJ" class="" style="width:52px">07</td><td id="iqV;" class="" style="width:88px">미래예측</td><td id="}iIV" class="" style="width:719px">미래 기온 확장 예측 시 2050년이 아닌 <strong>2060년까지의 연도 범위(</strong><code><strong>np.arange</strong></code><strong>) 생성</strong> 후 예측하기</td><td id="O~tt" class="" style="width:419px"><code>new_X = np.arange(1907, 2061)</code></td></tr><tr id="3d4ddb6c-37bb-80aa-b4ab-f7b719522d0c" dir="ltr"><td id="NIiJ" class="" style="width:52px">08</td><td id="iqV;" class="" style="width:88px">슬라이싱</td><td id="}iIV" class="" style="width:719px">확장 예측 데이터(<code>new_Y</code>)에서 <strong>마지막 10개(2041~2050년)의 예측 기온</strong>만 슬라이싱하여 출력하기</td><td id="O~tt" class="" style="width:419px"><code>new_Y[-10:]</code></td></tr><tr id="3d4ddb6c-37bb-80b7-981b-cc9bbb70bb4a" dir="ltr"><td id="NIiJ" class="" style="width:52px">09</td><td id="iqV;" class="" style="width:88px">수식계산</td><td id="}iIV" class="" style="width:719px">회귀계수와 절편을 이용해 <strong>2030년의 서울 평균기온 예측 방정식</strong> 수식을 직접 코드로 작성하여 계산하기</td><td id="O~tt" class="" style="width:419px"><code>0.025 * 2030 - 35.479</code></td></tr><tr id="3d4ddb6c-37bb-80b4-989c-f0bdfa3085c3" dir="ltr"><td id="NIiJ" class="" style="width:52px">10</td><td id="iqV;" class="" style="width:88px">코드구현</td><td id="}iIV" class="" style="width:719px">사용자 입력을 받아 특정 연도의 기온을 출력하는 코드에서 <code><strong>round()</strong></code><strong> 반올림 자릿수를 1자리에서 2자리로 변경</strong>하기</td><td id="O~tt" class="" style="width:419px"><code>print(round(new_Y[answer], 2))</code></td></tr><tr id="3d4ddb6c-37bb-80c8-b7c4-c4e9e60c0d08" dir="ltr"><td id="NIiJ" class="" style="width:52px">11</td><td id="iqV;" class="" style="width:88px">옵션변경</td><td id="}iIV" class="" style="width:719px"><code>train_test_split</code>의 무작위 시드값(<code>random_state</code>)을 <strong>156에서 42로 변경</strong> 후 <span data-notion-inline-equation="R^2" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span> 점수 변화 확인하기</td><td id="O~tt" class="" style="width:419px"><code>train_test_split(..., test_size=0.2, random_state=42)</code></td></tr><tr id="3d4ddb6c-37bb-80e7-a7c3-c54add11fe80" dir="ltr"><td id="NIiJ" class="" style="width:52px">12</td><td id="iqV;" class="" style="width:88px">시각화</td><td id="}iIV" class="" style="width:719px">학습/테스트 데이터 그래프에서 테스트 데이터 점의 색상을 노랑 대신 빨간색(<code>color=&#x27;red&#x27;</code>)으로 변경하기</td><td id="O~tt" class="" style="width:419px"><code>plt.scatter(X_test, y_test, color=&#x27;red&#x27;)</code></td></tr><tr id="3d4ddb6c-37bb-80b0-b6ec-f01cf8a840e2" dir="ltr"><td id="NIiJ" class="" style="width:52px">13</td><td id="iqV;" class="" style="width:88px">데이터해석</td><td id="}iIV" class="" style="width:719px">회귀계수 출력 코드에서 <code><strong>np.round</strong></code><strong> 반올림 자릿수를 소수점 3자리에서 4자리로 변경</strong>하여 정확도 높이기</td><td id="O~tt" class="" style="width:419px"><code>np.round(lr.coef_, 4)</code></td></tr><tr id="3d4ddb6c-37bb-80ff-8050-f9bdc7153271" dir="ltr"><td id="NIiJ" class="" style="width:52px">14</td><td id="iqV;" class="" style="width:88px">시각화</td><td id="}iIV" class="" style="width:719px">전체 기온 추세 그래프 그리기 시 <strong>가로/세로 크기(</strong><code><strong>figsize</strong></code><strong>)를 (10, 5)로 설정</strong>하여 그래프 비율 조정하기</td><td id="O~tt" class="" style="width:419px"><code>plt.figure(figsize=(10, 5))</code></td></tr><tr id="3d4ddb6c-37bb-803b-aa17-da0574790231" dir="ltr"><td id="NIiJ" class="" style="width:52px">15</td><td id="iqV;" class="" style="width:88px">미래예측</td><td id="}iIV" class="" style="width:719px">2050년 대신 <strong>2100년까지의 기온 변화 추세선</strong>을 확장 예측하여 선 그래프로 나타내기</td><td id="O~tt" class="" style="width:419px"><code>new_X = np.arange(1907, 2101)</code></td></tr></tbody></table><hr id="3e9ddb6c-37bb-8078-9e4c-c68f1de9e029" dir="auto"/><h1 id="3e9ddb6c-37bb-807e-ad52-c04515167e24" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto"><strong>2. 부산의 강수량 시각화</strong></h1><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-801d-aa98-fbb70796ce41" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-8067-b80a-d18278d7d321" class="" dir="auto">기상자료개방포털(<a href="https://data.kma.go.kr/cmmn/main.do">https://data.kma.go.kr/cmmn/main.do</a>) </p><p id="3e9ddb6c-37bb-8065-8ecc-e612bb19820e" class="" dir="auto">기후통계분석 - 강수량분석 - 검색조건에서 자료구분, 기간, 지역 지정 후 검색 - CSV 파일</p><p id="3e9ddb6c-37bb-80ed-b8cc-f984cc69d33d" class="" dir="auto">자료구분: 일</p><p id="3e9ddb6c-37bb-80c9-836c-d51ee885b4bf" class="" dir="auto">기간: 1907년 1월 1일 - 2021년 12월 31일</p><p id="3e9ddb6c-37bb-8068-ac61-c3b2a3ff9dab" class="" dir="auto">지점: 부산</p><figure id="3e9ddb6c-37bb-80c3-af84-ccb42330655a" dir="ltr"><div class="block-color-yellow_background source" data-notion-highlight="yellow_background"><a href="busan_rain_day.csv" data-notion-file="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/busan_rain_day.csv" data-notion-file-alias="busan_rain_day.csv">busan_rain_day.csv</a></div></figure></div></aside><h2 id="3e9ddb6c-37bb-8031-9abd-ebd12401f678" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.1. 기본 설정</strong></h2><pre id="3e9ddb6c-37bb-80f2-94ed-f0235ca1918e" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">!pip install koreanize-matplotlib
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import koreanize_matplotlib 
+</code></pre><h2 id="3e9ddb6c-37bb-801d-9259-e26cbcced35a" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.2. 부산의 강수량 샘플 출력</strong></h2><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8068-bbbd-e82e706ca574" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80b6-9bbc-d0abdb9affdd" class="" dir="auto">df_rain 변수 사용, encoding = &#x27;cp949&#x27;</p><p id="3e9ddb6c-37bb-8040-88b4-de580b65316c" class="" dir="auto">read_csv( )로 csv 파일을 DataFrame으로 로딩</p></div></aside><h3 id="3e9ddb6c-37bb-8081-89d1-efb06d98aaf8" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_01</h3><figure id="3e9ddb6c-37bb-8076-a35c-d5cd9e05c626" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2033.png" dir="ltr"><a href="images/image 33.png"><img style="width:624px" src="images/image 33.png"/></a></figure><figure id="3e9ddb6c-37bb-801f-944c-e6cada418a94" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2034.png" dir="ltr"><a href="images/image 34.png"><img style="width:305.9606628417969px" src="images/image 34.png"/></a></figure><h2 id="3e9ddb6c-37bb-8073-8457-ffdd476d0d5c" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.3. 데이터 프레임의 요약 정보</strong></h2><h3 id="3e9ddb6c-37bb-801b-b34f-d9cc3def2e09" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_02</h3><figure id="3e9ddb6c-37bb-801e-8967-e92ff5744a31" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2035.png" dir="ltr"><a href="images/image 35.png"><img style="width:198.984375px" src="images/image 35.png"/></a></figure><figure id="3e9ddb6c-37bb-80e1-bf61-f374df166390" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2036.png" dir="ltr"><a href="images/image 36.png"><img style="width:308.98150634765625px" src="images/image 36.png"/></a></figure><h2 id="3e9ddb6c-37bb-80c3-90de-cbe6f62984e7" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.4. 결측치를 0으로 채우기</strong></h2><h3 id="3e9ddb6c-37bb-8098-bd3b-f6bf1b7f2173" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_03</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-803f-a7c7-d0a523f7af1f" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-808e-8ccc-e599f93289d5" class="" dir="auto">df_rain 변수 그대로 사용하기</p></div></aside><figure id="3e9ddb6c-37bb-80af-bc13-e9afb55866b7" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/d1337a9d-f70d-4b10-ae8e-fa7db47b0e96.png" dir="ltr"><a href="images/d1337a9d-f70d-4b10-ae8e-fa7db47b0e96.png"><img style="width:720px" src="images/d1337a9d-f70d-4b10-ae8e-fa7db47b0e96.png"/></a></figure><figure id="3e9ddb6c-37bb-80d8-8db6-c6abff4489f0" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2037.png" dir="ltr"><a href="images/image 37.png"><img style="width:303.96990966796875px" src="images/image 37.png"/></a></figure><h2 id="3e9ddb6c-37bb-8049-9641-c0d32edde6d3" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.5. 날짜를 년, 월, 일로 분리하기</strong></h2><h3 id="3e9ddb6c-37bb-8087-8f50-f5b3ca8604d6" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_04</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80ec-b7aa-f661364e6d19" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80c4-b151-c0c9fbaa8d13" class="" dir="auto">str.split( ) 함수를 이용하기</p></div></aside><figure id="3e9ddb6c-37bb-80a1-ade3-d17cbfbee42c" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/dbf91626-dd0b-4ce8-8a49-8473bf067d77.png" dir="ltr"><a href="images/dbf91626-dd0b-4ce8-8a49-8473bf067d77.png"><img style="width:720px" src="images/dbf91626-dd0b-4ce8-8a49-8473bf067d77.png"/></a></figure><figure id="3e9ddb6c-37bb-805a-8095-fde229ff624f" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2038.png" dir="ltr"><a href="images/image 38.png"><img style="width:423.94677734375px" src="images/image 38.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-800a-8048-e7aaae75ea84" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-8028-933d-c172d0560f39" class="" dir="auto"><code><strong>expand=True</strong></code>: 분리된 결과를 단순 리스트가 아닌, <strong>각각 독립된 열(Column) 형태로 확장</strong>함.</p></div></aside><h2 id="3e9ddb6c-37bb-8070-b1c1-ebce6ee4ab86" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.6. 필요없는 날짜, 지점의 컬럼 제거</strong></h2><h3 id="3e9ddb6c-37bb-802c-be2d-cd2c59d2ff9e" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_05</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-806e-858e-e2597333556b" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80b3-a04b-c775fbde67f9" class="" dir="auto">drop( ) 함수를 이용하기</p></div></aside><figure id="3e9ddb6c-37bb-8046-b921-fd084f9c4447" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2039.png" dir="ltr"><a href="images/image 39.png"><img style="width:576px" src="images/image 39.png"/></a></figure><figure id="3e9ddb6c-37bb-8008-8f6e-f434fa903180" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2040.png" dir="ltr"><a href="images/image 40.png"><img style="width:279.942138671875px" src="images/image 40.png"/></a></figure><h2 id="3e9ddb6c-37bb-8070-97d4-dee528ee1212" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.7. barplot 함수로 시각화</strong></h2><h3 id="3e9ddb6c-37bb-808f-8e36-ffb2926ca352" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_06</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-803b-b409-f38ce96eb995" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80fb-ba00-fd62b261674c" class="" dir="auto">2001년부터 연도에 따른 강수량을 barplot로 시각화하기</p><p id="3e9ddb6c-37bb-801d-b941-faa66862aa14" class="" dir="auto">그림사이즈: 20x5, x축의 값을 90도로 회전하기</p></div></aside><pre id="3e9ddb6c-37bb-8045-b948-f6ad2081fdf6" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">#&#x27;년&#x27;컬럼을 정수형으로 변환함. (NaN 값은 fillna 후 변환)
+# pd.to_numeric: 열의 데이터를 숫자(숫자형)로 변환함.
+# errors=&#x27;coerce&#x27;(강제하다): 바꿀 수 없는 결측치는 결측값(NaN)으로 강제 처리함.
+# fillna(0): 생성된 NaN(결측값)을 숫자 0으로 채움.
+# astype(int): 모든 데이터를 정수형(int) 타입으로 변환함.
+
+df_rain[&#x27;년&#x27;]=pd.to_numeric(df_rain[&#x27;년&#x27;],errors=&#x27;coerce&#x27;).fillna(0).astype(int)
+df_2001 = df_rain[df_rain[&#x27;년&#x27;] &gt;= 2001]
+plt.figure(figsize=(20, 5))
+
+# ax는 Axes(축,차트 약자)
+# hue=&#x27;년&#x27;(항목별로 다른 색상)
+# palette=&#x27;husl&#x27;(파스텔톤: Hu(Human-friendly) S(Saturation) l(Lightness)
+# dodge=False(hue 지정시 막대들을 X축에 표시)
+# errorbar=&#x27;se&#x27;(오차 막대Error bar의 기준을 표준오차로 설정)
+# legend=False(범례(Legend) 박스 숨김.)
+ax = sns.barplot(
+    data=df_2001,
+    x=&#x27;년&#x27;,
+    y=&#x27;강수량&#x27;,
+    hue=&#x27;년&#x27;,
+    palette=&#x27;husl&#x27;,
+    dodge=False,
+    errorbar=&#x27;se&#x27;,
+    legend=False
+)
+# x축 값 90도 회전, xticks는 X축 + Tick marks(눈금)
+plt.xticks(rotation=90)
+plt.xlabel(&#x27;년&#x27;)
+plt.ylabel(&#x27;강수량&#x27;)
+plt.show()</code></pre><figure id="3e9ddb6c-37bb-80aa-bdac-df515010a8fc" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/9b0b0df9-74de-4287-b9b5-00eb49fc1c50.png" dir="ltr"><a href="images/9b0b0df9-74de-4287-b9b5-00eb49fc1c50.png"><img style="width:528px" src="images/9b0b0df9-74de-4287-b9b5-00eb49fc1c50.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8034-8dbf-ea7941b065bb" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-802d-95f7-fa1aa4597d85" class="" dir="auto"><strong>검정색 선: 오차 막대(Error Bar),</strong> <code>errorbar=&#x27;se&#x27;</code> 옵션에 의한 <strong>표준오차</strong></p><ul id="3e9ddb6c-37bb-80ba-b844-c6cc77e03828" class="bulleted-list" dir="auto"><li style="list-style-type:disc">막대 자체의 높이는 해당 연도 강수량의 <strong>평균값</strong></li></ul><ul id="3e9ddb6c-37bb-8007-9027-fbee11989bdc" class="bulleted-list" dir="auto"><li style="list-style-type:disc">검정색 선의 길이는 데이터가 그 평균값을 중심으로 퍼진 오차 범위를 보여줌.</li></ul><ul id="3e9ddb6c-37bb-8068-9b29-d2e06a8a70b5" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>선이 긴 경우</strong>: 해당 연도의 일별/월별 강수량 변화 폭이 컸음<br/>(비가 많이 온 날과 안 온 날의 차이가 심함)</li></ul><ul id="3e9ddb6c-37bb-80f3-a7aa-ebad00197f7e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>선이 짧은 경우</strong>: 데이터들이 평균값 근처에 모여 있어 강수량이 비교적 일정했음을 의미함.</li></ul></div></aside><h2 id="3e9ddb6c-37bb-807b-833d-d0434f40e70a" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.8. pointplot 함수로 시각화</strong></h2><h3 id="3e9ddb6c-37bb-807f-aa54-d46ba3515928" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_07</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-801a-8566-f8748dd6aff9" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-8015-9634-f5fc14e6ee8b" class="" dir="auto">2001년부터 연도에 따른 강수량을 pointplot로 시각화하기</p><p id="3e9ddb6c-37bb-80d4-9018-dd78956aa6d5" class="" dir="auto">그림사이즈: 20X5</p></div></aside><figure id="3e9ddb6c-37bb-8029-be69-d19d1bb1a85d" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2041.png" dir="ltr"><a href="images/image 41.png"><img style="width:672px" src="images/image 41.png"/></a></figure><figure id="3e9ddb6c-37bb-80bb-a73d-cbdb9e006ae3" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2042.png" dir="ltr"><a href="images/image 42.png"><img style="width:672px" src="images/image 42.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80ae-8cd7-c1862ea62ca3" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-800f-a436-d09f7c8ab82f" class="" dir="auto"><strong>Axes</strong>: 그래프가 그려진 차트 영역 객체</p><p id="3e9ddb6c-37bb-809d-9d10-c58afa36f74b" class="" dir="auto"><code><strong>0.125, 0.11</strong></code><strong> (시작 위치)</strong>: 전체 도화지 차트의 좌측 하단 구석이 시작되는 상대 위치 <br/>(왼쪽에서 12.5%, 아래에서 11% 떨어진 지점)</p><p id="3e9ddb6c-37bb-8016-9f15-f34b14738008" class="" dir="auto"><code><strong>0.775 x 0.77</strong></code><strong> (너비와 높이)</strong>: 전체 도화지 대비 차트 가로 너비(77.5%)와 세로 높이(77%) 비율</p></div></aside><h2 id="3e9ddb6c-37bb-80e1-8e13-f582273044c1" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.9. boxplot 함수로 시각화</strong></h2><h3 id="3e9ddb6c-37bb-8044-a7c8-c7e1fbf51ad1" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_08</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80b9-b611-de1800e9b69c" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-803b-878f-eb2bdac3eaa9" class="" dir="auto">2018년부터 연도에 따른 강수량을 월별로 색상을 다르게 시각화하기</p><p id="3e9ddb6c-37bb-800e-9ac1-cca92147c55e" class="" dir="auto">그림 사이즈: 20x5, 범례를 그림 박스 밖으로 표시하기</p></div></aside><pre id="3e9ddb6c-37bb-80e7-a26f-d4dbdd3f3b19" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">df_2018 = df_rain[df_rain[&#x27;년&#x27;] &gt;= 2018]
+plt.figure(figsize=(20, 5))
+ax = sns.boxplot(data=df_2018, x=&#x27;년&#x27;, y=&#x27;강수량&#x27;, hue=&#x27;월&#x27;, palette=&#x27;husl&#x27;)
+
+# 범례를 그래프 우측 상단 바깥에 위치
+plt.legend(bbox_to_anchor=(1, 1), loc=&#x27;upper left&#x27;)
+plt.xlabel(&#x27;년&#x27;)
+plt.ylabel(&#x27;강수량&#x27;)
+plt.show()</code></pre><figure id="3e9ddb6c-37bb-8075-be2a-d6048cf46e86" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2043.png" dir="ltr"><a href="images/image 43.png"><img style="width:672px" src="images/image 43.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80bf-bfbd-c83712b8c7e9" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-8021-9080-dd31c3a6a320" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>변동 가능한 박스 폭 (Variable Width):</strong> 일반적인 박스플롯은 모든 그룹의 박스 폭이 동일하지만, 이 그래프는 각 월별(01~12월) 데이터의 개수(Sample Size, N)에 비례하여 박스의 너비가 다름.</li></ul><ul id="3e9ddb6c-37bb-80e7-9d2b-f77b6797b423" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>데이터 극단성(강수량 데이터):</strong> Y축이 &#x27;강수량&#x27;으로, 비가 오지 않는 날(0mm)이 대다수라 중앙값(Q2)과 사분위수(Q1, Q3)가 0 근처에 누워 박스 형태가 납작하게 눌려 있고, 상단에 이상치(Outlier, 동그라미 점)가 높게 치솟아 있는 구조임.</li></ul><ul id="3e9ddb6c-37bb-8073-a7b2-fa47f3774e5a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>데이터 규모(표본 수)의 직관적 파악</strong></li></ul><ul id="3e9ddb6c-37bb-8098-8f05-fb55176fd68b" class="bulleted-list" dir="auto"><li style="list-style-type:disc">박스 너비만 보고도 특정 달이나 연도의 데이터 수량이 많은지 적은지 한눈에 비교할 수 있음.</li></ul><ul id="3e9ddb6c-37bb-8083-a91f-f3616d821551" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>데이터 불균형 검출</strong><ul id="3e9ddb6c-37bb-8083-864b-dba60fac2c2e" class="bulleted-list" dir="auto"><li style="list-style-type:circle">특정 기간의 데이터가 누락되었거나 결측치가 많아 표본 수가 적어진 경우, 박스가 얇아지므로 이상 데이터를 빠르게 포착할 수 있음.</li></ul></li></ul><ul id="3e9ddb6c-37bb-80eb-92ff-e0bf4831f316" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>분포와 데이터 신뢰도 동시 표현</strong><ul id="3e9ddb6c-37bb-80de-b821-ee00bfbff8b1" class="bulleted-list" dir="auto"><li style="list-style-type:circle">박스 높이로는 강수량 분포(사분위수)를, 박스 너비로는 데이터의 대표성(표본 크기)을 동시에 전달하므로 정보 밀도가 높음.</li></ul></li></ul></div></aside><h2 id="3e9ddb6c-37bb-80ba-925e-f5e3415c7c3c" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.10. swarmplot 함수로 시각화</strong></h2><h3 id="3e9ddb6c-37bb-80e3-b8f6-f05529a56f81" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_09</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80a3-b92f-d1cbbf4636d6" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-8030-976b-d00482820453" class="" dir="auto">2018년부터 연도에 따른 강수량을 월별로 색상을 다르게 시각화하기</p><p id="3e9ddb6c-37bb-800b-b1b9-d14cb6420cae" class="" dir="auto">그림 사이즈: 20x5</p></div></aside><pre id="3e9ddb6c-37bb-80d9-b1c6-f677975164f9" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">plt.figure(figsize=(20, 5))
+ax = sns.swarmplot(
+    data=df_2018,
+    x=&#x27;년&#x27;,
+    y=&#x27;강수량&#x27;,
+    hue=&#x27;월&#x27;,
+    palette=&#x27;husl&#x27;,
+    s=2  # 점의 크기
+)
+plt.legend(title=&#x27;월&#x27;, loc=&#x27;upper right&#x27;)
+plt.xlabel(&#x27;년&#x27;)
+plt.ylabel(&#x27;강수량&#x27;)
+plt.show()</code></pre><figure id="3e9ddb6c-37bb-800a-abbd-cd3811ec1f2a" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2044.png" dir="ltr"><a href="images/image 44.png"><img style="width:720px" src="images/image 44.png"/></a></figure><h2 id="3e9ddb6c-37bb-801b-b60d-e2fe0bf9336a" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.11. distplot 함수로 시각화</strong></h2><h3 id="3e9ddb6c-37bb-8075-8091-e8f56555032a" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_10</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8035-9e90-e3659ebb7b03" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80d4-bf12-eb48196c460c" class="" dir="auto">강수량 컬럼 사용하기</p></div></aside><figure id="3e9ddb6c-37bb-8098-b192-d671ef291fad" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2045.png" dir="ltr"><a href="images/image 45.png"><img style="width:672px" src="images/image 45.png"/></a></figure><figure id="3e9ddb6c-37bb-8009-8445-e2d0a3bf8679" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/7703ba17-ed70-45e0-b178-16592cfbc89d.png" dir="ltr"><a href="images/7703ba17-ed70-45e0-b178-16592cfbc89d.png"><img style="width:432px" src="images/7703ba17-ed70-45e0-b178-16592cfbc89d.png"/></a></figure><h2 id="3e9ddb6c-37bb-800e-8cdb-edb1ce8d815f" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.12. catplot 함수로 시각화</strong></h2><h3 id="3e9ddb6c-37bb-80f5-84d1-c411657d7e76" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_11</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80d1-8424-d922de0c45d1" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80cd-8d3f-fb30167a80e0" class="" dir="auto">2018년부터 연도에 따른 강수량을 월별로 subplot 시각화하기</p><p id="3e9ddb6c-37bb-80de-87b7-cb123f4310e6" class="" dir="auto">subplot으로 표현할 컬럼명: 월, 한 줄에 표기할 subplot의 개수: 4, 그래프 종류: bar</p></div></aside><pre id="3e9ddb6c-37bb-80d6-adbd-eed69467a3e6" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">df_2018 = df_rain[df_rain[&#x27;년&#x27;] &gt;= 2018]
+
+# catplot 생성
+# kind=&#x27;bar&#x27;: 막대그래프
+# col=&#x27;월&#x27;: &#x27;월&#x27;별로 서브플롯 생성
+# col_wrap=4: 한 줄에 4개의 서브플롯 배치
+# height=4: 개별 서브플롯의 높이 설정
+ax = sns.catplot(
+    data=df_2018,
+    x=&#x27;년&#x27;,
+    y=&#x27;강수량&#x27;,
+    col=&#x27;월&#x27;,
+    col_wrap=4,
+    kind=&#x27;bar&#x27;,
+    hue=&#x27;년&#x27;,
+    palette=&#x27;tab10&#x27;,
+    legend=False,
+    height=4
+)
+plt.show()</code></pre><figure id="3e9ddb6c-37bb-80cf-ac01-f2a7b7cbf582" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2046.png" dir="ltr"><a href="images/image 46.png"><img style="width:720px" src="images/image 46.png"/></a></figure><h2 id="3e9ddb6c-37bb-808e-bb0a-cf2f88d68ad2" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.13. pointplot + violinplot 시각화</strong></h2><h3 id="3e9ddb6c-37bb-8098-ab4b-c2e6a658d608" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_12</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-805c-88df-eed9a91ebf59" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80d1-b7f2-c7d10fbd46c6" class="" dir="auto">2015년부터 연도에 따른 강수량을 월별로 색상을 다르게 시각화하기</p><p id="3e9ddb6c-37bb-80f6-893d-c7ea72791481" class="" dir="auto">그림 사이즈: 20x5, 범례를 그림 박스 밖으로 표시하기</p></div></aside><pre id="3e9ddb6c-37bb-80e3-8cee-c6a2b5088171" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">df_2015 = df_rain[df_rain[&#x27;년&#x27;] &gt;= 2015]
+plt.figure(figsize=(20, 5))
+
+# violinplot 그리기
+sns.violinplot(
+    data=df_2015,
+    x=&#x27;년&#x27;,
+    y=&#x27;강수량&#x27;,
+    hue=&#x27;월&#x27;,
+    palette=&#x27;husl&#x27;
+)
+
+# pointplot 그리기
+# 평균 지점을 선으로 이어 보여줌.
+# dodge=True(월별 violin 위치와 point 위치가 일치함.)
+ax = sns.pointplot(
+    data=df_2015,
+    x=&#x27;년&#x27;,
+    y=&#x27;강수량&#x27;,
+    hue=&#x27;월&#x27;,
+    palette=&#x27;husl&#x27;,
+    dodge=True
+)
+plt.legend(bbox_to_anchor=(1, 1), loc=&#x27;upper left&#x27;)
+plt.xlabel(&#x27;년&#x27;)
+plt.ylabel(&#x27;강수량&#x27;)
+plt.show()</code></pre><figure id="3e9ddb6c-37bb-80e8-9474-d9df846fcde8" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/image%2047.png" dir="ltr"><a href="images/image 47.png"><img style="width:672px" src="images/image 47.png"/></a></figure><h2 id="3e9ddb6c-37bb-802e-b45b-f51589a5aff9" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>2.14. boxplot + stripplot 시각화</strong></h2><h3 id="3e9ddb6c-37bb-80e6-a81a-d09b407ec4c1" class="block-color-purple_background" data-notion-highlight="purple_background" dir="auto">코드입력_13</h3><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8012-a438-dd948a85b416" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80d5-8eac-e02f50839dd8" class="" dir="auto">2015년부터 연도에 따른 강수량을 월별로 색상을 다르게 시각화하기</p><p id="3e9ddb6c-37bb-8012-b0dd-d928fcb97f06" class="" dir="auto">그림 사이즈: 20x5, 범례를 그림 박스 밖으로 표시하기</p></div></aside><pre id="3e9ddb6c-37bb-8048-89fd-e6cc8953f3a1" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">df_2015 = df_rain[df_rain[&#x27;년&#x27;] &gt;= 2015]
+plt.figure(figsize=(20, 5))
+
+# boxplot 그리기
+sns.boxplot(
+data=df_2015,
+x=&#x27;년&#x27;,
+y=&#x27;강수량&#x27;,
+hue=&#x27;월&#x27;,
+palette=&#x27;husl&#x27;,
+showfliers=False, # 중복 방지를 위해 박스플롯의 기본 이상치는 숨김.
+dodge=True # 월별로 색상을 다르게 하기(dodge=True)
+)
+
+# stripplot 그리기
+ax = sns.stripplot(
+data=df_2015,
+x=&#x27;년&#x27;,
+y=&#x27;강수량&#x27;,
+hue=&#x27;월&#x27;,
+palette=&#x27;husl&#x27;,
+dodge=True,      # 박스 위치에 맞게 점을 배치
+jitter=True,     # 점들을 약간 흩뿌림
+size=1,          # 점 크기 조절
+alpha=0.5,       # 점의 투명도 조절 (이미지처럼 은은하게)
+linewidth=0.5    # 점의 테두리 굵기
+)
+plt.legend(bbox_to_anchor=(1, 1), loc=&#x27;upper left&#x27;)
+plt.xlabel(&#x27;년&#x27;)
+plt.ylabel(&#x27;강수량&#x27;)
+plt.show()</code></pre><figure id="3e9ddb6c-37bb-802a-85f2-e09369fbd49a" class="image" style="text-align:left" data-notion-image="%5B11%EC%B0%A8%EC%8B%9C%5D%202050%EB%85%84%20%EA%B8%B0%EC%98%A8%EC%98%88%EC%B8%A1%20%EA%B0%95%EC%88%98%EB%9F%89%20%EC%8B%9C%EA%B0%81%ED%99%94/f515adf9-4c88-4313-9aa0-aa13453aa266.png" dir="ltr"><a href="images/f515adf9-4c88-4313-9aa0-aa13453aa266.png"><img style="width:720px" src="images/f515adf9-4c88-4313-9aa0-aa13453aa266.png"/></a></figure><h4 id="3e9ddb6c-37bb-808a-9ed7-e5c84c6ac79b" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>[학번별 개별 과제]</strong></h4><table id="3e9ddb6c-37bb-80bf-94e1-df4d78a1d1c2" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-8051-ad26-ec4a9b2a5ffc" dir="ltr"><th id="B{fV" class="simple-table-header-color simple-table-header" style="width:58px"><strong>학번</strong></th><th id="qtoX" class="simple-table-header-color simple-table-header" style="width:88px"><strong>문제 유형</strong></th><th id="irH{" class="simple-table-header-color simple-table-header" style="width:352px"><strong>추가 실습 과제</strong></th><th id="fgYf" class="simple-table-header-color simple-table-header" style="width:482px"><strong>예상 실행 코드</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-802d-94da-ddd90954730a" dir="ltr"><td id="B{fV" class="" style="width:58px">01</td><td id="qtoX" class="" style="width:88px">전처리</td><td id="irH{" class="" style="width:352px">강수량 결측치를 <code>0</code> 대신 <code>ffill</code>(직전 날짜 값)로 채운 후, 평균 강수량이 어떻게 변하는지 확인하기</td><td id="fgYf" class="" style="width:482px"><code>df_rain[&#x27;강수량&#x27;].ffill()</code> 적용 전후의 <code>.mean()</code> 값 차이 비교 작성</td></tr><tr id="3e9ddb6c-37bb-80a3-9ea2-d652d3a9b3b9" dir="ltr"><td id="B{fV" class="" style="width:58px">02</td><td id="qtoX" class="" style="width:88px">시각화</td><td id="irH{" class="" style="width:352px"><code>swarmplot</code>에서 점이 빽빽하게 겹치는 문제를 해결하기 위해 점 크기(<code>s=2</code>)와 투명도(<code>alpha=0.5</code>)를 추가 설정해 그려보기</td><td id="fgYf" class="" style="width:482px"><code>sns.swarmplot(..., s=2, alpha=0.5)</code> 설정 후 기존 그래프와 가시성 비교</td></tr><tr id="3e9ddb6c-37bb-8068-8273-f8c0457ae650" dir="ltr"><td id="B{fV" class="" style="width:58px">03</td><td id="qtoX" class="" style="width:88px">코드구현</td><td id="irH{" class="" style="width:352px">2018년 이후 데이터에서 월별(1월~12월) 평균 강수량&#x27;을 계산하고, 막대그래프(<code>barplot</code>)로 시각화하기</td><td id="fgYf" class="" style="width:482px"><code>df_2018.groupby(&#x27;월&#x27;)[&#x27;강수량&#x27;].mean()</code> 후 <code>sns.barplot()</code> 작성</td></tr><tr id="3e9ddb6c-37bb-80f8-a679-e6eee8bcc3b6" dir="ltr"><td id="B{fV" class="" style="width:58px">04</td><td id="qtoX" class="" style="width:88px">옵션확인</td><td id="irH{" class="" style="width:352px">9번 <code>boxplot + stripplot</code> 코드에서 <code><strong>jitter=False</strong></code><strong>로 변경</strong>해보고, 점들의 배치 모습이 어떻게 달라지는지 확인하기</td><td id="fgYf" class="" style="width:482px"><code>jitter=False</code> 실행 시 점들이 일렬로 겹치는 현상 캡처 및 설명</td></tr><tr id="3e9ddb6c-37bb-8057-ac01-d5d5247cc37b" dir="ltr"><td id="B{fV" class="" style="width:58px">05</td><td id="qtoX" class="" style="width:88px">데이터해석</td><td id="irH{" class="" style="width:352px"><strong>&#x27;강수량이 0인 날(비가 안 온 날)&#x27;을 제외</strong>한 실제 맑지 않은 날만의 평균 강수량과 중앙값 계산해보기</td><td id="fgYf" class="" style="width:482px"><code>df_rain[df_rain[&#x27;강수량&#x27;] &gt; 0][&#x27;강수량&#x27;].describe()</code> 실행 후 결과 서술</td></tr><tr id="3e9ddb6c-37bb-8069-8fca-ca140bc08da9" dir="ltr"><td id="B{fV" class="" style="width:58px">06</td><td id="qtoX" class="" style="width:88px">전처리</td><td id="irH{" class="" style="width:352px">강수량 결측치를 <code>0</code> 대신 <code>ffill</code>(직전 날짜 값)로 채운 후, 평균 강수량이 어떻게 변하는지 확인하기</td><td id="fgYf" class="" style="width:482px"><code>df_rain[&#x27;강수량&#x27;].ffill()</code> 적용 전후의 <code>.mean()</code> 값 차이 비교 작성</td></tr><tr id="3e9ddb6c-37bb-8081-b4ef-db052e103f70" dir="ltr"><td id="B{fV" class="" style="width:58px">07</td><td id="qtoX" class="" style="width:88px">시각화</td><td id="irH{" class="" style="width:352px">5번 <code>swarmplot</code>에서 점이 빽빽하게 겹치는 문제를 해결하기 위해 점 크기(<code>s=2</code>)와 투명도(<code>alpha=0.5</code>)를 추가 설정해 그려보기</td><td id="fgYf" class="" style="width:482px"><code>sns.swarmplot(..., s=2, alpha=0.5)</code> 설정 후 기존 그래프와 가시성 비교</td></tr><tr id="3e9ddb6c-37bb-8090-a9d6-c687753f12f3" dir="ltr"><td id="B{fV" class="" style="width:58px">08</td><td id="qtoX" class="" style="width:88px">코드구현</td><td id="irH{" class="" style="width:352px">2018년 이후 데이터에서 &#x27;월별(1월~12월) 평균 강수량&#x27;을 계산하고, 막대그래프(<code>barplot</code>)로 시각화하기</td><td id="fgYf" class="" style="width:482px"><code>df_2018.groupby(&#x27;월&#x27;)[&#x27;강수량&#x27;].mean()</code> 후 <code>sns.barplot()</code> 작성</td></tr><tr id="3e9ddb6c-37bb-804d-b673-cb8875aa69e2" dir="ltr"><td id="B{fV" class="" style="width:58px">09</td><td id="qtoX" class="" style="width:88px">옵션확인</td><td id="irH{" class="" style="width:352px">9번 <code>boxplot + stripplot</code> 코드에서 <code><strong>jitter=False</strong></code><strong>로 변경</strong>해보고, 점들의 배치 모습이 어떻게 달라지는지 확인하기</td><td id="fgYf" class="" style="width:482px"><code>jitter=False</code> 실행 시 점들이 일렬로 겹치는 현상 캡처 및 설명</td></tr><tr id="3e9ddb6c-37bb-800d-b37e-cf2243e78cb7" dir="ltr"><td id="B{fV" class="" style="width:58px">10</td><td id="qtoX" class="" style="width:88px">데이터해석</td><td id="irH{" class="" style="width:352px"><strong>&#x27;강수량이 0인 날(비가 안 온 날)&#x27;을 제외</strong>한 실제 맑지 않은 날만의 평균 강수량과 중앙값 계산해보기</td><td id="fgYf" class="" style="width:482px"><code>df_rain[df_rain[&#x27;강수량&#x27;] &gt; 0][&#x27;강수량&#x27;].describe()</code> 실행 후 결과 서술</td></tr><tr id="3e9ddb6c-37bb-80da-83d2-c9346b91c73a" dir="ltr"><td id="B{fV" class="" style="width:58px">11</td><td id="qtoX" class="" style="width:88px">전처리</td><td id="irH{" class="" style="width:352px">강수량 결측치를 <code>0</code> 대신 <code>ffill</code>(직전 날짜 값)로 채운 후, 평균 강수량이 어떻게 변하는지 확인하기</td><td id="fgYf" class="" style="width:482px"><code>df_rain[&#x27;강수량&#x27;].ffill()</code> 적용 전후의 <code>.mean()</code> 값 차이 비교 작성</td></tr><tr id="3e9ddb6c-37bb-80d5-95cf-f2db01be7bd8" dir="ltr"><td id="B{fV" class="" style="width:58px">12</td><td id="qtoX" class="" style="width:88px">시각화</td><td id="irH{" class="" style="width:352px">5번 <code>swarmplot</code>에서 점이 빽빽하게 겹치는 문제를 해결하기 위해 **점 크기(<code>s=2</code>)와 투명도(<code>alpha=0.5</code>)**를 추가 설정해 그려보기</td><td id="fgYf" class="" style="width:482px"><code>sns.swarmplot(..., s=2, alpha=0.5)</code> 설정 후 기존 그래프와 가시성 비교</td></tr><tr id="3e9ddb6c-37bb-80ac-bebb-cc6f9fce3866" dir="ltr"><td id="B{fV" class="" style="width:58px">13</td><td id="qtoX" class="" style="width:88px">코드구현</td><td id="irH{" class="" style="width:352px">2018년 이후 데이터에서 &#x27;월별(1월~12월) 평균 강수량&#x27;을 계산하고, 막대그래프(<code>barplot</code>)로 시각화하기</td><td id="fgYf" class="" style="width:482px"><code>df_2018.groupby(&#x27;월&#x27;)[&#x27;강수량&#x27;].mean()</code> 후 <code>sns.barplot()</code> 작성</td></tr><tr id="3e9ddb6c-37bb-801a-b677-fb9ae0e838d3" dir="ltr"><td id="B{fV" class="" style="width:58px">14</td><td id="qtoX" class="" style="width:88px">옵션확인</td><td id="irH{" class="" style="width:352px">9번 <code>boxplot + stripplot</code> 코드에서 <code><strong>jitter=False</strong></code><strong>로 변경</strong>해보고, 점들의 배치 모습이 어떻게 달라지는지 확인하기</td><td id="fgYf" class="" style="width:482px"><code>jitter=False</code> 실행 시 점들이 일렬로 겹치는 현상 캡처 및 설명</td></tr><tr id="3e9ddb6c-37bb-80f8-8a11-dbdb02a8a923" dir="ltr"><td id="B{fV" class="" style="width:58px">15</td><td id="qtoX" class="" style="width:88px">데이터해석</td><td id="irH{" class="" style="width:352px"><strong>&#x27;강수량이 0인 날(비가 안 온 날)&#x27;을 제외</strong>한 실제 맑지 않은 날만의 평균 강수량과 중앙값 계산해보기</td><td id="fgYf" class="" style="width:482px"><code>df_rain[df_rain[&#x27;강수량&#x27;] &gt; 0][&#x27;강수량&#x27;].describe()</code> 실행 후 결과 서술</td></tr></tbody></table><p id="3e9ddb6c-37bb-8029-91b8-d4d66fd18f9f" class="" dir="auto">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

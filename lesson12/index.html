@@ -1,38 +1,825 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>[12차시] 김밥을 얼마에 팔아야 할까?</title>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[12차시] 김밥을 얼마에 팔아야 할까?</title><meta name="data-notion-page-icon" content="📽️"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%93%BD%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style>
 <style>
   html, body { background: #fff; }
   body {
     margin: 0 auto;
     max-width: 900px;
-    padding: 16px 16px 64px;
+    padding: 0 24px 80px;
     font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
     color: rgb(55, 53, 47);
   }
-  nav { margin-bottom: 12px; }
-  nav a { color: rgb(55, 53, 47); }
-  h1 { font-size: 1.7rem; line-height: 1.3; margin: 0 0 20px; }
-  img { width: 100%; height: auto; display: block; margin: 0 0 16px; background: #fafafa; }
+  .page-cover-image {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-left: -24px;
+    display: block;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .page-header-icon { font-size: 78px; line-height: 1; margin-top: -42px; position: relative; }
+  .simple-table { width: 100%; }
+  .simple-table td, .simple-table th { min-width: 0; }
+  pre, code { font-family: Consolas, "Malgun Gothic", monospace; }
+  @media (max-width: 720px) {
+    .column-list { flex-direction: column; gap: 12px; }
+  }
 </style>
-</head>
-<body>
-<nav><a href="../">수업 목록</a></nav>
-<h1>[12차시] 김밥을 얼마에 팔아야 할까?</h1>
-  <img src="images/page-01.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 1쪽">
-  <img src="images/page-02.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 2쪽">
-  <img src="images/page-03.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 3쪽">
-  <img src="images/page-04.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 4쪽">
-  <img src="images/page-05.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 5쪽">
-  <img src="images/page-06.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 6쪽">
-  <img src="images/page-07.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 7쪽">
-  <img src="images/page-08.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 8쪽">
-  <img src="images/page-09.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 9쪽">
-  <img src="images/page-10.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 10쪽">
-  <img src="images/page-11.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 11쪽">
-  <img src="images/page-12.jpg" alt="[12차시] 김밥을 얼마에 팔아야 할까? 12쪽">
-</body>
-</html>
+</head><body><nav style="margin:16px 0;font-family:Malgun Gothic,sans-serif"><a href="../" style="color:rgb(55,53,47)">수업 목록</a></nav><article id="3bcddb6c-37bb-80ac-9eee-e2196d07410a" class="page sans" data-notion-page-icon="📽️"><header><img class="page-cover-image" src="images/cover.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="📽️"></span></div><h1 class="page-title" dir="auto">[12차시] 김밥을 얼마에 팔아야 할까?</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><h1 id="3e9ddb6c-37bb-804d-b269-fabbd73063f5" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">품목별 소비자 물가 지수로 김밥 물가 지수 예측하기</h1><figure id="3e9ddb6c-37bb-8066-ad14-e1807f6b5c15" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image.png" dir="ltr"><a href="images/image.png"><img style="width:704.005615234375px" src="images/image.png"/></a></figure><figure id="3e9ddb6c-37bb-8078-939d-c2c661119a4a" dir="ltr"><div class="block-color-teal_background source" data-notion-highlight="teal_background"><a href="consumer_price_index.csv" data-notion-file="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/consumer_price_index.csv" data-notion-file-alias="consumer price index.csv">consumer price index.csv</a></div></figure><h4 id="3eaddb6c-37bb-80fd-874e-cac9006ebd24" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">엑셀 CSV 한글 깨짐 해결 방법</h4><table id="3eaddb6c-37bb-8025-8805-f10aa5d176e4" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3eaddb6c-37bb-80b1-8be4-ee2f11a08347" dir="ltr"><th id="IP\i" class="simple-table-header-color simple-table-header" style="width:239.4027862548828px"><strong>구분</strong></th><th id="lpWM" class="simple-table-header-color simple-table-header" style="width:461.9930725097656px"><strong>해결 절차</strong></th></tr></thead><tbody><tr id="3eaddb6c-37bb-8001-b31b-de1546c08db8" dir="ltr"><td id="IP\i" class="" style="width:239.4027862548828px"><strong>방법 1. 메모장에서 인코딩 재저장</strong></td><td id="lpWM" class="" style="width:461.9930725097656px">1. 실행 중인 엑셀 창 종료<br/>2. 메모장에서 해당 CSV 파일 열기<br/>3. 상단 메뉴 [파일] → [다른 이름으로 저장] 선택<br/>4. 하단 [인코딩] 항목을 <code>UTF-8 (BOM 포함)</code>으로 변경<br/>5. 기존 파일 덮어쓰기 저장 후 엑셀에서 재실행 후 한글 깨짐 여부 확인<br/>6. 파일명: consumer price index.csv</td></tr><tr id="3eaddb6c-37bb-8097-8e7f-e3ad0039dd3d" dir="ltr"><td id="IP\i" class="" style="width:239.4027862548828px"><strong>방법 2. 엑셀 [데이터 가져오기] 활용</strong></td><td id="lpWM" class="" style="width:461.9930725097656px">1. 새 엑셀 통합 문서 실행<br/>2. 상단 [데이터] 탭 → [텍스트/CSV] 선택<br/>3. 대상 CSV 파일 선택 후 [가져오기] 클릭<br/>4. 파일 원본 드롭다운에서 <code><strong>65001 : 유니코드(UTF-8)</strong></code> 지정<br/>5. 미리보기 한글 정상 표시 확인 후 하단 [로드] 클릭<br/>6. 다른 이름(consumer price index.csv) 으로 저장:<mark class="highlight-red" data-notion-highlight="red"><strong> CSV UTF-8(쉼표 분리)</strong></mark></td></tr></tbody></table><figure id="3e9ddb6c-37bb-80dc-8ec9-fda2079a4907" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image%201.png" dir="ltr"><a href="images/image 1.png"><img style="width:703.9961547851562px" src="images/image 1.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8092-a870-ce1f13c4145f" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-8045-9c3d-d7e141d91a31" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Pandas 라이브러리 호출:</strong> 데이터 분석 필수 패키지인 Pandas를 <code>pd</code>라는 약칭으로 로드함.</li></ul><ul id="3e9ddb6c-37bb-80f7-b198-c087628f7c1e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>CSV 데이터 로드:</strong> <code>pd.read_csv()</code>를 활용하여 소비자물가지수 파일 수집 및 데이터프레임(<code>df</code>) 형태로 변환함.</li></ul><ul id="3e9ddb6c-37bb-80bd-a1a8-efd1e4c2d79e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>상위 데이터 확인:</strong> <code>df.head()</code>를 통해 수집된 데이터의 상위 5개 행을 시각적으로 점검함.</li></ul></div></aside><figure id="3e9ddb6c-37bb-80ba-9ec9-d3474eb1032c" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/33b68be8-ce08-4144-861c-4bd28fbfd38c.png" dir="ltr"><a href="images/33b68be8-ce08-4144-861c-4bd28fbfd38c.png"><img style="width:719.984375px" src="images/33b68be8-ce08-4144-861c-4bd28fbfd38c.png"/></a></figure><figure id="3e9ddb6c-37bb-80d2-9319-c17693583f39" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image%202.png" dir="ltr"><a href="images/image 2.png"><img style="width:703.9961547851562px" src="images/image 2.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80ef-a52d-e10b34debadd" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-8094-b579-d9416be471a2" class="bulleted-list" dir="auto"><li style="list-style-type:disc">특정 속성들로 새로운 데이터 프레임을 생성함.</li></ul><ul id="3e9ddb6c-37bb-806a-9382-d218d64a4a18" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>df[[&#x27;김&#x27;, ...]]</strong></code>: 전체 물가 데이터 중에서 <strong>김밥과 김밥 재료에 해당하는 7개 열(속성)만 따로 선택</strong>하여 <code>df1</code>이라는 새로운 표를 만듦.</li></ul><ul id="3e9ddb6c-37bb-8004-90ee-df6bf825ee0c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>df1.info()</strong></code>: 이 새 표에 데이터가 총 몇 개가 있는지, 빈 곳(결측치)은 없는지, 데이터 타입은 무엇인지 등 요약 정보를 확인함.</li></ul></div></aside><figure id="3e9ddb6c-37bb-8032-80e5-f200f0b31a1a" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/77437735-a491-4aa9-a933-eddc979d528e.png" dir="ltr"><a href="images/77437735-a491-4aa9-a933-eddc979d528e.png"><img style="width:719.984375px" src="images/77437735-a491-4aa9-a933-eddc979d528e.png"/></a></figure><figure id="3e9ddb6c-37bb-80af-b2ce-c22ab35b3001" class="image" style="text-align:left" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image%203.png" dir="ltr"><a href="images/image 3.png"><img style="width:384px" src="images/image 3.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8066-8c20-d51c1bfb7cb1" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-8038-b3e2-ccc0e58b073e" class="bulleted-list" dir="auto"><li style="list-style-type:disc">결측치를 확인함. </li></ul><ul id="3e9ddb6c-37bb-80a4-af67-c23b9ecd576f" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>df1.isnull().sum()</strong></code>: 데이터 중에 혹시 누락된 값(NaN)이 있는지 확인하고, 빈 곳이 몇 개나 되는지 합계를 내어 보여줌. (분석 전 데이터의 무결성을 검사하는 필수 과정)</li></ul></div></aside><figure id="3e9ddb6c-37bb-809f-aa3f-efdea20b588b" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image%204.png" dir="ltr"><a href="images/image 4.png"><img style="width:703.9961547851562px" src="images/image 4.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80cb-aa04-f406b4d1aaac" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-80c6-82a2-e2b5ef125ab3" class="bulleted-list" dir="auto"><li style="list-style-type:disc">한글 폰트 설정을 위한 패키지를 설치함.</li></ul><ul id="3e9ddb6c-37bb-8032-b42c-cda92a94fad4" class="bulleted-list" dir="auto"><li style="list-style-type:disc">파이썬 그래프 라이브러리는 기본적으로 한글을 지원하지 않아 글자가 깨짐. 그래프에 &#x27;김밥&#x27;, &#x27;달걀&#x27; 같은 <strong>한글이 잘 나오도록 도와주는 패키지를 설치</strong>하는 명령어임.</li></ul></div></aside><figure id="3e9ddb6c-37bb-8082-8bba-f157e8a9a60d" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/146cf32c-0e94-47fb-ae8f-8d45ff79ce96.png" dir="ltr"><a href="images/146cf32c-0e94-47fb-ae8f-8d45ff79ce96.png"><img style="width:719.984375px" src="images/146cf32c-0e94-47fb-ae8f-8d45ff79ce96.png"/></a></figure><figure id="3e9ddb6c-37bb-8079-bc04-ea87c763b7f1" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/80704a76-e2da-4e48-b7ed-ee68768ffb1e.png" dir="ltr"><a href="images/80704a76-e2da-4e48-b7ed-ee68768ffb1e.png"><img style="width:559.9202392821535px" src="images/80704a76-e2da-4e48-b7ed-ee68768ffb1e.png"/></a></figure><figure id="3e9ddb6c-37bb-8090-b2e0-d036646ef13c" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/f0f9e874-2463-40d8-85bf-b641c4dbe218.png" dir="ltr"><a href="images/f0f9e874-2463-40d8-85bf-b641c4dbe218.png"><img style="width:719.984375px" src="images/f0f9e874-2463-40d8-85bf-b641c4dbe218.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80a3-84cf-d78fda902712" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-802a-af5c-ed236220abcd" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>sns.pairplot(df1)</strong></code>: 재료와 김밥 가격 간에 쌍을 지어 산점도 그래프를 그림. 어떤 재료와 김밥이 서로 비례해서 오르는지 한눈에 볼 수 있음.</li></ul></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8029-9a63-cd4b5045b757" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-8074-971f-c57145ea5964" class="" dir="auto"><strong>&#x27;김&#x27;의 분포 (양극화 형태):</strong> 김의 히스토그램을 보면 40 부근(최저값)뿐만 아니라 <strong>100 부근(최고값)에도 두 번째 봉우리</strong>가 존재하며, 양극화(U자형)에 가까운 분포를 보임.</p><p id="3e9ddb6c-37bb-80e2-bd5e-c5755bc5dfb0" class="" dir="auto"><strong>비선형(S자형/Sigmoid) 관계:</strong> 김-단무지, 김-김밥 등의 관계를 보면 단순 직선이라기보다 <strong>소량 구간은 완만하다가 중간에서 급격히 상승하고 상한선에서 완만해지는 S자형 곡선 패턴</strong>이 관찰됨.</p><p id="3e9ddb6c-37bb-80be-a2b2-c3e63dc87298" class="" dir="auto"><strong>&#x27;쌀&#x27; 재료의 특이점:</strong> 쌀은 다른 재료들에 비해 y축(량) 변화에 따라 x축 범위가 좁게 유지가 되다가 급격히 늘어나는 계단형 분포 특성을 가짐.</p></div></aside><table id="3e9ddb6c-37bb-80a2-8bde-c19475582a8d" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-8082-baf0-e645d6b89b74" dir="ltr"><th id="XriC" class="simple-table-header-color simple-table-header" style="width:144.6496124267578px"><strong>구분</strong></th><th id="nZcc" class="simple-table-header-color simple-table-header" style="width:159.23104858398438px"><strong>대상 변수</strong></th><th id="nVgU" class="simple-table-header-color simple-table-header" style="width:258.7935485839844px"><strong>상세 분포 및 관계 패턴</strong></th><th id="QsOv" class="simple-table-header-color simple-table-header" style="width:819.7405242919922px"><strong>데이터 관점의 해석</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-80e6-ae0e-e2f03b490726" dir="ltr"><td id="XriC" rowspan="4" class="" style="width:144.6496124267578px"><strong>개별 변수 분포</strong></td><td id="nZcc" class="" style="width:159.23104858398438px"><strong>김</strong></td><td id="nVgU" class="" style="width:258.7935485839844px">양극화 분포 (U자형)</td><td id="QsOv" class="" style="width:819.7405242919922px">최소치(약 40)와 최대치(약 100) 구간에 데이터가 몰려 있는 양극화 특성을 보임.   </td></tr><tr id="3e9ddb6c-37bb-8062-9efa-c613d0678150" dir="ltr"><td id="nZcc" class="" style="width:159.23104858398438px"><strong>단무지</strong></td><td id="nVgU" class="" style="width:258.7935485839844px">평탄한 고른 분포</td><td id="QsOv" class="" style="width:819.7405242919922px">50~100 전 구간에 걸쳐 데이터가 비교적 균등하게 분산됨.   </td></tr><tr id="3e9ddb6c-37bb-80ce-a013-dd16c1f041dd" dir="ltr"><td id="nZcc" class="" style="width:159.23104858398438px"><strong>쌀</strong></td><td id="nVgU" class="" style="width:258.7935485839844px">중앙 집중형 (단봉 분포)</td><td id="QsOv" class="" style="width:819.7405242919922px">70~80 구간에 강력하게 집중되어 기준량이 명확히 정해져 있음을 암시함.   </td></tr><tr id="3e9ddb6c-37bb-8009-924a-dab42c531d40" dir="ltr"><td id="nZcc" class="" style="width:159.23104858398438px"><strong>당근, 달걀, 시금치, 김밥</strong></td><td id="nVgU" class="" style="width:258.7935485839844px">오른쪽 꼬리가 긴 분포</td><td id="QsOv" class="" style="width:819.7405242919922px">낮은~중간 값 구간에 주로 집중되어 있으며 높은 값으로 갈수록 빈도가 줄어듦.   </td></tr><tr id="3e9ddb6c-37bb-80b9-b3e6-c47227ce3565" dir="ltr"><td id="XriC" class="" style="width:144.6496124267578px"><strong>핵심 선형/곡선 관계</strong></td><td id="nZcc" class="" style="width:159.23104858398438px"><strong>김 - 단무지 - 김밥</strong></td><td id="nVgU" class="" style="width:258.7935485839844px">강한 비선형 양의 상관 (S자형/Sigmoid)</td><td id="QsOv" class="" style="width:819.7405242919922px">김과 단무지, 완성된 김밥 간에는 매우 끈끈한 관계를 보이지만 단순 직선보다는 일정 임계점을 지나면서 급증하는 곡선 형태를 띰.   </td></tr><tr id="3e9ddb6c-37bb-80d1-a2fa-c3db93cef6df" dir="ltr"><td id="XriC" class="" style="width:144.6496124267578px"><strong>가변적 관계</strong></td><td id="nZcc" class="" style="width:159.23104858398438px"><strong>당근, 달걀, 시금치</strong></td><td id="nVgU" class="" style="width:258.7935485839844px">넓은 산포도를 가진 양의 상관</td><td id="QsOv" class="" style="width:819.7405242919922px">전체적인 김밥 양과 함께 증가하지만 점들의 흩어짐(분산)이 크며, 레시피나 제조자의 선택에 따라 비율 조절이 자유로움.   </td></tr></tbody></table><table id="3e9ddb6c-37bb-803d-9a23-c178efdf1792" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-8006-b6c8-d16ce8e54afe" dir="ltr"><th id="Q\DU" class="simple-table-header-color simple-table-header"><strong>분류</strong></th><th id="vQa@" class="simple-table-header-color simple-table-header" style="width:139.99999237060547px"><strong>대상 재료</strong></th><th id="V~gE" class="simple-table-header-color simple-table-header" style="width:199.99999237060547px"><strong>패턴 특징</strong></th><th id="sth]" class="simple-table-header-color simple-table-header" style="width:519.9715728759766px"><strong>실제 제조 과정에서의 의미</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-805f-9fa6-d4d153c7cd3b" dir="ltr"><td id="Q\DU" class=""><strong>필수 기준 재료</strong></td><td id="vQa@" class="" style="width:139.99999237060547px">김, 단무지, 쌀</td><td id="V~gE" class="" style="width:199.99999237060547px">S자형 곡선 및 특정 구간 집중   </td><td id="sth]" class="" style="width:519.9715728759766px">김밥의 전체 규격과 최소/최대 기준을 결정짓는 <strong>강한 결합 재료</strong><br/>   </td></tr><tr id="3e9ddb6c-37bb-800f-bd6c-ee1b0a8f32bd" dir="ltr"><td id="Q\DU" class=""><strong>자율 조절 재료</strong></td><td id="vQa@" class="" style="width:139.99999237060547px">당근, 달걀, 시금치</td><td id="V~gE" class="" style="width:199.99999237060547px">퍼진 우상향 점 분포   </td><td id="sth]" class="" style="width:519.9715728759766px">김밥 크기에 비례해 늘어나지만, 양을 자유롭게 늘리거나 줄일 수 있는 <strong>가변 부재료</strong><br/></td></tr></tbody></table><table id="3e9ddb6c-37bb-80dc-bd06-fe522bca1249" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-8073-9049-ed959b6eacaa" dir="ltr"><th id="Q@sq" class="simple-table-header-color simple-table-header" style="width:150.58522033691406px"><strong>구분</strong></th><th id="D]|M" class="simple-table-header-color simple-table-header"><strong>구성 요소</strong></th><th id="Zw@_" class="simple-table-header-color simple-table-header" style="width:196.17044067382812px"><strong>축별 의미</strong></th><th id="yOTt" class="simple-table-header-color simple-table-header" style="width:333.9961853027344px"><strong>그래프 해석 방법</strong></th><th id="m[|;" class="simple-table-header-color simple-table-header" style="width:454.99999237060547px"><strong>이미지 내 주요 예시</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-8021-8163-c7ed1dacec83" dir="ltr"><td id="Q@sq" class="" style="width:150.58522033691406px"><strong>1. 막대그래프</strong><br/>(대각선 히스토그램)</td><td id="D]|M" class="">대각선 방향 위치</td><td id="Zw@_" class="" style="width:196.17044067382812px">• <strong>가로축:</strong> 재료/김밥의 양<br/><br/>• <strong>세로축:</strong> 데이터 개수 (빈도수)</td><td id="yOTt" class="" style="width:333.9961853027344px">단일 변수 기준 데이터의 분포 및 특정 구간 집중도 파악</td><td id="m[|;" class="" style="width:454.99999237060547px">• <strong>쌀 (3행 3열):</strong> 70~80 구간에 데이터 집중 (단봉 분포)   <br/>• <strong>김 (1행 1열):</strong> 40 부근 및 100 부근 양극화 (U자형 분포)   </td></tr><tr id="3e9ddb6c-37bb-8078-b580-f07d04257a0b" dir="ltr"><td id="Q@sq" class="" style="width:150.58522033691406px"><strong>2. 점그래프</strong><br/>(대각선 외 산점도)</td><td id="D]|M" class="">대각선 제외 전체</td><td id="Zw@_" class="" style="width:196.17044067382812px">• <strong>가로축:</strong> X축 재료의 양<br/>• <strong>세로축:</strong> Y축 재료/김밥의 양</td><td id="yOTt" class="" style="width:333.9961853027344px">두 변수 간 상관관계 및 비례/자유도 파악<br/>(점 1개 = 김밥 1줄)</td><td id="m[|;" class="" style="width:454.99999237060547px">• <strong>우상향(↗) 배열:</strong> 두 재료가 함께 증가함 (예: 김과 김밥의 강한 비례 관계)   <br/>• <strong>넓은 분산 형태:</strong> 규칙성이 작고 투입 비율이 자유로움 (예: 당근, 시금치)</td></tr></tbody></table><figure id="3e9ddb6c-37bb-80a3-aecb-c53a1f6dd04b" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/01d78d27-8a74-4c55-b344-2cc06812d682.png" dir="ltr"><a href="images/01d78d27-8a74-4c55-b344-2cc06812d682.png"><img style="width:719.984375px" src="images/01d78d27-8a74-4c55-b344-2cc06812d682.png"/></a></figure><ul id="400ddb6c-37bb-8046-a6b8-d32e80de9ac6" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>annot=True</strong></code>: 격자 안에 실제 수치(숫자)를 적어줘.</li></ul><ul id="400ddb6c-37bb-80aa-a10a-c1ab78e755eb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>cmap=&#x27;Set1&#x27;</strong></code>: 색상은 &#x27;Set1&#x27; 팔레트(대비가 강한 범주형 색상)로 칠해줘.</li></ul><figure id="3e9ddb6c-37bb-8061-90d3-dd81048732d5" class="image" style="text-align:left" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image%205.png" dir="ltr"><a href="images/image 5.png"><img style="width:589.9999389648438px" src="images/image 5.png"/></a></figure><figure id="3e9ddb6c-37bb-8022-92c5-e754b8fff411" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/7ebe82fa-5eff-4b2c-b564-204574c5b481.png" dir="ltr"><a href="images/7ebe82fa-5eff-4b2c-b564-204574c5b481.png"><img style="width:719.984375px" src="images/7ebe82fa-5eff-4b2c-b564-204574c5b481.png"/></a></figure><table id="3e9ddb6c-37bb-80b6-b619-f982e5c8e88a" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-8039-8d29-dca3cbdc1e1d" dir="ltr"><th id="FyjA" class="simple-table-header-color simple-table-header"><strong>비교 항목</strong></th><th id=":;}]" class="simple-table-header-color simple-table-header" style="width:305.9980773925781px"><strong>페어플롯 (Pairplot)</strong></th><th id="t|wy" class="simple-table-header-color simple-table-header" style="width:321.40907287597656px"><strong>히트맵 (Heatmap)</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-80ba-ae40-f359a7c73dbf" dir="ltr"><td id="FyjA" class=""><strong>주요 역할</strong></td><td id=":;}]" class="" style="width:305.9980773925781px">전체 데이터의 <strong>실제 형상, 패턴, 분포 탐색</strong></td><td id="t|wy" class="" style="width:321.40907287597656px">변수 간 상관관계의 <mark class="highlight-red" data-notion-highlight="red"><strong>수치적 크기 비교</strong></mark></td></tr><tr id="3e9ddb6c-37bb-8003-8315-c5678db81f5d" dir="ltr"><td id="FyjA" class=""><strong>비선형 관계</strong></td><td id=":;}]" class="" style="width:305.9980773925781px"><strong>S자형, 곡선 등 비선형 관계 포착 가능</strong></td><td id="t|wy" class="" style="width:321.40907287597656px">감지 불가 (선형 상관계수 수치만 제공)</td></tr><tr id="3e9ddb6c-37bb-8059-804b-eadede07a729" dir="ltr"><td id="FyjA" class=""><strong>이상치 / 군집</strong></td><td id=":;}]" class="" style="width:305.9980773925781px"><strong>이상치(Outlier) 및 군집(Cluster) 직관적 확인</strong></td><td id="t|wy" class="" style="width:321.40907287597656px">확인 불가 (이상치에 의해 수치 왜곡 발생 가능)</td></tr><tr id="3e9ddb6c-37bb-802a-b8af-eb7de9568f3e" dir="ltr"><td id="FyjA" class=""><strong>단일 변수 분포</strong></td><td id=":;}]" class="" style="width:305.9980773925781px"><strong>대각선 히스토그램으로 개별 분포 동시 확인</strong></td><td id="t|wy" class="" style="width:321.40907287597656px">확인 불가</td></tr><tr id="3e9ddb6c-37bb-8056-bba1-e2966ebb5ed3" dir="ltr"><td id="FyjA" class=""><strong>데이터 분산</strong></td><td id=":;}]" class="" style="width:305.9980773925781px"><strong>구간별 분산 변화(이분산성) 관찰 가능</strong></td><td id="t|wy" class="" style="width:321.40907287597656px">확인 불가</td></tr><tr id="3e9ddb6c-37bb-8089-94a0-d2fe4448e582" dir="ltr"><td id="FyjA" class=""><strong>가독성 및 직관성</strong></td><td id=":;}]" class="" style="width:305.9980773925781px">요약성이 낮으나 데이터의 세부 특성 파악에 용이  </td><td id="t|wy" class="" style="width:321.40907287597656px"><mark class="highlight-red" data-notion-highlight="red"><strong>요약성이 높아</strong></mark> 전체적인 관계 강도를 한눈에 파악</td></tr></tbody></table><figure id="3e9ddb6c-37bb-808b-8ad6-c4f2f3b258f3" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/0772da55-fef9-46b3-9a9e-22216b6c1f17.png" dir="ltr"><a href="images/0772da55-fef9-46b3-9a9e-22216b6c1f17.png"><img style="width:719.984375px" src="images/0772da55-fef9-46b3-9a9e-22216b6c1f17.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80d7-9a5f-f7140547ad07" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-804e-832f-e044dff775e5" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>독립변수 X (원인)</strong>: 원인이 되는 &#x27;달걀&#x27; 물가 지수를 선택함. 머신러닝 모델이 인식할 수 있도록<code>reshape(-1, 1)</code>을 통해 2차원 배열 형태로 모양을 바꿔줌. <code>reshape(-1, 1)</code>을 실행하면, 열의 개수를 <code>1</code>로 고정함.</li></ul><ul id="400ddb6c-37bb-803c-9d25-e78b9c52472b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>reshape(n)</code> : <strong>1개의 인자</strong> → <strong>1차원 배열</strong> (<code>[1, 2, 3, 4]</code>)<br/><code>reshape(n, m)</code> : <strong>2개의 인자</strong> → <strong>2차원 배열</strong> (<code>[[1], [2], [3], [4]]</code>)<br/><code>reshape(n, m, k)</code> : <strong>3개의 인자</strong> → <strong>3차원 배열</strong></li></ul><ul id="3e9ddb6c-37bb-804e-a287-eb9b54ee5e5d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>종속변수 y (결과)</strong>: 결과를 예측할 &#x27;김밥&#x27; 물가 지수를 선택함.</li></ul></div></aside><figure id="3e9ddb6c-37bb-80d5-b003-c67486a84ca5" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/5696bf4c-d106-45a6-a67d-e7679dd076a4.png" dir="ltr"><a href="images/5696bf4c-d106-45a6-a67d-e7679dd076a4.png"><img style="width:719.984375px" src="images/5696bf4c-d106-45a6-a67d-e7679dd076a4.png"/></a></figure><figure id="3e9ddb6c-37bb-80a6-bffa-e2d7024a42cf" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image%206.png" dir="ltr"><a href="images/image 6.png"><img style="width:703.9772338867188px" src="images/image 6.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80c6-8eb7-ff220d5dda8d" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80cf-abd3-c292669fec59" class="" dir="auto"><code><strong>LinearRegression()</strong></code>: 선형 회귀 모델을 컴퓨터에게 준비시킴.<br/><code><strong>lr.fit(X, y)</strong></code>: 달걀(X)과 김밥(y) 데이터를 컴퓨터에게 학습시켜 <strong>최적의 예측 직선</strong>을 찾게 함.<br/><code><strong>lr.coef_</strong></code><strong>, </strong><code><strong>lr.intercept_</strong></code>: 예측 직선의 <strong>기울기</strong>(가중치)와 <strong>y절편</strong>을 출력함. </p></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8036-9f3e-ccd7e2695596" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><figure id="3e9ddb6c-37bb-8077-9700-e2dec2d47ed3" class="equation" data-notion-equation="y = 0.63786818 \times X + 18.695050146373497" dir="auto"><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.63786818</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">18.695050146373497</span></span></span></span></span></div></figure></div></aside><table id="3e9ddb6c-37bb-80cf-afd2-e7d8615d4c3f" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-80ae-a3fb-eeb7c935b8ed" dir="ltr"><th id="pKJS" class="simple-table-header-color simple-table-header" style="width:182.18370056152344px"><strong>출력 속성</strong></th><th id="QdRx" class="simple-table-header-color simple-table-header" style="width:149.67044067382812px"><strong>수치</strong></th><th id="fKBv" class="simple-table-header-color simple-table-header" style="width:347.7802734375px"><strong>수학적 / 통계적 의미</strong></th><th id="oL{[" class="simple-table-header-color simple-table-header" style="width:468.99999237060547px"><strong>실무적 해석</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-808f-a37c-e06028033870" dir="ltr"><td id="pKJS" class="" style="width:182.18370056152344px">lr.coef_ (회귀 계수 / 기울기)</td><td id="QdRx" class="" style="width:149.67044067382812px">[0.63786818]</td><td id="fKBv" class="" style="width:347.7802734375px">독립변수 X가 1단위 증가할 때, 종속변수 y가 변화하는 양</td><td id="oL{[" class="" style="width:468.99999237060547px">X의 양이 1 증가할 때마다 y의 예측값은 약 0.638만큼 증가함 (양의 상관관계)   </td></tr><tr id="3e9ddb6c-37bb-806c-8c64-c3d9ef2a38ff" dir="ltr"><td id="pKJS" class="" style="width:182.18370056152344px">lr.intercept_ (절편 / Y절편)</td><td id="QdRx" class="" style="width:149.67044067382812px">18.695050146373497</td><td id="fKBv" class="" style="width:347.7802734375px">독립변수 X의 값이 0일 때의 종속변수 y의 기본값</td><td id="oL{[" class="" style="width:468.99999237060547px">X가 0일 때도 기본적으로 존재하는 y의 기초 수치(약 18.7)를 의미함</td></tr></tbody></table><figure id="3e9ddb6c-37bb-8066-aa0c-ecae4c421169" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/3176eef6-b45b-4aec-ba7e-21778d372693.png" dir="ltr"><a href="images/3176eef6-b45b-4aec-ba7e-21778d372693.png"><img style="width:719.984375px" src="images/3176eef6-b45b-4aec-ba7e-21778d372693.png"/></a></figure><figure id="3e9ddb6c-37bb-8070-bcb0-ecc0db7d6afc" class="image" style="text-align:left" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/image%207.png" dir="ltr"><a href="images/image 7.png"><img style="width:480px" src="images/image 7.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-80c3-9607-dd69caf28d6c" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e9ddb6c-37bb-80c8-9bee-f644a986ab19" class="" dir="auto"><code><strong>lr.score(X, y)</strong></code>: 이 모델이 데이터를 얼마나 잘 설명하는지 나타내는 결정계수를 구함. <br/>                                 1에 가까울수록 완벽하게 예측한다는 뜻임.<br/><code><strong>plt.scatter(...)</strong></code>: 실제 달걀과 김밥의 데이터를 파란색 점으로 찍음.<br/><code><strong>plt.plot(X, lr.predict(X), ...)</strong></code>: 컴퓨터가 학습을 통해 찾아낸 예측 직선(빨간선)을 그림. <br/>                                 점들이 이 선에 예쁘게 모여 있을수록 예측을 잘하는 모델임.</p></div></aside><figure id="3e9ddb6c-37bb-80c1-a6a3-d3a113875653" class="image" data-notion-image="%5B12%EC%B0%A8%EC%8B%9C%5D%20%EA%B9%80%EB%B0%A5%EC%9D%84%20%EC%96%BC%EB%A7%88%EC%97%90%20%ED%8C%94%EC%95%84%EC%95%BC%20%ED%95%A0%EA%B9%8C/2d597259-0e12-4698-aafc-f3bf0cf6067e.png" dir="ltr"><a href="images/2d597259-0e12-4698-aafc-f3bf0cf6067e.png"><img style="width:719.984375px" src="images/2d597259-0e12-4698-aafc-f3bf0cf6067e.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3e9ddb6c-37bb-8057-83e8-e03cc86913a6" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e9ddb6c-37bb-8026-8ff7-e79626428089" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>df1.iloc[:, 0:6]</strong></code>: 0번째부터 5번째 열(김, 단무지, 쌀, 당근, 달걀, 시금치)까지 6개 재료 전부를 독립변수 X2로 지정함.</li></ul><ul id="3e9ddb6c-37bb-80d3-9ac2-dcc844921afc" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>df1.iloc[:, 6]</strong></code>: 6번째 열인 &#x27;김밥&#x27;을 종속변수 y2로 지정함.</li></ul><ul id="3e9ddb6c-37bb-80ab-8155-cdd365b73b5e" class="bulleted-list" dir="auto"><li style="list-style-type:disc">이 뒤에 단순 선형 회귀처럼 똑같이 <code>lr.fit(X2, y2)</code>를 하면, 여러 재료의 가격을 종합해 김밥 가격을 훨씬 정확하게 예측하는 모델을 만들 수 있게 됨.</li></ul></div></aside><h2 id="3e9ddb6c-37bb-8013-89af-c06050efee84" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[추가 실습_01] 김밥 소비자 물가 지수에 가장 영향을 많이 주는 재료는?</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e9ddb6c-37bb-80c4-b225-c42a41a4562d" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">6가지 재료(김, 단무지, 쌀, 당근, 달걀, 시금치)를 모두 고려하여 김밥 소비자 물가 지수를 예측하는 다중 선형 회귀 모델을 학습하고, 각 재료가 김밥 가격에 미치는 영향력을 확인하기</li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="400ddb6c-37bb-8011-b96d-ffe815d866fe" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><mark class="highlight-red" data-notion-highlight="red"><strong>아래의 예상 코드를 차례로 입력</strong></mark>하세요.</li></ul></div><table id="3e9ddb6c-37bb-8028-91f0-f2270a40604d" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-8066-94cc-d27d2d530c9a" dir="ltr"><th id="zS\M" class="simple-table-header-color simple-table-header" style="width:385.99998474121094px"><strong>예상 코드</strong></th><th id="=_vd" class="simple-table-header-color simple-table-header" style="width:528.9999847412109px"><strong>기능 및 의미</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-8013-ac12-c7ea0967c7ba" dir="ltr"><td id="zS\M" class="" style="width:385.99998474121094px"><code>lr2 = LinearRegression()</code></td><td id="=_vd" class="" style="width:528.9999847412109px">다중 선형 회귀 모델 객체를 생성함.   </td></tr><tr id="3e9ddb6c-37bb-80a5-94b9-d0c37ac7babc" dir="ltr"><td id="zS\M" class="" style="width:385.99998474121094px"><code>lr2.fit(X2, y2)</code></td><td id="=_vd" class="" style="width:528.9999847412109px">6개 재료 데이터(X2)와 김밥 데이터(y2)를 학습시켜 최적의 회귀 모델을 생성함.   </td></tr><tr id="3e9ddb6c-37bb-801b-97c4-c3c6212af142" dir="ltr"><td id="zS\M" class="" style="width:385.99998474121094px"><code>feature_names = df1.columns[0:6]</code></td><td id="=_vd" class="" style="width:528.9999847412109px">전체 열 중 독립변수로 사용된 6개 재료 이름(<code>김</code>~<code>시금치</code>)을 추출함.   </td></tr><tr id="3e9ddb6c-37bb-80ac-b3f7-f2fa2897fe37" dir="ltr"><td id="zS\M" class="" style="width:385.99998474121094px"><code>print(&#x27;--- [재료별 회귀 계수 (기울기)] ---&#x27;)</code></td><td id="=_vd" class="" style="width:528.9999847412109px">출력을 구분하기 위한 안내문 헤더를 출력함.   </td></tr><tr id="3e9ddb6c-37bb-80ce-839c-db2a961b79e6" dir="ltr"><td id="zS\M" class="" style="width:385.99998474121094px"><code>for name, coef in zip(feature_names, lr2.coef_):</code></td><td id="=_vd" class="" style="width:528.9999847412109px">재료 이름과 해당 재료의 회귀 계수(기울기)를 1:1로 묶어 반복 순회함.   </td></tr><tr id="3e9ddb6c-37bb-809f-a09f-e8d3eb64b450" dir="ltr"><td id="zS\M" class="" style="width:385.99998474121094px"><code>print(f&#x27;{name}: {coef:.4f}&#x27;)</code></td><td id="=_vd" class="" style="width:528.9999847412109px">각 재료 이름과 회귀 계수를 소수점 4자리까지 포맷팅하여 출력함.   </td></tr><tr id="3e9ddb6c-37bb-804d-90f0-d22c73ede958" dir="ltr"><td id="zS\M" class="" style="width:385.99998474121094px"><code>print(f&#x27;\n[절편 (Intercept)]: {lr2.intercept_:.4f}&#x27;)</code></td><td id="=_vd" class="" style="width:528.9999847412109px">모든 재료가 0일 때의 기본 바탕값(Y절편)을 소수점 4자리까지 출력함.</td></tr></tbody></table><h2 id="3e9ddb6c-37bb-80a5-b24a-f75e0bd3f71b" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[추가 실습_02] 단순 선형 회귀와 다중 선형 회귀의 결정계수 비교</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e9ddb6c-37bb-80b1-b8c5-ee7e752d409c" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">김밥 소비자 물가 지수는 단일 재료(달걀)의 가격 변화만으로 예측하는 것보다, <strong>김밥 구성 재료 전체의 물가 지수를 종합적으로 고려하는 다중 선형 회귀 모델을 적용할 때 실제 김밥 가격 변동을 거의 완벽하게 설명할 수 있음</strong>을 보여줌.  </li></ul></div><table id="3e9ddb6c-37bb-805a-97b4-d3bc659e0600" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e9ddb6c-37bb-80de-9f5d-d243738893df" dir="ltr"><th id="}lFc" class="simple-table-header-color simple-table-header"><strong>회귀 모델 종류</strong></th><th id="c[yI" class="simple-table-header-color simple-table-header"><strong>독립변수(X)</strong></th><th id="vrkw" class="simple-table-header-color simple-table-header"><strong>결정계수 (R2 Score)</strong></th><th id="LJ^O" class="simple-table-header-color simple-table-header"><strong>모델의 설명력 (%)</strong></th></tr></thead><tbody><tr id="3e9ddb6c-37bb-80c9-b37c-c199425a421b" dir="ltr"><td id="}lFc" class=""><strong>단순 선형 회귀</strong></td><td id="c[yI" class="">달걀</td><td id="vrkw" class="block-color-yellow_background"></td><td id="LJ^O" class="block-color-orange_background"></td></tr><tr id="3e9ddb6c-37bb-804d-8d06-c641025b4b8e" dir="ltr"><td id="}lFc" class=""><strong>다중 선형 회귀</strong></td><td id="c[yI" class="">김, 단무지, 쌀, 당근, 달걀, 시금치</td><td id="vrkw" class="block-color-yellow_background"></td><td id="LJ^O" class="block-color-orange_background"></td></tr></tbody></table><h2 id="3e9ddb6c-37bb-8067-b6d6-cabd8e5e1a53" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[추가 실습_03] 깁밥 외에 다른 품목으로 소비자 물가 지수를 예측하는 선형 회귀 모델 만들기</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e9ddb6c-37bb-80e9-826d-ecabd275d5ad" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>[예] ‘밀가루’, ‘파’, ‘달걀’을 독립변수로, ‘라면’을 종속변수로 설정 → 라면 물가 지수 예측 모델 만들기  </strong></li></ul></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
