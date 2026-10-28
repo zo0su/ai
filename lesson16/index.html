@@ -1,0 +1,865 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[16차시] 고객 취향의 음료 추천</title><meta name="data-notion-page-icon" content="☕"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%E2%98%95%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><style>
+  html, body { background: #fff; }
+  body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 0 24px 80px;
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    color: rgb(55, 53, 47);
+  }
+  .page-cover-image {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-left: -24px;
+    display: block;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .page-header-icon { font-size: 78px; line-height: 1; margin-top: -42px; position: relative; }
+  .simple-table { width: 100%; }
+  .simple-table td, .simple-table th { min-width: 0; }
+  pre, code { font-family: Consolas, "Malgun Gothic", monospace; }
+  @media (max-width: 720px) {
+    .column-list { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head><body><nav style="margin:16px 0;font-family:Malgun Gothic,sans-serif"><a href="../" style="color:rgb(55,53,47)">수업 목록</a></nav><article id="3bcddb6c-37bb-80db-b90a-d4b55ccb4c76" class="page sans" data-notion-page-icon="☕"><header><img class="page-cover-image" src="images/cover.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="☕"></span></div><h1 class="page-title" dir="auto">[16차시] 고객 취향의 음료 추천</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><figure id="3bcddb6c-37bb-803d-9bc4-eb0708a08a70" class="image" data-notion-image="images/1b66fc96-6240-4804-a6d7-a90646928b59.png" dir="ltr"><a href="images/1b66fc96-6240-4804-a6d7-a90646928b59.png"><img style="width:720px" src="images/1b66fc96-6240-4804-a6d7-a90646928b59.png"/></a></figure><figure id="3bcddb6c-37bb-807e-98c8-cce8bd441328" dir="ltr"><div class="block-color-purple_background source" data-notion-highlight="purple_background"><a href="caffe_menu.csv" data-notion-file="caffe_menu.csv" data-notion-file-alias="caffe_menu.csv">caffe_menu.csv</a></div></figure><figure id="3e8ddb6c-37bb-8025-9825-eb15e200bd83" class="image" data-notion-image="images/cc1b0989-b86e-4349-98cf-d9633212f4e5.png" dir="ltr"><a href="images/cc1b0989-b86e-4349-98cf-d9633212f4e5.png"><img style="width:637.109375px" src="images/cc1b0989-b86e-4349-98cf-d9633212f4e5.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-80d0-a5b5-ef074a432e83" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h3 id="3bcddb6c-37bb-80bf-b4bd-e3fe95a006a4" class="" dir="auto">MinMaxScaler(최소-최대 정규화)</h3><ul id="3bcddb6c-37bb-800b-a405-fc2f11da038b" class="bulleted-list" dir="auto"><li style="list-style-type:disc">최솟값은 0, 최댓값은 1이 되도록 <mark class="highlight-red" data-notion-highlight="red"><strong>0과 1 사이의 숫자로 </strong></mark>변환하는 방법임. </li></ul><ul id="3e8ddb6c-37bb-80d9-8529-da1771d2cefb" class="bulleted-list" dir="auto"><li style="list-style-type:disc">어떤 데이터가 최솟값(Xmin)과 같다면 분자가 0이 되므로 <code>0</code>이 됨. </li></ul><ul id="3e8ddb6c-37bb-808d-9061-d5c8300790e9" class="bulleted-list" dir="auto"><li style="list-style-type:disc">어떤 데이터가 최댓값(Xmax)과 같다면 분모와 분자가 같아지므로 <code>1</code>이 됨.</li></ul><ul id="3e8ddb6c-37bb-803e-8e80-da90844c7c4b" class="bulleted-list" dir="auto"><li style="list-style-type:disc">그 사이에 있는 값들은 비율에 따라 <code><strong>0.x</strong></code> 형태의 소수점으로 변환됨.</li></ul><figure id="3bcddb6c-37bb-805e-a694-ec13abc0e2c0" class="image" data-notion-image="images/image.png" dir="ltr"><a href="images/image.png"><img style="width:192px" src="images/image.png"/></a></figure></div></aside><figure id="3e8ddb6c-37bb-80bc-a8d2-e9438b7d19e5" class="image" data-notion-image="images/eff73bc6-a379-44f7-b079-f0eca2382f61.png" dir="ltr"><a href="images/eff73bc6-a379-44f7-b079-f0eca2382f61.png"><img style="width:637.109375px" src="images/eff73bc6-a379-44f7-b079-f0eca2382f61.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-80ae-acbc-e462361453a1" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h4 id="3bcddb6c-37bb-8061-8bfd-e9d5648ddcff" class="" dir="auto">K-Means Clustering</h4><ul id="3bcddb6c-37bb-803b-b9a6-c7d05c075abd" class="bulleted-list" dir="auto"><li style="list-style-type:disc">데이터 공간에 무작위로 <strong>중심점(Centroid)</strong> 4개를 찍음.</li></ul><ul id="3bcddb6c-37bb-80ab-8534-dc98686cd20e" class="bulleted-list" dir="auto"><li style="list-style-type:disc">각 데이터는 가장 가까운 중심점으로 가서 그룹이 됨.</li></ul><ul id="3bcddb6c-37bb-8044-b642-daabe6de7599" class="bulleted-list" dir="auto"><li style="list-style-type:disc">그룹의 중심을 계산해서 중심점을 옮기고 중심점이 변하지 않을 때까지 반복함.</li></ul><ul id="3bcddb6c-37bb-8019-bdd4-de65d6ac3b72" class="bulleted-list" dir="auto"><li style="list-style-type:disc"> 고카페인-저당, 저카페인-고당 그룹처럼 음료들의 성격이 나뉨.</li></ul></div></aside><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8050-9d18-d427184e9337" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3bcddb6c-37bb-80b9-a99e-ead156c5efdb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>n_clusters=4</strong></code>: 데이터를 4개의 그룹(군집)으로 나누겠다는 뜻임.</li></ul><ul id="3bcddb6c-37bb-8074-bc9a-f367e688e5f2" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>model.labels_</strong></code>: 학습이 끝난 뒤 각 음료가 몇 번 그룹(0, 1, 2, 3)에 속하는지 알려주는 번호표.</li></ul><ul id="3bcddb6c-37bb-8083-8744-f459f5286f52" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>df[df[&#x27;cluster&#x27;] == 0][&#x27;name&#x27;]</strong></code> 0번 그룹에 묶인 음료들이 무엇인지 리스트업함.</li></ul></div></aside><figure id="3e8ddb6c-37bb-807c-8f40-eee7038966d0" class="image" style="text-align:left" data-notion-image="images/image 1.png" dir="ltr"><a href="images/image 1.png"><img style="width:450.9861145019531px" src="images/image 1.png"/></a></figure><h1 id="3bcddb6c-37bb-8052-8e94-d27f6baa1275" class="block-color-orange_background" data-notion-highlight="orange_background" dir="auto">[모델 적용] </h1><h3 id="3bcddb6c-37bb-80a7-99b5-ebdd749259dd" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>① </strong>군집별로 설탕과 카페인의 평균 계산</h3><figure id="3dbddb6c-37bb-80c9-b52b-d5922dc7abe4" class="image" data-notion-image="images/image 2.png" dir="ltr"><a href="images/image 2.png"><img style="width:703.9772338867188px" src="images/image 2.png"/></a></figure><figure id="3e8ddb6c-37bb-809f-882f-e041cc6067aa" class="image" style="text-align:left" data-notion-image="images/image 3.png" dir="ltr"><a href="images/image 3.png"><img style="width:548.9305419921875px" src="images/image 3.png"/></a></figure><h3 id="3bcddb6c-37bb-80f7-a5e5-dc0213883409" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">② 정규화된 공간에서의 군집 중심점 확인</h3><figure id="3dbddb6c-37bb-80d4-bfe1-e1cc8eed7429" class="image" data-notion-image="images/image 4.png" dir="ltr"><a href="images/image 4.png"><img style="width:703.90625px" src="images/image 4.png"/></a></figure><figure id="3e8ddb6c-37bb-800b-a525-e1cd144e1475" class="image" style="text-align:left" data-notion-image="images/image 5.png" dir="ltr"><a href="images/image 5.png"><img style="width:525.9583129882812px" src="images/image 5.png"/></a></figure><table id="3e8ddb6c-37bb-807f-ad52-cc062b54cb02" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e8ddb6c-37bb-8075-9cfe-e7aacdaf7fae" dir="ltr"><th id="pkNu" class="simple-table-header-color simple-table-header" style="width:47px"><strong>군집</strong></th><th id="?Hyj" class="simple-table-header-color simple-table-header" style="width:96px"><strong>sugars 수치 </strong></th><th id="PuuZ" class="simple-table-header-color simple-table-header" style="width:102px"><strong>caffeine 수치 </strong></th><th id="VwV\" class="simple-table-header-color simple-table-header" style="width:129px"><strong>상대적 당류</strong></th><th id="vXsX" class="simple-table-header-color simple-table-header" style="width:124px"><strong>상대적 카페인</strong></th><th id="Y&lt;xb" class="simple-table-header-color simple-table-header" style="width:225px"><strong>군집 특성</strong></th></tr></thead><tbody><tr id="3e8ddb6c-37bb-8036-bfeb-c9e694ac07fe" dir="ltr"><td id="pkNu" class="" style="width:47px"><strong>0</strong></td><td id="?Hyj" class="" style="width:96px">0.044007</td><td id="PuuZ" class="" style="width:102px">0.254539</td><td id="VwV\" class="" style="width:129px">최하위 (매우 낮음)</td><td id="vXsX" class="" style="width:124px">하위 (낮음)</td><td id="Y&lt;xb" class="" style="width:225px">Low 당류 / Low 카페인 음료 군집</td></tr><tr id="3e8ddb6c-37bb-8042-9820-dd27bd4b0be3" dir="ltr"><td id="pkNu" class="" style="width:47px"><strong>1</strong></td><td id="?Hyj" class="" style="width:96px">0.581532</td><td id="PuuZ" class="" style="width:102px">0.602574</td><td id="VwV\" class="" style="width:129px">최상위 (높음)</td><td id="vXsX" class="" style="width:124px">최상위 (높음)</td><td id="Y&lt;xb" class="" style="width:225px">High 당류 / High 카페인 음료 군집</td></tr><tr id="3e8ddb6c-37bb-803a-9712-cd5f1f31648b" dir="ltr"><td id="pkNu" class="" style="width:47px"><strong>2</strong></td><td id="?Hyj" class="" style="width:96px">0.078187</td><td id="PuuZ" class="" style="width:102px">0.604356</td><td id="VwV\" class="" style="width:129px">하위 (낮음)</td><td id="vXsX" class="" style="width:124px">최상위 (높음)</td><td id="Y&lt;xb" class="" style="width:225px">Low 당류 / High 카페인 음료 군집</td></tr><tr id="3e8ddb6c-37bb-808e-a754-fb16224d5fff" dir="ltr"><td id="pkNu" class="" style="width:47px"><strong>3</strong></td><td id="?Hyj" class="" style="width:96px">0.588434</td><td id="PuuZ" class="" style="width:102px">0.178014</td><td id="VwV\" class="" style="width:129px">최상위 (높음)</td><td id="vXsX" class="" style="width:124px">최하위 (매우 낮음)</td><td id="Y&lt;xb" class="" style="width:225px">High 당류 / Low 카페인 음료 군집</td></tr></tbody></table><h3 id="3bcddb6c-37bb-80dd-83ad-fa3d5f4cb701" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">③ scatter plot으로 나타내기</h3><figure id="3e8ddb6c-37bb-80fb-8403-ede08c9590e0" class="image" data-notion-image="images/image 6.png" dir="ltr"><a href="images/image 6.png"><img style="width:672px" src="images/image 6.png"/></a></figure><figure id="3bcddb6c-37bb-8006-9948-c653ad0b4c16" class="image" style="text-align:left" data-notion-image="images/image 7.png" dir="ltr"><a href="images/image 7.png"><img style="width:432px" src="images/image 7.png"/></a></figure><h3 id="3bcddb6c-37bb-8091-baf8-f225807c641c" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">④ 각 군집의 평균(mean) 확인</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><pre id="3bcddb6c-37bb-8043-b6c6-fec6b5390284" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all"># 각 군집의 평균 확인
+cluster_mean = df.groupby(&#x27;cluster&#x27;)[[&#x27;sugars(g)&#x27;, &#x27;caffeine(mg)&#x27;]].mean()
+print(cluster_mean)
+
+# 분석 결과에 따라 명명
+# 0번: 설탕 높음/카페인 낮음 -&gt; &#x27;Sweet &amp; Low Caffeine&#x27;
+# 1번: 설탕 낮음/카페인 낮음 -&gt; &#x27;Light &amp; Clean&#x27;
+# 2번: 설탕 낮음/카페인 높음 -&gt; &#x27;High Caffeine&#x27;
+# 3번: 설탕 높음/카페인 높음 -&gt; &#x27;Energy Bomb&#x27;
+cluster_names = {
+    0: &#x27;Sweet &amp; Low Caffeine&#x27;,
+    1: &#x27;Light &amp; Clean&#x27;,
+    2: &#x27;High Caffeine&#x27;,
+    3: &#x27;Energy Bomb&#x27;
+}
+
+# &#x27;category&#x27; 컬럼 생성
+df[&#x27;category&#x27;] = df[&#x27;cluster&#x27;].map(cluster_names)
+
+# 결과 확인
+print(df[[&#x27;name&#x27;, &#x27;cluster&#x27;, &#x27;category&#x27;]].head())</code></pre><figure id="3e8ddb6c-37bb-8050-b081-c5db0c521757" class="image" style="text-align:left" data-notion-image="images/image 8.png" dir="ltr"><a href="images/image 8.png"><img style="width:624px" src="images/image 8.png"/></a></figure><h3 id="3bcddb6c-37bb-809d-ae23-f7e572a330a4" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">⑤ seaborn의 hue 옵션으로 일목요연하게 나타내기</h3><pre id="3bcddb6c-37bb-8091-87e1-ece35fe58cfb" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 7))
+
+# seaborn의 hue 옵션
+sns.scatterplot(
+    data=df,
+    x=&#x27;sugars(g)&#x27;,
+    y=&#x27;caffeine(mg)&#x27;,
+    hue=&#x27;category&#x27;,   # 범주 이름으로 색상 구분
+    style=&#x27;category&#x27;, # 모양도 다르게 설정 가능
+    s=100,            # 점 크기
+    palette=&#x27;viridis&#x27;
+)
+
+plt.title(&#x27;Cafe Menu Clustering Analysis&#x27;, fontsize=15)
+plt.xlabel(&#x27;Sugars (g)&#x27;)
+plt.ylabel(&#x27;Caffeine (mg)&#x27;)
+plt.legend(title=&#x27;Beverage Type&#x27;, bbox_to_anchor=(1.05, 1), loc=&#x27;upper left&#x27;)
+plt.grid(True, linestyle=&#x27;--&#x27;, alpha=0.6)
+plt.show()</code></pre><figure id="3bcddb6c-37bb-8023-8e77-e9f5780dd9c8" class="image" style="text-align:left" data-notion-image="images/image 9.png" dir="ltr"><a href="images/image 9.png"><img style="width:576px" src="images/image 9.png"/></a></figure><h2 id="3e8ddb6c-37bb-8013-990c-f3fd658684f4" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[개별 추가 과제] K-Means 카페 음료 추천 실습</h2><table id="3e8ddb6c-37bb-8003-bebf-fbc0fc24da6d" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e8ddb6c-37bb-8011-a08e-e3dc4ebeb5f9" dir="ltr"><th id="{Pfn" class="simple-table-header-color simple-table-header" style="width:52.99999237060547px"><strong>학번</strong></th><th id="a_}&gt;" class="simple-table-header-color simple-table-header" style="width:87.99999237060547px"><strong>문제 유형</strong></th><th id=";Gx]" class="simple-table-header-color simple-table-header" style="width:604.9874877929688px"><strong>추가 실습 과제</strong></th><th id="\J&lt;e" class="simple-table-header-color simple-table-header" style="width:603.0000305175781px"><strong>예상 실행 코드</strong></th></tr></thead><tbody><tr id="3e8ddb6c-37bb-80da-8423-c5155646de5e" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>01</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">전처리</td><td id=";Gx]" class="" style="width:604.9874877929688px"><code>sugars(g)</code>와 <code>caffeine(mg)</code> 수치를 <code>StandardScaler</code>를 사용하여 표준화하고 정규화 결과 차이 확인</td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>from sklearn.preprocessing import StandardScaler</code><br/><code>scaler = StandardScaler()</code><br/><code>data_scaled = scaler.fit_transform(data)</code></td></tr><tr id="3e8ddb6c-37bb-809e-9a40-f664368303e0" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>02</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">시각화</td><td id=";Gx]" class="" style="width:604.9874877929688px">군집 개수를 k=3으로 설정하고 <code>plt.scatter()</code>를 그려서 k=4일 때와 시각적 분포 비교하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>model = KMeans(n_clusters=3).fit(data_scaled)</code><br/><code>plt.scatter(..., c=model.labels_, cmap=&#x27;viridis&#x27;)</code></td></tr><tr id="3e8ddb6c-37bb-805c-81b7-ec2d37cc3c96" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>03</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">코드구현</td><td id=";Gx]" class="" style="width:604.9874877929688px">각 군집별 음료 개수를 계산하여 막대그래프(<code>sns.barplot</code>)로 시각화하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>df[&#x27;cluster&#x27;].value_counts().plot(kind=&#x27;bar&#x27;)</code></td></tr><tr id="3e8ddb6c-37bb-8081-840c-c1664a53cf94" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>04</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">옵션확인</td><td id=";Gx]" class="" style="width:604.9874877929688px"><code>KMeans</code> 모델 생성 시 <code>random_state=42</code> 옵션을 주고 실행했을 때 군집 결과의 재현성 확인하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>KMeans(n_clusters=4, random_state=42).fit(data_scaled)</code></td></tr><tr id="3e8ddb6c-37bb-8022-b613-f9f0a37d30e0" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>05</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">데이터해석</td><td id=";Gx]" class="" style="width:604.9874877929688px">&#x27;Energy Bomb&#x27; 카테고리에 속한 음료 중 카페인 함량이 가장 높은 상위 5개 음료 추출하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>df[df[&#x27;category&#x27;]==&#x27;Energy Bomb&#x27;].sort_values(&#x27;caffeine(mg)&#x27;, ascending=False).head()</code></td></tr><tr id="3e8ddb6c-37bb-8027-b48f-d8790b1f83ff" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>06</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">전처리</td><td id=";Gx]" class="" style="width:604.9874877929688px">당류(<code>sugars</code>)가 0인 음료(무당 음료)만 필터링하여 별도의 데이터프레임으로 추출하고 비율 확인하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>zero_sugar = df[df[&#x27;sugars(g)&#x27;] == 0]</code><br/><code>print(len(zero_sugar) / len(df))</code></td></tr><tr id="3e8ddb6c-37bb-80e2-957d-d9a138c05fe1" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>07</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">시각화</td><td id=";Gx]" class="" style="width:604.9874877929688px"><code>sns.scatterplot</code>에서 <code>palette=&#x27;plasma&#x27;</code>로 변경하여 색상 테마 차이 비교하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>sns.scatterplot(..., palette=&#x27;plasma&#x27;)</code></td></tr><tr id="3e8ddb6c-37bb-809c-93d6-c728df591c9b" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>08</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">코드구현</td><td id=";Gx]" class="" style="width:604.9874877929688px">각 군집의 <code>sugars(g)</code> 및 <code>caffeine(mg)</code>의 중앙값(<code>median</code>)을 구해 평균값(<code>mean</code>)과 비교하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>df.groupby(&#x27;cluster&#x27;)[[&#x27;sugars(g)&#x27;, &#x27;caffeine(mg)&#x27;]].median()</code></td></tr><tr id="3e8ddb6c-37bb-809c-8b8e-f3feb5fdc360" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>09</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">옵션확인</td><td id=";Gx]" class="" style="width:604.9874877929688px"><code>KMeans</code>의 <code>init=&#x27;random&#x27;</code> 옵션을 적용해보고 기본값(<code>init=&#x27;k-means++&#x27;</code>)과의 결과 비교하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>KMeans(n_clusters=4, init=&#x27;random&#x27;).fit(data_scaled)</code></td></tr><tr id="3e8ddb6c-37bb-80df-9ec6-dcac165a40d9" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>10</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">데이터해석</td><td id=";Gx]" class="" style="width:604.9874877929688px">&#x27;Light &amp; Clean&#x27; 카테고리 음료들의 평균 당류/카페인 수치를 계산하고 결과 서술하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>df[df[&#x27;category&#x27;]==&#x27;Light &amp; Clean&#x27;][[&#x27;sugars(g)&#x27;, &#x27;caffeine(mg)&#x27;]].mean()</code></td></tr><tr id="3e8ddb6c-37bb-80f8-a381-c86123b73a65" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>11</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">전처리</td><td id=";Gx]" class="" style="width:604.9874877929688px"><code>caffeine(mg)</code> 변수에 대해 로그 변환(<code>np.log1p</code>)을 적용한 후 정규화 진행해보기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>import numpy as np</code><br/><code>data[&#x27;caffeine_log&#x27;] = np.log1p(data[&#x27;caffeine(mg)&#x27;])</code></td></tr><tr id="3e8ddb6c-37bb-803e-8dbc-c6e9a61b8722" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>12</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">시각화</td><td id=";Gx]" class="" style="width:604.9874877929688px">산점도 그래프 위에 각 군집의 중심점(Centroid)을 빨간색 X 마크로 추가하여 시각화하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>plt.scatter(centers[:,0], centers[:,1], marker=&#x27;x&#x27;, s=200, c=&#x27;red&#x27;)</code></td></tr><tr id="3e8ddb6c-37bb-8008-83a7-d8ff102d483a" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>13</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">코드구현</td><td id=";Gx]" class="" style="width:604.9874877929688px">군집 개수 k를 2부터 8까지 변경하며 엘보우 방법(Elbow Method)으로 최적의 k 찾아보기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>inertia = [KMeans(n_clusters=k).fit(data_scaled).inertia_ for k in range(2,9)]</code></td></tr><tr id="3e8ddb6c-37bb-802a-be4b-f0cfa50d5800" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>14</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">옵션확인</td><td id=";Gx]" class="" style="width:604.9874877929688px"><code>sns.scatterplot</code>에서 <code>alpha=0.5</code> 옵션을 추가하여 데이터 점들의 겹침 정도 확인하기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>sns.scatterplot(..., alpha=0.5)</code></td></tr><tr id="3e8ddb6c-37bb-8042-9f87-d07c1157e23e" dir="ltr"><td id="{Pfn" class="" style="width:52.99999237060547px"><strong>15</strong></td><td id="a_}&gt;" class="" style="width:87.99999237060547px">데이터해석</td><td id=";Gx]" class="" style="width:604.9874877929688px">&#x27;High Caffeine&#x27; 그룹과 &#x27;Sweet &amp; Low Caffeine&#x27; 그룹 간의 카페인 평균 차이검정 해보기   </td><td id="\J&lt;e" class="" style="width:603.0000305175781px"><code>g1 = df[df[&#x27;category&#x27;]==&#x27;High Caffeine&#x27;][&#x27;caffeine(mg)&#x27;]</code><br/><code>g2 = df[df[&#x27;category&#x27;]==&#x27;Sweet &amp; Low Caffeine&#x27;][&#x27;caffeine(mg)&#x27;]</code></td></tr></tbody></table></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
