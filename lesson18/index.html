@@ -1,0 +1,833 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[18차시] YOLO 비전으로 객체 식별</title><meta name="data-notion-page-icon" content="👁️‍🗨️"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%91%81%EF%B8%8F%E2%80%8D%F0%9F%97%A8%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><style>
+  html, body { background: #fff; }
+  body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 0 24px 80px;
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    color: rgb(55, 53, 47);
+  }
+  .page-cover-image {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-left: -24px;
+    display: block;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .page-header-icon { font-size: 78px; line-height: 1; margin-top: -42px; position: relative; }
+  .simple-table { width: 100%; }
+  .simple-table td, .simple-table th { min-width: 0; }
+  pre, code { font-family: Consolas, "Malgun Gothic", monospace; }
+  @media (max-width: 720px) {
+    .column-list { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head><body><nav style="margin:16px 0;font-family:Malgun Gothic,sans-serif"><a href="../" style="color:rgb(55,53,47)">수업 목록</a></nav><article id="3bcddb6c-37bb-805d-a988-d73ea8a72953" class="page sans" data-notion-page-icon="👁️‍🗨️"><header><img class="page-cover-image" src="images/cover.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="👁️‍🗨️"></span></div><h1 class="page-title" dir="auto">[18차시] YOLO 비전으로 객체 식별</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><h1 id="3e3ddb6c-37bb-80df-bb71-f67035252731" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">학습 목표</h1><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e3ddb6c-37bb-80be-ad57-e90b1ef557bd" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e3ddb6c-37bb-8063-914b-c9d788149dbb" class="" dir="auto"><strong>학습 목표</strong>:</p><ol type="1" id="3e3ddb6c-37bb-8063-b811-f97529be1bc3" class="numbered-list" start="1" dir="auto"><li>객체 탐지의 개념과 YOLO 알고리즘의 특징을 이해할 수 있다.</li></ol><ol type="1" id="3e3ddb6c-37bb-803a-b2ea-d6ff3bebefcf" class="numbered-list" start="2" dir="auto"><li>구글 코랩 환경에서 YOLO v4 모델을 활용하여 이미지 내 객체를 직접 탐지하고 결과를 분석할 수 있다.</li></ol></div></aside><h2 id="3e3ddb6c-37bb-8051-9604-d819fac5c348" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">YOLO (You Only Look Once) 비전 모델</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-803d-9f81-c494dace149b" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">이미지 전체를 <mark class="highlight-red" data-notion-highlight="red"><strong>한 번만 보고</strong></mark> 객체의 위치와 종류를 동시에 예측하는 <mark class="highlight-red" data-notion-highlight="red"><strong>실시간 객체 탐지 알고리즘</strong></mark></li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-8062-a44a-e5f060233f2b" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">빠른 처리 속도를 가져 자율주행, 실시간 CCTV 분석 등 다양한 분야에서 활용됨.</li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-800e-a46e-d17466bd1323" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>Darknet</strong>: YOLO 모델을 구현하고 실행하기 위한 인공지능 프레임워크(Framework)<br/>개발자 <strong>Joseph Redmon</strong>이 만든 신경망 프레임워크의 고유한 프로젝트명, <strong>CUDA</strong>로 작성된 오픈소스 신경망 프레임워크</li></ul></div><h1 id="3e3ddb6c-37bb-808c-b8ca-d4bec7788516" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">실습 과제</h1><h2 id="3e3ddb6c-37bb-8042-afdf-c0f431629a9e" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>[1단계] Darknet 환경 구축하기</strong></h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-8073-9074-f0417406f9ed" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>github에서 Darknet 저장소를 복제하고, 코랩 환경에 맞게 빌드</strong></li></ul></div><h4 id="3e3ddb6c-37bb-80d4-92e9-ddd4bf0e297d" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">코드 입력_01</h4><figure id="3e3ddb6c-37bb-8096-adbd-ed49615ccef9" class="image" data-notion-image="images/image.png" dir="ltr"><a href="images/image.png"><img style="width:703.92578125px" src="images/image.png"/></a></figure><figure id="3e3ddb6c-37bb-80ad-add0-d6e3214519a6" class="image" style="text-align:left" data-notion-image="images/4.png" dir="ltr"><a href="images/4.png"><img style="width:457.98828125px" src="images/4.png"/></a></figure><figure id="3e3ddb6c-37bb-8040-be92-c43d4a537752" class="image" data-notion-image="images/image 1.png" dir="ltr"><a href="images/image 1.png"><img style="width:703.96484375px" src="images/image 1.png"/></a></figure><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-8048-aede-f143d8913adb" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h3 id="3e4ddb6c-37bb-802e-a951-c86b2fa54181" class="" dir="auto"><code><strong>!</strong></code><strong> : 코랩이 실행 중인 환경에서 터미널 명령어를 실행하라는 뜻</strong></h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3e4ddb6c-37bb-8046-9d31-ecf4ac5ed2c6" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">!pwd                      # 현재 작업 폴더 확인
+!ls                       # 파일/폴더 목록 보기
+!mkdir data               # data 폴더 만들기
+!cp a.txt b.txt           # 파일 복사
+!rm file.txt              # 파일 삭제
+!pip install ultralytics  # 파이썬 패키지 설치
+!git clone                # Git으로 Darknet 소스 내려받기</code></pre></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-80f1-972e-c95c8afc82ab" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h3 id="3e4ddb6c-37bb-80c0-b3d9-dd8572f6ea53" class="" dir="auto"><code><strong>%</strong></code><strong> : IPython/Colab의 매직(Magic) 명령어 실행</strong></h3><pre id="3e4ddb6c-37bb-80e6-ad66-e7b42fa1fed3" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">%pwd                      # 현재 작업 경로 확인
+%cd /content              # 작업 경로 변경
+%cd darknet               # 코랩의 작업 위치를 darknet 폴더로 이동</code></pre></div></aside><table id="3e4ddb6c-37bb-8088-9523-c58b086c12d6" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e4ddb6c-37bb-8064-a700-d81d8eae616a" dir="ltr"><th id="kv|j" class="simple-table-header-color simple-table-header" style="width:70.99999237060547px">기호</th><th id="fpku" class="simple-table-header-color simple-table-header" style="width:167.33900451660156px">의미</th><th id="}:Y|" class="simple-table-header-color simple-table-header" style="width:275.99998474121094px">주된 용도</th><th id=";iO\" class="simple-table-header-color simple-table-header" style="width:186.0871124267578px">예시</th></tr></thead><tbody><tr id="3e4ddb6c-37bb-802a-aebf-fd629b8df98d" dir="ltr"><td id="kv|j" class="" style="width:70.99999237060547px"><code>!</code></td><td id="fpku" class="" style="width:167.33900451660156px">리눅스 <strong>셸 명령</strong> 실행</td><td id="}:Y|" class="" style="width:275.99998474121094px">패키지 설치, 파일 관리, Git, GPU 확인</td><td id=";iO\" class="" style="width:186.0871124267578px"><code>!pip install ...</code>, <code>!ls</code></td></tr><tr id="3e4ddb6c-37bb-802b-b7ab-f3798035dcb4" dir="ltr"><td id="kv|j" class="" style="width:70.99999237060547px"><code>%</code></td><td id="fpku" class="" style="width:167.33900451660156px">IPython <strong>매직 명령</strong></td><td id="}:Y|" class="" style="width:275.99998474121094px">코랩 노트북 환경 제어, 경로 이동, 시간 측정</td><td id=";iO\" class="" style="width:186.0871124267578px"><code>%cd</code>, <code>%time</code></td></tr><tr id="3e4ddb6c-37bb-8084-afc6-e4dfce127031" dir="ltr"><td id="kv|j" class="" style="width:70.99999237060547px"><code>%%</code></td><td id="fpku" class="" style="width:167.33900451660156px">셀 전체에 적용하는 매직</td><td id="}:Y|" class="" style="width:275.99998474121094px">여러 줄 코드/명령에 일괄 적용</td><td id=";iO\" class="" style="width:186.0871124267578px"><code>%%time</code>, <code>%%bash</code></td></tr></tbody></table><h2 id="3e3ddb6c-37bb-8012-9b81-c427a1b4aa06" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>[2단계] 테스트 이미지 업로드하기</strong></h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-806c-83ca-eec4ed6ceeaa" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">탐지하고 싶은 이미지 파일(조르주 쇠라의 ‘그랑드자트섬의 일요일 오후’ 또는 인물이 있는 다른 그림)을 구글에서 검색하여 다운로드하고, 해당 이미지의 이름을 <code>test.jpg</code>로 변경함.</li></ul></div><div data-notion-highlight="gray_background" dir="auto"><ul id="3e4ddb6c-37bb-80b1-89db-dcb953d573b8" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">코랩 왼쪽 파일 창에서 <code><strong>darknet</strong></code><strong> 폴더 내부로 </strong><code><strong>test.jpg</strong></code><strong> 파일</strong>을 드래그앤드롭하거나 <strong>업로드</strong>함.</li></ul></div><figure id="3e3ddb6c-37bb-806d-945c-f49ceaf2e5d6" class="image" style="text-align:left" data-notion-image="images/a320367f-3183-4e7e-99ec-5f9f3c2cf45c.png" dir="ltr"><a href="images/a320367f-3183-4e7e-99ec-5f9f3c2cf45c.png"><img style="width:624px" src="images/a320367f-3183-4e7e-99ec-5f9f3c2cf45c.png"/></a></figure><h2 id="3e3ddb6c-37bb-8062-974f-d7b98797fb99" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>[3단계] 사전 학습된 가중치 파일(YOLOv4 Weights) 다운로드</strong></h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-80ba-9d63-c9986f9fc3df" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>COCO 데이터셋으로 미리 학습된 YOLOv4 모델 가중치 파일을 다운로드</strong></li></ul></div><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-80d6-9082-d43d40166dd6" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h3 id="3e4ddb6c-37bb-8008-92fe-f0f46f8c82c4" class="" dir="auto"><strong>COCO(Common Objects in Context) 데이터</strong></h3><ul id="3e4ddb6c-37bb-8038-89c2-f9b845b00996" class="bulleted-list" dir="auto"><li style="list-style-type:disc">일상 속 사진에 등장하는 물체를 인공지능이 학습하도록 만든 대규모 이미지 데이터셋임.</li></ul><ul id="3e4ddb6c-37bb-80ba-8dfa-fc6396ccdfa1" class="bulleted-list" dir="auto"><li style="list-style-type:disc">많은 YOLO 모델은 COCO 데이터셋으로 학습되었거나, COCO 기준으로 성능을 평가받음.</li></ul><ul id="3e4ddb6c-37bb-80c1-ac33-d43a7ad5d33b" class="bulleted-list" dir="auto"><li style="list-style-type:disc">COCO 공식 소개 기준으로 약 <strong>33만 장의 이미지</strong>, 그중 <strong>20만 장 이상에 라벨 정보</strong>가 포함되어 있음. 약 <strong>150만 개의 물체 인스턴스</strong>와 <strong>80개 주요 물체 범주</strong>를 제공함.</li></ul></div></aside><h4 id="3e3ddb6c-37bb-804a-98da-d4d432d8eeb7" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">코드 입력_02</h4><figure id="3e3ddb6c-37bb-8025-8339-c9a8d04cc131" class="image" data-notion-image="images/image 2.png" dir="ltr"><a href="images/image 2.png"><img style="width:1200px" src="images/image 2.png"/></a></figure><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-8045-a3b8-c09e4d348b67" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>결과 확인</strong>: <code>darknet</code> 폴더 안에 <code>yolov4.weights</code> 파일이 정상적으로 다운로드되었는지 확인</li></ul></div><figure id="3e3ddb6c-37bb-80ca-81a8-c8c648c8b6e1" class="image" data-notion-image="images/image 3.png" dir="ltr"><a href="images/image 3.png"><img style="width:703.9453125px" src="images/image 3.png"/></a></figure><h2 id="3e3ddb6c-37bb-80b3-a4b7-f9dc086351af" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>[4단계] YOLO 객체 탐지 실행하기</strong></h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-80d8-9ef0-f059b4313c64" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">Darknet 실행 파일을 이용하여 업로드한 <code>test.jpg</code> 이미지의 객체 탐지</li></ul></div><h4 id="3e3ddb6c-37bb-8057-b8b7-efa6f37fc284" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">코드 입력_03</h4><figure id="3e3ddb6c-37bb-808e-b1a2-ccc272d3b679" class="image" data-notion-image="images/image 4.png" dir="ltr"><a href="images/image 4.png"><img style="width:1152px" src="images/image 4.png"/></a></figure><table id="3e4ddb6c-37bb-80b5-b116-d3593537fa3e" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e4ddb6c-37bb-80fe-a583-ead925ded6bd" dir="ltr"><th id="exsJ" class="simple-table-header-color simple-table-header">명령어 요소</th><th id="O{{A" class="simple-table-header-color simple-table-header" style="width:392.99998474121094px">의미</th></tr></thead><tbody><tr id="3e4ddb6c-37bb-80c4-bc07-c24ac0faf908" dir="ltr"><td id="exsJ" class=""><code>!</code></td><td id="O{{A" class="" style="width:392.99998474121094px">코랩의 리눅스 명령어 실행 표시</td></tr><tr id="3e4ddb6c-37bb-80f7-8ee4-ee68023efde8" dir="ltr"><td id="exsJ" class=""><code>./darknet</code></td><td id="O{{A" class="" style="width:392.99998474121094px">현재 폴더에 있는 Darknet 실행 프로그램</td></tr><tr id="3e4ddb6c-37bb-8070-8143-dc6084b7ac29" dir="ltr"><td id="exsJ" class=""><code>detector test</code></td><td id="O{{A" class="" style="width:392.99998474121094px">객체 탐지 시험 모드</td></tr><tr id="3e4ddb6c-37bb-8052-a87c-c124d635faca" dir="ltr"><td id="exsJ" class=""><code>cfg/coco.data</code></td><td id="O{{A" class="" style="width:392.99998474121094px">COCO 물체 이름과 관련 정보가 담긴 파일</td></tr><tr id="3e4ddb6c-37bb-80e3-bcb9-fca2d3fd6914" dir="ltr"><td id="exsJ" class=""><code>cfg/yolov4.cfg</code></td><td id="O{{A" class="" style="width:392.99998474121094px">YOLOv4 모델의 신경망 구조를 정의한 설정 파일</td></tr><tr id="3e4ddb6c-37bb-806c-a1ab-f89556224e12" dir="ltr"><td id="exsJ" class=""><code>yolov4.weights</code></td><td id="O{{A" class="" style="width:392.99998474121094px">학습이 완료된 모델의 가중치 파일</td></tr><tr id="3e4ddb6c-37bb-807f-9a41-c91b4b11b792" dir="ltr"><td id="exsJ" class=""><code>-thresh 0.5</code></td><td id="O{{A" class="" style="width:392.99998474121094px">탐지 확률이 50% 이상인 결과만 출력하도록 설정하는 기준값</td></tr><tr id="3e4ddb6c-37bb-80bf-bfb2-ea7b2c4afa4c" dir="ltr"><td id="exsJ" class=""><code>test.jpg</code></td><td id="O{{A" class="" style="width:392.99998474121094px">분석 대상 이미지 파일</td></tr></tbody></table><figure id="3e3ddb6c-37bb-80fc-a6b8-ce00d12f015e" class="image" style="text-align:left" data-notion-image="images/image 5.png" dir="ltr"><a href="images/image 5.png"><img style="width:672px" src="images/image 5.png"/></a></figure><ul id="3e4ddb6c-37bb-8096-a368-c49ba6ecf818" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>mini_batch = 1</code> : 한 번에 처리하는 이미지 수가 1장이라는 의미</li></ul><ul id="3e4ddb6c-37bb-80d2-8ed3-c70d355ade69" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>batch = 8</code> : 학습 또는 처리 단위와 관련된 설정값</li></ul><ul id="3e4ddb6c-37bb-80c3-b9dd-ced1f405cf10" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>time_steps = 1</code> : 순서 정보가 있는 데이터를 처리할 때 사용하는 설정값이며, 일반 이미지 탐지에서는 크게 중요하지 않은 값</li></ul><ul id="3e4ddb6c-37bb-804f-9b7d-fc18c17f779a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>train = 0</code> : 학습 모드가 아니라 <strong>테스트 또는 예측 모드</strong>라는 의미</li></ul><h2 id="3e3ddb6c-37bb-80dc-84e3-f4f2a4e19c1c" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>[5단계] 원본 이미지와 탐지 결과 비교 시각화</strong></h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e3ddb6c-37bb-807c-87f3-e95aaa4c45cf" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc">Python 시각화 라이브러리(<code>OpenCV</code>, <code>Matplotlib</code>)를 통해 원본 이미지(<code>test.jpg</code>)와 탐지 결과가 반영된 이미지(<code>predictions.jpg</code>)를 나란히 출력</li></ul></div><h4 id="3e3ddb6c-37bb-8010-8659-f1fb90a76c95" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">코드 입력_04</h4><figure id="3e3ddb6c-37bb-80cf-ba77-ff054f2da613" class="image" data-notion-image="images/image 6.png" dir="ltr"><a href="images/image 6.png"><img style="width:703.984375px" src="images/image 6.png"/></a></figure><table id="3e4ddb6c-37bb-8082-8c0b-ff48abd71326" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e4ddb6c-37bb-8055-a641-c29cc6beb712" dir="ltr"><th id="uJ{Y" class="simple-table-header-color simple-table-header" style="width:157.85037231445312px"><strong>구분</strong></th><th id="AuH=" class="simple-table-header-color simple-table-header" style="width:274.0643768310547px"><strong>주요 코드</strong></th><th id="r?im" class="simple-table-header-color simple-table-header"><strong>설명</strong></th></tr></thead><tbody><tr id="3e4ddb6c-37bb-80ab-8c58-dfd381c9d0de" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>라이브러리 불러오기</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>import cv2</code><br/><code>import matplotlib.pyplot as plt</code></td><td id="r?im" class="">이미지 관련 작업과 화면 출력에 필요한 도구 상자를 불러오기</td></tr><tr id="3e4ddb6c-37bb-803d-8888-cacad65c9c81" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>이미지 불러오기</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>cv2.imread(&#x27;test.jpg&#x27;)</code><br/><code>cv2.imread(&#x27;predictions.jpg&#x27;)</code></td><td id="r?im" class="">원본 사진과 AI 예측 결과 사진을 읽어오기</td></tr><tr id="3e4ddb6c-37bb-8093-8728-db956634156a" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>캔버스 설정</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>plt.figure(figsize=(10, 5))</code></td><td id="r?im" class="">전체 도화지 크기를 조절하는 작업</td></tr><tr id="3e4ddb6c-37bb-80b2-8f39-deed5a0a715d" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>색상 채널 변환</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>cv2.cvtColor(..., cv2.COLOR_BGR2RGB)</code></td><td id="r?im" class="">OpenCV의 BGR 채널 구조를 Matplotlib 표준 RGB 형식으로 변환</td></tr><tr id="3e4ddb6c-37bb-80af-b89a-e320dba6bec9" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>화면 분할 및 출력</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>plt.subplot(1, 2, 1)</code><br/><code>plt.subplot(1, 2, 2)</code></td><td id="r?im" class="">도화지를 반으로 나누어 왼쪽에 원본, 오른쪽에 결과물을 배치</td></tr><tr id="3e4ddb6c-37bb-80f5-8689-ff288b569857" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>이미지 및 제목 표시</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>plt.imshow(...)</code><br/><code>plt.title(...)</code></td><td id="r?im" class="">각 영역에 사진을 띄우고 어떤 그림인지 이름을 붙여주는 작업</td></tr><tr id="3e4ddb6c-37bb-800b-b960-c6099c892ae0" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>축 레이블 제거</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>plt.axis(&#x27;off&#x27;)</code></td><td id="r?im" class="">불필요한 눈금과 숫자를 숨겨 이미지를 깔끔하게 보이게 하는 처리 </td></tr><tr id="3e4ddb6c-37bb-80f7-a062-f821f5d3d804" dir="ltr"><td id="uJ{Y" class="" style="width:157.85037231445312px"><strong>여백 및 최종 출력</strong></td><td id="AuH=" class="" style="width:274.0643768310547px"><code>plt.tight_layout()</code><br/><code>plt.show()</code></td><td id="r?im" class="">제목이나 그림이 겹치지 않게 정돈한 뒤 최종 화면을 모니터에 출력</td></tr></tbody></table><figure id="3e3ddb6c-37bb-80a2-a72c-c70d6176e4bf" class="image" data-notion-image="images/image 7.png" dir="ltr"><a href="images/image 7.png"><img style="width:768px" src="images/image 7.png"/></a></figure><h2 id="3e3ddb6c-37bb-806b-8792-ee698c541e97" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>[개별 추가 과제]</strong></h2><table id="3e3ddb6c-37bb-800e-ad27-dcf9f6840805" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e3ddb6c-37bb-8001-b15b-e55b9e5e2a6c" dir="ltr"><th id="sQ[u" class="simple-table-header-color simple-table-header" style="width:64px"><strong>학번</strong></th><th id="~YrO" class="simple-table-header-color simple-table-header" style="width:104.99609375px"><strong>문제 유형</strong></th><th id="Cthr" class="simple-table-header-color simple-table-header" style="width:654.98828125px"><strong>추가 실습 과제</strong></th><th id="|wZF" class="simple-table-header-color simple-table-header" style="width:648.984375px"><strong>예상 실행 코드</strong></th></tr></thead><tbody><tr id="3e3ddb6c-37bb-805b-95ed-fceab37b675e" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>01</strong></td><td id="~YrO" class="" style="width:104.99609375px">옵션변경</td><td id="Cthr" class="" style="width:654.98828125px">신뢰도 임계값(<code>-thresh</code>) 옵션을 <code>0.5</code>에서 <code>0.2</code>로 변경하여 탐지된 객체의 변화 관찰하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>!./darknet detector test cfg/coco.data cfg/yolov4.cfg yolov4.weights -thresh 0.2 test.jpg</code></td></tr><tr id="3e3ddb6c-37bb-8062-ac5c-d2d8c7f41835" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>02</strong></td><td id="~YrO" class="" style="width:104.99609375px">옵션변경</td><td id="Cthr" class="" style="width:654.98828125px">신뢰도 임계값(<code>-thresh</code>) 옵션을 <code>0.8</code>로 높여 명확한 객체만 탐지되도록 실행해 보기   </td><td id="|wZF" class="" style="width:648.984375px"><code>!./darknet detector test cfg/coco.data cfg/yolov4.cfg yolov4.weights -thresh 0.8 test.jpg</code></td></tr><tr id="3e3ddb6c-37bb-800d-84ed-d61a10b2ae78" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>03</strong></td><td id="~YrO" class="" style="width:104.99609375px">모델변경</td><td id="Cthr" class="" style="width:654.98828125px">경량화된 모델인 <code>yolov4-tiny.weights</code>를 다운로드하여 탐지 속도 및 결과 비교하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>!wget [https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v4_pre/yolov4-tiny.weights](https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v4_pre/yolov4-tiny.weights)</code></td></tr><tr id="3e3ddb6c-37bb-8060-8cd9-d4027ba316d7" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>04</strong></td><td id="~YrO" class="" style="width:104.99609375px">이미지변경</td><td id="Cthr" class="" style="width:654.98828125px">인터넷에서 사람이 여러 명 있는 새로운 이미지를 다운로드하여 <code>test.jpg</code>로 저장 후 객체 탐지하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>!wget -O test.jpg &quot;[https://example.com/people.jpg](https://example.com/people.jpg)&quot;</code></td></tr><tr id="3e3ddb6c-37bb-803a-bf37-e2d71fc6485d" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>05</strong></td><td id="~YrO" class="" style="width:104.99609375px">데이터분석</td><td id="Cthr" class="" style="width:654.98828125px">탐지 결과 이미지(<code>predictions.jpg</code>)의 가로 및 세로 해상도(픽셀 크기) 출력하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>print(predicted_image.shape)</code></td></tr><tr id="3e3ddb6c-37bb-8016-af38-f4068820b9e9" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>06</strong></td><td id="~YrO" class="" style="width:104.99609375px">전처리</td><td id="Cthr" class="" style="width:654.98828125px">원본 이미지(<code>test.jpg</code>)를 좌우 반전(Flip)시킨 뒤 저장하여 객체 탐지 결과 비교하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>cv2.imwrite(&#x27;test.jpg&#x27;, cv2.flip(original_image, 1))</code></td></tr><tr id="3e3ddb6c-37bb-80b4-9c74-e7f5ba3fb113" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>07</strong></td><td id="~YrO" class="" style="width:104.99609375px">데이터필터링</td><td id="Cthr" class="" style="width:654.98828125px">결과 텍스트 파일이나 로그에서 <code>person</code>으로 탐지된 객체의 신뢰도(Confidence) 점수만 출력하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>!./darknet detector test ... | grep person</code></td></tr><tr id="3e3ddb6c-37bb-80ad-8368-d2fb82afb3ee" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>08</strong></td><td id="~YrO" class="" style="width:104.99609375px">시각화</td><td id="Cthr" class="" style="width:654.98828125px">탐지 결과 이미지(<code>predictions.jpg</code>)를 흑백(Gray)으로 변환하여 출력하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>plt.imshow(cv2.cvtColor(predicted_image, cv2.COLOR_BGR2GRAY), cmap=&#x27;gray&#x27;)</code></td></tr><tr id="3e3ddb6c-37bb-8029-9a90-e45f11c9916f" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>09</strong></td><td id="~YrO" class="" style="width:104.99609375px">코드구현</td><td id="Cthr" class="" style="width:654.98828125px">이미지 로드 실패 시 에러 문구를 출력하고 안전하게 종료되는 예외 처리 코드 작성하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>if original_image is None: print(&quot;파일을 찾을 수 없습니다.&quot;)</code></td></tr><tr id="3e3ddb6c-37bb-802b-b16b-d7908215efa8" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>10</strong></td><td id="~YrO" class="" style="width:104.99609375px">시각화</td><td id="Cthr" class="" style="width:654.98828125px"><code>Matplotlib</code>을 이용하여 원본 이미지와 예측 이미지의 색상 히스토그램(RGB) 비교해 보기   </td><td id="|wZF" class="" style="width:648.984375px"><code>plt.hist(original_image.ravel(), 256, [0, 256])</code></td></tr><tr id="3e3ddb6c-37bb-80fc-aa7c-cf40fe13335a" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>11</strong></td><td id="~YrO" class="" style="width:104.99609375px">이미지처리</td><td id="Cthr" class="" style="width:654.98828125px">원본 이미지를 흐리게(Blur) 가공한 후 YOLO 모델이 객체를 얼마나 잘 찾는지 테스트하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>blurred = cv2.blur(original_image, (15, 15)); cv2.imwrite(&#x27;test.jpg&#x27;, blurred)</code></td></tr><tr id="3e3ddb6c-37bb-8097-87ef-d79389233c2f" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>12</strong></td><td id="~YrO" class="" style="width:104.99609375px">시각화</td><td id="Cthr" class="" style="width:654.98828125px"><code>subplot</code>을 1행 2열 대신 2행 1열(상/하) 구조로 변경하여 이미지 출력하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>plt.subplot(2, 1, 1)</code> 및 <code>plt.subplot(2, 1, 2)</code></td></tr><tr id="3e3ddb6c-37bb-80c6-aa58-c9f5c78d63ab" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>13</strong></td><td id="~YrO" class="" style="width:104.99609375px">파일제어</td><td id="Cthr" class="" style="width:654.98828125px">코랩의 <code>os</code> 모듈을 이용하여 <code>darknet</code> 폴더 안의 전체 파일 목록 출력하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>import os; print(os.listdir(&#x27;.&#x27;))</code></td></tr><tr id="3e3ddb6c-37bb-80d7-a218-c7b605e4122d" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>14</strong></td><td id="~YrO" class="" style="width:104.99609375px">응용실습</td><td id="Cthr" class="" style="width:654.98828125px">자율주행 관련 이미지(도로, 차량, 표지판 등)를 업로드하여 이동 수단 객체 탐지 결과 분석하기   </td><td id="|wZF" class="" style="width:648.984375px"><code>!./darknet detector test ... car_test.jpg</code></td></tr><tr id="3e3ddb6c-37bb-8047-a910-ef2d30b1f78b" dir="ltr"><td id="sQ[u" class="" style="width:64px"><strong>15</strong></td><td id="~YrO" class="" style="width:104.99609375px">미래예측</td><td id="Cthr" class="" style="width:654.98828125px">COCO 데이터셋의 클래스 정의 파일(<code>cfg/coco.names</code>)을 열어 읽어보고 탐지 가능한 객체 종류 개수 확인하기</td><td id="|wZF" class="" style="width:648.984375px"><code>!cat cfg/coco.names | wc -l</code></td></tr></tbody></table><p id="3e3ddb6c-37bb-80ba-883d-d9775ed0cd60" class="" dir="auto">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

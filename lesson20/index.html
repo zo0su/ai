@@ -1,0 +1,971 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[20차시] 허깅페이스(Hugging Face)</title><meta name="data-notion-page-icon" content="😇"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%98%87%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><style>
+  html, body { background: #fff; }
+  body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 0 24px 80px;
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    color: rgb(55, 53, 47);
+  }
+  .page-cover-image {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-left: -24px;
+    display: block;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .page-header-icon { font-size: 78px; line-height: 1; margin-top: -42px; position: relative; }
+  .simple-table { width: 100%; }
+  .simple-table td, .simple-table th { min-width: 0; }
+  pre, code { font-family: Consolas, "Malgun Gothic", monospace; }
+  @media (max-width: 720px) {
+    .column-list { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head><body><nav style="margin:16px 0;font-family:Malgun Gothic,sans-serif"><a href="../" style="color:rgb(55,53,47)">수업 목록</a></nav><article id="3bcddb6c-37bb-8066-9d6c-de10cd913aad" class="page sans" data-notion-page-icon="😇"><header><img class="page-cover-image" src="https://app.notion.com/images/page-cover/hudsonRiverSchool_springLandscape.jpg" style="object-position:center 100%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="😇"></span></div><h1 class="page-title" dir="auto">[20차시] 허깅페이스(Hugging Face)</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><h1 id="3bcddb6c-37bb-80d3-aec1-fa7807b31e82" class="block-color-orange_background" data-notion-highlight="orange_background" dir="auto">🤖 허깅페이스(Hugging Face)</h1><h4 id="3bcddb6c-37bb-805d-a914-dd14bd7688f4" class="block-color-teal" data-notion-highlight="teal" dir="auto"><strong><a href="https://huggingface.co/">https://huggingface.co/</a></strong><strong>  </strong></h4><ul id="3bcddb6c-37bb-805e-be09-ec3113f43dcb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개념:</strong> 전 세계 AI 연구자 및 개발자들이 인공지능 모델, 데이터셋, 웹 데모를 공유하고 협업하는 <strong>세계 최대의 오픈소스 AI 플랫폼</strong></li></ul><ul id="3bcddb6c-37bb-80f0-893b-e923fbd4b610" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>역할:</strong> 복잡한 논문 구현 과정 없이 <strong>코드 몇 줄만으로</strong> 최고 성능의 오픈소스 AI 모델을 활용할 수 있도록 지원하는 인프라</li></ul><h2 id="3bcddb6c-37bb-8053-a271-da3304ca4b81" class="block-color-orange_background" data-notion-highlight="orange_background" dir="auto">🌟 4대 핵심 구성 요소</h2><h3 id="3bcddb6c-37bb-804e-8a66-e4d81cd6ace6" class="" dir="auto">1. Models (인공지능 모델 저장소)</h3><ul id="3bcddb6c-37bb-8003-9f9c-c6392012790c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>내용:</strong> 자연어 처리(LLM), 이미지 생성, 음성 인식, 컴퓨터 비전 등 수십만 개의 사전 학습된(Pre-trained) 모델 제공</li></ul><ul id="3bcddb6c-37bb-8075-aee2-c4f278f17c90" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징:</strong> 빅테크 기업(Meta, Google 등)이 대규모 자원을 투입해 만든 고성능 모델(Llama, ViT 등)의 무료 다운로드 및 테스트 가능</li></ul><h3 id="3bcddb6c-37bb-8046-b1c0-e9764f17c4a6" class="" dir="auto">2. Datasets (데이터셋 저장소)</h3><ul id="3bcddb6c-37bb-8097-92d2-c8e31f7fc915" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>내용:</strong> AI 모델 학습 및 평가에 필요한 텍스트, 이미지, 오디오 등의 다양한 데이터셋 집합소</li></ul><ul id="3bcddb6c-37bb-8031-8085-db7a133a0d38" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징:</strong> 복잡한 데이터 수집 및 전처리 과정을 생략하고, 표준화된 데이터셋을 코드에 즉시 로드 가능</li></ul><table id="3bcddb6c-37bb-8053-bd6e-e775a247a087" class="simple-table" dir="ltr"><tbody><tr id="3bcddb6c-37bb-80dd-a68d-c75c6d333335" dir="ltr"><td id="RcY;" class=""><strong>비교 항목</strong></td><td id="ST~:" class="" style="width:272px"><strong>허깅페이스 데이터셋 (Hugging Face)</strong></td><td id="rbI[" class="" style="width:392px"><strong>캐글 (Kaggle)</strong></td></tr><tr id="3bcddb6c-37bb-804c-b6c5-c115a7ddae36" dir="ltr"><td id="RcY;" class=""><strong>태생 및 핵심 초점</strong></td><td id="ST~:" class="" style="width:272px"><strong>NLP 및 대형 생성형 AI (LLM, 멀티모달)</strong></td><td id="rbI[" class="" style="width:392px"><strong>전통적 머신러닝, Tabular(표) 데이터, 데이터 분석</strong></td></tr><tr id="3bcddb6c-37bb-80e3-9d54-e79d8c7327b5" dir="ltr"><td id="RcY;" class=""><strong>주요 사용자</strong></td><td id="ST~:" class="" style="width:272px">AI 연구원, LLM 엔지니어, 오픈소스 개발자</td><td id="rbI[" class="" style="width:392px">데이터 분석가, 데이터 과학자, 머신러닝 초심자</td></tr><tr id="3bcddb6c-37bb-80e3-94a8-f364c2a18924" dir="ltr"><td id="RcY;" class=""><strong>데이터 포맷</strong></td><td id="ST~:" class="" style="width:272px">스트리밍에 최적화된 Hugging Face <code>datasets</code> 포맷 (Arrow 기반)</td><td id="rbI[" class="" style="width:392px">CSV, JSON, SQLite 등 전통적이고 직관적인 파일 포맷</td></tr><tr id="3bcddb6c-37bb-806c-bb65-c1b2b43b2184" dir="ltr"><td id="RcY;" class=""><strong>핵심 생태계</strong></td><td id="ST~:" class="" style="width:272px">Hugging Face Hub (Models, Spaces, Spaces와 연동)</td><td id="rbI[" class="" style="width:392px">Kaggle Competitions (경진대회), Notebooks (커널 코드)</td></tr></tbody></table><h3 id="3bcddb6c-37bb-8090-a4a4-e60d154bbd22" class="" dir="auto">3. Spaces (AI 웹 데모 공간)</h3><ul id="3bcddb6c-37bb-80f5-96a8-eddf78567415" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>내용:</strong> 파이썬으로 구현한 AI 모델을 웹 페이지 형태로 시각화하여 배포하는 공간</li></ul><ul id="3bcddb6c-37bb-80aa-bda9-c7f887ca8afd" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징:</strong> 별도의 코딩 없이 마우스 클릭만으로 최신 AI 모델의 성능을 직접 체험할 수 있는 환경 제공</li></ul><h3 id="3bcddb6c-37bb-800f-83b5-e027aa388e1f" class="" dir="auto">4. Documentation (문서 및 라이브러리)</h3><ul id="3bcddb6c-37bb-801b-aba5-ccb9fa4d0451" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>내용:</strong> 허깅페이스의 핵심 라이브러리인 <code>transformers</code> 등의 사용법과 API 명세서가 정리된 공간</li></ul><ul id="3bcddb6c-37bb-8019-bd10-c5351d0364ac" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징:</strong> 전 세계 AI 개발자들의 표준 개발 규격이자 실무 중심의 공식 교과서 역할</li></ul><h2 id="3bcddb6c-37bb-8066-a758-eb33fc072372" class="block-color-orange_background" data-notion-highlight="orange_background" dir="auto">💡 딥러닝 학습자 관점의 효용성</h2><ul id="3bcddb6c-37bb-8065-ac3d-d066530c7b41" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>전이 학습(Transfer Learning) 실습 최적화:</strong> 기반 모델을 바탕으로 내 데이터에 맞게 추가 학습시키는 파인튜닝(Fine-tuning)의 원리 이해 및 실전 구현 가능</li></ul><ul id="3bcddb6c-37bb-80fd-a327-d457695c3e6f" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개발자 포트폴리오 구축:</strong> 학생들이 수행한 프로젝트의 모델과 데모(Spaces)를 업로드하여 취업 및 진학을 위한 포트폴리오로 활용 가능</li></ul><ul id="3bcddb6c-37bb-8006-beb3-f5a54cbd7f11" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>글로벌 AI 트렌드 파악:</strong> 실시간 인기 차트(Trending)를 통해 현재 AI 업계에서 가장 주목받는 기술과 모델 확인 가능</li></ul><h4 id="3bcddb6c-37bb-80d4-8c23-fe6c4a3f79b0" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[참고] 실시간 인공지능(AI) 순위</h4><h3 id="3bcddb6c-37bb-8057-ab4e-c7e6ae98d782" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><a href="https://artificialanalysis.ai/">https://artificialanalysis.ai/</a></h3><h1 id="3bcddb6c-37bb-805c-9b32-e7f84fed26f3" class="block-color-orange_background" data-notion-highlight="orange_background" dir="auto">데이터셋 토크나이저로 추론하기</h1><h3 id="3bcddb6c-37bb-8067-825d-e6ba6bb45a2a" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">1. 구글 코랩(Colab) 노트북과 사용자의 구글 드라이브를 연결(마운트)</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><pre id="3bcddb6c-37bb-8083-af3b-f640c2deea07" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">from google.colab import drive
+drive.mount(&#x27;/content/drive&#x27;)</code></pre><h3 id="3bcddb6c-37bb-80fc-a057-ed14d4f015a9" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">2. 자연어 처리에 필요한 필수 패키지 설치</h3><pre id="3bcddb6c-37bb-80a9-8a1c-f3b201438628" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">!pip install transformers
+!pip install datasets
+!pip install accelerate
+!pip install ftfy
+!pip install tensorboard
+!pip install Jinja2</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-80ac-a228-d6286a12db81" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8065-9256-d42434eab304" class="" dir="auto"><code>transformers</code>: Hugging Face의 핵심 라이브러리로, BERT, GPT 같은 최신 AI 모델과 토크나이저를 제공함.</p><p id="3bcddb6c-37bb-80b6-9acc-f77f199820aa" class="" dir="auto"><code>datasets</code>: 대용량 텍스트/AI 데이터셋을 쉽게 로드하고 처리해 주는 도구임.</p><p id="3bcddb6c-37bb-80bb-bfc3-eed57e75ba68" class="" dir="auto"><code>accelerate</code>: PyTorch 모델의 학습 및 하드웨어(GPU/TPU) 최적화를 도움.</p><p id="3bcddb6c-37bb-8052-8c7d-ff859f4ca877" class="" dir="auto"><code>ftfy</code>: 깨진 텍스트(유니코드, 인코딩 오류)를 자동으로 고쳐주는 라이브러리임.</p><p id="3bcddb6c-37bb-8061-a969-e0f0e1df884c" class="" dir="auto"><code>tensorboard</code>: 학습 과정을 시각적인 그래프로 모니터링하는 도구임.</p><p id="3bcddb6c-37bb-809e-b3a0-d68e2a66079f" class="" dir="auto"><code>Jinja2</code>: 파이썬에서 템플릿(문서 양식)을 처리할 때 쓰는 라이브러리임.</p></div></aside><h3 id="3bcddb6c-37bb-80c2-85d9-cacee98ae5ba" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">3. 이미지 생성용 <code>diffusers</code> 라이브러리를 깃허브(GitHub)에서 직접 다운로드</h3><pre id="3bcddb6c-37bb-80fe-ae4c-cf031271d647" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">!pip3 install git+https://github.com/huggingface/diffusers</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8061-8f1a-c464eb0cd0f4" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-800c-85c6-fa61fd34e055" class="" dir="auto"><strong>Diffusers</strong>는 Hugging Face(허깅페이스)에서 개발 및 관리하는 <strong>오픈소스 AI 이미지 생성 라이브러리</strong>. 현재 AI 이미지 및 비디오 생성 분야(특히 Diffusion 모델 분야)에서 사실상의 표준(De-facto standard)으로 자리 잡은 상태.</p><h4 id="3bcddb6c-37bb-8071-9312-d3be5440b27d" class="" dir="auto">🛠️ Diffusers의 핵심 특징</h4><ul id="3bcddb6c-37bb-8028-8b58-fc0eafd9cb1a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>파이프라인(Pipelines) 중심 설계:</strong> 텍스트-이미지 변환(Text-to-Image), 이미지-이미지 변환(Image-to-Image) 등의 복잡한 과정을 단 한 줄의 고수준 API로 실행 가능.</li></ul><ul id="3bcddb6c-37bb-80f6-968b-ed0430f4d241" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>최신 모델 전폭 지원:</strong> Stable Diffusion(v1.5, XL), <strong>FLUX</strong>, <strong>SD3(Stable Diffusion 3)</strong>, ControlNet 등 최신 Diffusion 기반 모델 대부분을 포함.</li></ul><ul id="3bcddb6c-37bb-8055-9835-c4a7ddb23403" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>플러그 앤 플레이(Plug-and-Play) 구조:</strong> 스케줄러(노이즈 제거 알고리즘), UNet, VAE 등의 핵심 컴포넌트를 자유롭게 커스텀 및 조립 가능.</li></ul><ul id="3bcddb6c-37bb-80f6-9994-c2ed7848da33" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>최적화 및 메모리 효율성:</strong> 8-bit 양자화, CPU 오프로딩(Offloading), xformers 연산 지원을 통해 낮은 VRAM 환경에서도 구동 가능.</li></ul></div></aside><h3 id="3bcddb6c-37bb-806a-bfa5-f2489639c122" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">4. 나만의 BPE 토크나이저 학습 및 추론</h3><pre id="3bcddb6c-37bb-800f-a6b0-cb59da216c44" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">from tokenizers import Tokenizer, models, pre_tokenizers, trainers</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-80c2-a490-e7b23f1f1255" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-802b-b816-e0d14f29f6b8" class="" dir="auto">Hugging Face의 고속 토크나이저 제작 라이브러리(<code>tokenizers</code>)에서 토크나이저 뼈대, 알고리즘 모델, 전처리 도구, 학습기(Trainer)를 불러옴.<br/><br/>🛠️ <strong>tokenizers의 핵심 특징</strong></p><ul id="3bcddb6c-37bb-803f-b9dc-c96941810c73" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>압도적인 처리 속도 (Rust 기반):</strong> 파이프라인의 핵심 부분을 <strong>Rust 언어로 구현</strong>. 멀티코어 CPU를 활용한 병렬 처리를 지원하여 CPU 환경에서 수 기가바이트(GB)의 텍스트를 수 초 만에 토큰화 가능.</li></ul><ul id="3bcddb6c-37bb-8028-894f-ff9dc0afe306" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>유연한 파이프라인 구성:</strong> 텍스트 전처리(Normalization)부터 토큰 분할(Pre-tokenization), 모델 적용(Model), 후처리(Post-processing)까지의 전 과정을 사용자가 원하는 대로 커스텀 조립 가능.</li></ul><ul id="3bcddb6c-37bb-8009-bad7-fcac74cd1d1d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>주요 토큰화 알고리즘 완벽 지원:</strong> 현대 NLP에서 표준으로 자리를 잡은 <strong>BPE(Byte-Pair Encoding), WordPiece, Unigram, Word</strong> 알고리즘 모두 탑재.</li></ul><ul id="3bcddb6c-37bb-803b-befa-c7d6d20f005a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>정렬 메쉬(Alignment Tracking) 지원:</strong> 변환된 토큰이 원본 텍스트의 어느 위치(인덱스)에서 왔는지 정확히 추적 가능. 개체명 인식(NER)이나 질의응답(QA) 태스크 구현 시 매우 유용.</li></ul></div></aside><pre id="3bcddb6c-37bb-8079-afa6-e01377c5929a" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">with open(&quot;tokenizer_train.txt&quot;, &quot;r&quot;) as file:
+    dataset = [line.strip() for line in file.readlines()]</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-80b1-bb72-cebd6f57af6d" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8074-b465-f7013d4063c4" class="" dir="auto">파일 읽기/쓰기 작업 후 자동으로 파일을 닫아주는 안전한 <code>with</code> 블록 선언함.<br/>구글 드라이브 에 저장된 토크나이저 학습용 텍스트 파일의 경로 지정 및 읽기 모드(<code>&quot;r&quot;</code>) 설정.<br/>오픈한 파일 객체를 코드 내에서 <code>file</code>이라는 이름의 변수로 할당함.<br/>파일의 모든 줄을 읽어와(<code>readlines()</code>) 각 줄의 양끝 공백 및 줄바꿈 문자를 제거(<code>strip()</code>)한 뒤 문장 리스트(<code>dataset</code>)로 저장하는 리스트 과정임.</p></div></aside><figure id="3bcddb6c-37bb-80f3-bd0a-eeb38d8e1985" dir="ltr"><div class="block-color-teal_background source" data-notion-highlight="teal_background"><a href="tokenizer_train.txt" data-notion-file="tokenizer_train.txt" data-notion-file-alias="tokenizer_train.txt">tokenizer_train.txt</a></div></figure><p id="3bcddb6c-37bb-8051-9527-cc3837263546" class="" dir="auto"><a href="https://drive.google.com/file/d/1NDHh29AMFmYCYwmTTkhrsOp8Qp7HaJlw/view?usp=sharing">https://drive.google.com/file/d/1NDHh29AMFmYCYwmTTkhrsOp8Qp7HaJlw/view?usp=sharing</a>  </p><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8008-baa2-e1941ca392d3" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3bcddb6c-37bb-80e1-afc1-e84ca95e64e9" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>텍스트 데이터 공급원:</strong> 토크나이저 알고리즘(BPE)이 단어를 어떻게 쪼갤지 학습하는 데 필요한 <strong>원본 말뭉치(Corpus) 데이터임</strong>.</li></ul><ul id="3bcddb6c-37bb-8045-a585-e479e37e22a4" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>도메인 특징 반영:</strong> 이 파일 안에 <code>PyTorch</code>, <code>HuggingFace</code>, <code>frameworks</code> 같은 단어들이 자주 등장했기 때문에, 토크나이저 알고리즘은 이 단어들을 중요한 핵심 어휘(Vocabulary)로 인식하게 됨.</li></ul><ul id="3bcddb6c-37bb-8047-acc1-edfc6612904e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>tokenizer_train.txt</code>는 AI 모델용 맞춤형 단어 사전용 &#x27;기초 학습 교재&#x27;의 역할을 함.</li></ul></div></aside><pre id="3bcddb6c-37bb-80e9-903b-eae24a059ec1" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">tokenizer = Tokenizer(models.BPE())</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-808a-b297-ccce646d0c4b" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8052-9060-c9897825853a" class="" dir="auto">자연어 처리에서 가장 널리 쓰이는 하위 단어(Subword) 분할 알고리즘인 <strong>BPE(Byte Pair Encoding)</strong> 기반의 빈 토크나이저 인스턴스를 생성함.</p></div></aside><pre id="3bcddb6c-37bb-80f5-8e36-d9f8e753ac21" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">tokenizer.pre_tokenizer = pre_tokenizers.Whitespace()</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8045-8bc8-fc251db98583" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-80ae-afdb-fa4d97c1aa3f" class="" dir="auto">텍스트를 본격적으로 쪼개기 전에, <strong>공백(띄어쓰기)을 기준으로 1차로 나누는 전처리 규칙</strong>을 설정함.</p></div></aside><pre id="3bcddb6c-37bb-80a0-b502-fb602840da69" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">trainer = trainers.BpeTrainer(special_tokens=[&quot;[UNK]&quot;, &quot;[CLS]&quot;, &quot;[SEP]&quot;, &quot;[PAD]&quot;, &quot;[MASK]&quot;])</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-809a-8b7f-d750774d7a11" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8090-a234-d8e8480e4535" class="" dir="auto">BPE 알고리즘을 훈련시킬 학습기(<code>BpeTrainer</code>)를 만듦. 이때 AI 모델이 문장의 시작, 끝, 패딩 등을 인식할 때 사용할 특수 토큰(Special Tokens)들을 미리 지정해 둠.</p></div></aside><pre id="3bcddb6c-37bb-8081-b6d0-e8544920c201" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">tokenizer.train_from_iterator(dataset, trainer=trainer)</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-801b-8830-c26c4253aa52" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8031-92a8-fd926664759a" class="" dir="auto">파이썬 리스트(<code>dataset</code>) 데이터를 입력값으로 주어, 지정한 규칙대로 <strong>토크나이저를 실제로 학습</strong>시킴. 텍스트 안에서 자주 등장하는 글자 조합을 찾아 단어 사전(Vocabulary)을 구축함.</p></div></aside><pre id="3bcddb6c-37bb-80f7-a89f-e46e2da41be6" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">tokenizer.save(&quot;tokenizer.json&quot;)</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-80b8-9f5d-e5791f2310a9" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8046-b161-f1a7f4db7f4e" class="" dir="auto">학습시킨 토크나이저 규칙과 단어 사전을 구글 드라이브에 <code>tokenizer.json</code> 파일로 저장함.</p></div></aside><pre id="3bcddb6c-37bb-8056-9439-c5bb09f7dbad" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">from transformers import PreTrainedTokenizerFast
+fast_tokenizer = PreTrainedTokenizerFast(tokenizer_file=&quot;tokenizer.json&quot;)
+text = &quot;The Tokenizers&quot;
+encoded = fast_tokenizer.encode(text)
+print(encoded.tokens)</code></pre><figure id="3bcddb6c-37bb-807b-a8a5-dbeaae56c41e" class="image" style="text-align:left" data-notion-image="images/image.png" dir="ltr"><a href="images/image.png"><img style="width:314.9431457519531px" src="images/image.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8088-a7ef-c174479cda08" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8030-a7e2-e048b3e39810" class="" dir="auto">방금 저장한 <code>tokenizer.json</code> 파일을 불러와서, Hugging Face <code>transformers</code> 라이브러리와 호환되는 <strong>고속 버전의 토크나이저 객체</strong>(<code>fast_tokenizer</code>)로 변환함.<br/><code>&quot;The Tokenizers&quot;</code>라는 샘플 문장을 방금 만든 토크나이저를 통해 컴퓨터가 이해할 수 있는 숫자(ID) 배열로 변환(인코딩)함.<br/>인코딩된 결과물에서 숫자가 아닌, 실제로 문장이 어떻게 쪼개졌는지(토큰 목록)를 화면에 출력함.</p></div></aside><h3 id="3bcddb6c-37bb-80bd-8546-d9622ad17882" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">5. 시각화 및 사전 학습된 토크나이저 사용</h3><pre id="3bcddb6c-37bb-80dc-acba-ef4bdd4bb746" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">from tokenizers.tools import EncodingVisualizer
+visualizer = EncodingVisualizer(fast_tokenizer._tokenizer)
+visualizer(text=&quot;The Tokenizers&quot;)</code></pre><figure id="3bcddb6c-37bb-80fe-a8a5-e756f8bf987f" class="image" style="text-align:left" data-notion-image="images/image 1.png" dir="ltr"><a href="images/image 1.png"><img style="width:181.9980926513672px" src="images/image 1.png"/></a></figure><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-806a-b84e-e2302f78b2bd" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-801e-af84-e7971b383c36" class="" dir="auto">텍스트가 토큰으로 어떻게 쪼개지고 인덱싱되는지 <strong>시각적으로 확인</strong>할 수 있는 시각화 도구를 실행함.</p></div></aside><pre id="3bcddb6c-37bb-808c-9c3f-f39c2d4ebcb8" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">from transformers import BertTokenizer
+tokenizer = BertTokenizer.from_pretrained(&quot;bert-base-uncased&quot;)
+print(tokenizer.tokenize(&quot;The tokenizers&quot;))</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-80f1-b5b5-c0e86d28c328" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-80ab-aa4c-e906d0c3e17c" class="" dir="auto"><strong>구글이 만든 모델인 BERT의 공식 사전 학습된 토크나이저(</strong><code><strong>bert-base-uncased</strong></code><strong>)를 인터넷에서 다운로드해 가져옴. </strong><code><strong>&quot;The tokenizers&quot;</strong></code><strong> 문장을 대입해, BERT는 이 문장을 어떻게 쪼개는지 결과를 확인함. BERT-base-uncased는 구글이 개발한 혁신적인 자연어 처리(NLP) 인공지능 모델인BERT(Bidirectional Encoder Representations from Transformers)의 대표적인 기본 모델임.</strong></p><p id="3bcddb6c-37bb-80a3-8594-c69b52b9cdce" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong><a href="https://huggingface.co/google-bert/bert-base-uncased">https://huggingface.co/google-bert/bert-base-uncased</a></strong><strong>  </strong></p><h4 id="3bcddb6c-37bb-8047-bea9-e3d52d3f1cd9" class="" dir="auto">핵심 개념 및 특징</h4><ul id="3bcddb6c-37bb-80ea-9b19-cc2290d64016" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>BERT의 기본형 (Base):</strong> Transformer의 핵심을 담은 구조를 채택함. 총 12개의 레이어(Transformer Blocks), 768차원의 은닉층(Hidden Size), 12개의 어텐션 헤드(Attention Heads)로 구성됨. 총 파라미터 수는 약 1억 1,000만 개(110M)임.</li></ul><ul id="3bcddb6c-37bb-80d8-914c-c32f26ebc914" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>소문자화 (Uncached):</strong> 입력 텍스트의 대소문자를 구분하지 않음. 모델 입력 전 모든 텍스트를 소문자로 변환(Lowercasing)하며, 악센트 기호(예: café -&gt; cafe)를 제거함. 영어 데이터 처리에 매우 효율적임.</li></ul><ul id="3bcddb6c-37bb-801f-bf96-ff6969889ead" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>양방향 문맥 이해 (Bidirectional):</strong> 문장을 왼쪽에서 오른쪽으로만 읽는 기존 모델과 달리, 문장 전체를 양방향에서 동시에 분석함. 단어의 앞뒤 문맥을 모두 고려하므로 동음이의어 파악에 압도적인 성능을 보임.</li></ul><ul id="3bcddb6c-37bb-8082-bd19-ffe9b16f96f9" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>한계점:</strong> 문장 생성(Text Generation) 능력이 떨어지며, 2018년 출시 이후 등장한 대형 언어 모델(LLM)에 비해 맥락 유지 길이(최대 512 토크나이저 제한)가 짧다는 아쉬움이 있음. 최신 AI 연구에서는 가볍고 빠른 임베딩 추출이나 특정 분류기 구축용(Inference 비용 절감 목적)으로 여전히 현업에서 애용됨.</li></ul><h4 id="3bcddb6c-37bb-80ec-9fdb-dedf28a89dfb" class="" dir="auto">주요 학습 방법 (Pre-training)</h4><p id="3bcddb6c-37bb-8054-a7aa-dbaa37d9a8af" class="" dir="auto">방대한 웹코퍼스(BookCorpus, Wikipedia 등 총 33억 단어)를 활용해 다음 두 가지 자기지도학습(Self-supervised Learning)을 수행함.</p><ul id="3bcddb6c-37bb-804f-afcf-dab2feac6ac5" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>마스크 언어 모델 (MLM, Masked Language Model):</strong> 문장 내 무작위로 15%의 단어를 <code>[MASK]</code>로 가린 뒤, 주변 문맥만을 보고 가려진 단어를 예측하도록 학습함.</li></ul><ul id="3bcddb6c-37bb-800d-aeaf-c981769815ca" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>다음 문장 예측 (NSP, Next Sentence Prediction):</strong> 두 문장을 연달아 주고, 두 번째 문장이 첫 번째 문장 바로 뒤에 이어지는 문장인지 여부(<code>IsNext</code> 또는 <code>NotNext</code>)를 이진 분류로 예측하며 문장 간의 관계를 학습함.</li></ul></div></aside><pre id="3bcddb6c-37bb-8011-8738-d0fc3582c5ed" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">!pip install --upgrade datasets huggingface_hub
+!pip install -U &quot;datasets&gt;=2.18.0&quot; &quot;huggingface_hub&gt;=0.24.0&quot; transformers</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-801e-8986-d66b9db445c6" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8073-b89b-c5dcf3b3aa89" class="" dir="auto">최신 데이터셋 기능과 허브 기능을 사용하기 위해 관련 라이브러리 버전을 최신으로 업그레이드(<code>--upgrade</code>, <code>-U</code>)함.</p><p id="3bcddb6c-37bb-80e2-ab79-f45cb6414e44" class="" dir="auto"><strong>주요 옵션:</strong></p><ul id="3bcddb6c-37bb-8046-be7d-e808c6903354" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>U</code>: 첫 번째 셀의 <code>-upgrade</code>와 동일한 역할을 하는 축약형 옵션임.</li></ul><ul id="3bcddb6c-37bb-8060-a041-c8ba4345c92e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>&quot;&gt;=2.18.0&quot;</code>, <code>&quot;&gt;=0.24.0&quot;</code>: 각각 <code>datasets</code> 패키지는 2.18.0 버전 이상, <code>huggingface_hub</code> 패키지는 0.24.0 버전 이상으로 설치하도록 버전을 제한함. </li></ul><ul id="3bcddb6c-37bb-806b-87ae-d5fbacaa94e1" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>transformers</code>: 자연어 처리 모델(BERT, GPT 등)을 로드하고 파인튜닝할 수 있는 핵심 메인 라이브러리를 추가로 설치함.</li></ul></div></aside><pre id="3bcddb6c-37bb-8034-838b-f4274db4b954" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">from datasets import load_dataset
+from transformers import AutoTokenizer
+
+imdb_dataset = load_dataset(&quot;stanfordnlp/imdb&quot;)
+print(imdb_dataset)
+model_name = &quot;distilbert-base-uncased-finetuned-sst-2-english&quot;
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+sample_text = imdb_dataset[&quot;test&quot;][0][&quot;text&quot;]
+print(sample_text)</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8020-981e-c86a01347ad8" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-80a5-9937-dc3e49c8ef24" class="" dir="auto">영화 리뷰 분석으로 유명한 <strong>IMDb 감성 분석 데이터셋</strong>을 Hugging Face 허브에서 인터넷을 통해 자동으로 다운로드하여 로드하고, 데이터셋의 대략적인 구조(Train/Test 개수 등)를 출력함. 감성 분석용으로 이미 튜닝된 가벼운 BERT 모델(<code>DistilBERT</code>)의 이름을 지정하고, <code>AutoTokenizer</code>를 통해 <strong>그 모델 전용 토크나이저를 자동으로 찾아서 가져옴.<br/></strong><a href="https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english">https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english</a> </p></div></aside><p id="3bcddb6c-37bb-8039-a29d-e118216e3b3c" class="" dir="auto">I love sci-fi and am willing to put up with a lot. Sci-fi movies/TV are usually underfunded, under-appreciated and misunderstood. I tried to like this, I really did, but it is to good TV sci-fi as Babylon 5 is to Star Trek (the original). Silly prosthetics, cheap cardboard sets, stilted dialogues, CG that doesn&#x27;t match the background, and painfully one-dimensional characters cannot be overcome with a &#x27;sci-fi&#x27; setting. (I&#x27;m sure there are those of you out there who think Babylon 5 is good sci-fi TV. It&#x27;s not. It&#x27;s clichéd and uninspiring.) While US viewers might like emotion and character development, sci-fi is a genre that does not take itself seriously (cf. Star Trek). It may treat important issues, yet not as a serious philosophy. It&#x27;s really difficult to care about the characters here as they are not simply foolish, just missing a spark of life. Their actions and reactions are wooden and predictable, often painful to watch. The makers of Earth KNOW it&#x27;s rubbish as they have to always say &quot;Gene Roddenberry&#x27;s Earth...&quot; otherwise people would not continue watching. Roddenberry&#x27;s ashes must be turning in their orbit as this dull, cheap, poorly edited (watching it without advert breaks really brings this home) trudging Trabant of a show lumbers into space. Spoiler. So, kill off a main character. And then bring him back as another actor. Jeeez! Dallas all over again.</p><p id="3bcddb6c-37bb-80fb-b0f4-cf78a688d9b6" class="" dir="auto">나는 SF 장르를 사랑하며 많은 것을 감수할 용의가 있다. SF 영화나 TV 프로그램은 대개 제작비가 부족하고, 저평가되며, 오해를 받곤 한다. 나는 이 작품을 좋아하려고 정말, 정말 노력했다. 하지만 이 작품과 훌륭한 TV SF물의 관계는 마치 &#x27;바빌론 5(Babylon 5)&#x27;와 &#x27;스타 트렉(오리지널)&#x27;의 관계와 같다. 유치한 분장, 싸구려 판판한 세트장, 어색한 대사, 배경과 따로 노는 CG, 그리고 고통스러울 정도로 평면적인 캐릭터들은 &#x27;SF&#x27;라는 배경만으로는 극복할 수 없다. (여러분 중에는 바빌론 5가 훌륭한 TV SF물이라고 생각하는 분들이 분명 계실 것이다. 하지만 그렇지 않다. 진부하고 감흥도 없다.) 미국 시청자들은 감정 교류나 캐릭터의 성장을 좋아할지 모르겠지만, SF는 스스로를 너무 진지하게 다루지 않는 장르다(스타 트렉처럼 말이다). 중요한 주제를 다룰 수는 있어도, 이를 진지한 철학처럼 다루지는 않는다. 이 작품의 캐릭터들은 단순히 어리석은 게 아니라 생기 자체가 없어서 몰입하기가 정말 어렵다. 캐릭터들의 행동과 반응은 뻣뻣하고 뻔해서 보는 것 자체가 고통스러울 때가 많다. &#x27;어스(Earth)&#x27;의 제작진도 이 작품이 쓰레기라는 걸 알고 있다. 그러니까 사람들이 계속 시청하게 만들려고 항상 &quot;진 로든버리(Gene Roddenberry)의 어스...&quot;라고 강조하는 것이다. 진 로든버리의 유골이 궤도에서 돌다가도 벌떡 일어날 판이다. 이 지루하고, 싸구려 같고, 편집도 엉망인(광고 시간 없이 연달아 보면 이 점이 정말 뼈저리게 느껴진다) 트라반트(구동독의 삼류 자동차) 같은 드라마가 우주를 향해 무겁게 발걸음을 옮기고 있으니 말이다. 스포일러. 그러니까, 주요 캐릭터를 죽여 놓고는 다른 배우를 써서 다시 살려낸다고? 제발! 드라마 &#x27;달라스(Dallas)&#x27;의 재림이다.</p><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-803e-ae37-fb5777992520" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-80b3-8942-e845762e0a2a" class="" dir="auto">다운로드한 IMDb 데이터셋의 <strong>테스트 데이터(</strong><code><strong>test</strong></code><strong>) 중 가장 첫 번째(0번) 데이터의 실제 텍스트 내용</strong>을 추출해서 화면에 보여줌.</p></div></aside><h3 id="3bcddb6c-37bb-80bf-868f-f05b4ee1c816" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">6. 파이프라인 활용 감성 분석</h3><p id="3bcddb6c-37bb-803c-95e4-fd104392a739" class="" dir="auto">사전 학습된 인공지능 모델을 가져와 실제 데이터의 긍정/부정을 판단(추론)하고, 데이터셋을 딥러닝 프레임워크(PyTorch) 형식으로 가공함.</p><pre id="3bcddb6c-37bb-80d0-9123-f36d6912e1b4" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">from transformers import AutoModelForSequenceClassification, pipeline
+model = AutoModelForSequenceClassification.from_pretrained(model_name)</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8003-bd8c-e9148b9b6ece" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-80eb-9ac1-d6eb73a83a25" class="" dir="auto">텍스트 분류(긍정/부정) 목적에 맞게 만들어진 DistilBERT 모델의 실제 신경망 가중치(Weight)를 다운로드하여 로드함.</p><h4 id="3bcddb6c-37bb-8084-ab0a-d025ccafddf9" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><a href="https://huggingface.co/arindamatcalgm/w266_model4_BERT_AutoModelForSequenceClassification">https://huggingface.co/arindamatcalgm/w266_model4_BERT_AutoModelForSequenceClassification</a> </h4></div></aside><pre id="3bcddb6c-37bb-80af-b0a7-da2c0f19f346" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">sentiment_analysis_pipeline = pipeline(&quot;sentiment-analysis&quot;, model=model, tokenizer=tokenizer)</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8098-ba50-c519fb6155ff" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8038-9f35-f024a29c2015" class="" dir="auto">Hugging Face의 가장 편리한 도구인 파이프라인(pipeline)을 생성함. 분석 종류(<code>&quot;sentiment-analysis&quot;</code>), 적용할 모델, 그리고 세트로 사용할 토크나이저를 넣어주면 <strong>[텍스트 입력 ➔ 토큰화 ➔ 모델 계산 ➔ 결과 해석]</strong> 과정이 한 번에 묶임. 자연어 처리(NLP) 모델을 다룰 때 필수적인 <strong>4단계의 복잡한 프로세스를 단 한 줄의 코드로 통합</strong>해주기 때문에 매우 편리한 것임.<br/>• <strong>기존 방식:</strong> 텍스트 입력 → 토크나이저 로드 및 토큰화 → 모델 입력 형식 변환 → 모델 추론(Inference) → 로짓(Logits) 결과 해석(Argmax 등) 및 텍스트 매핑 등의 과정을 개발자가 일일이 코드로 구현해야 함.<br/>• <strong>파이프라인 방식:</strong> <code>[텍스트 입력 ➔ 토큰화 ➔ 모델 계산 ➔ 결과 해석]</code> 과정이 내부적으로 자동 연계되어 수행됨.</p></div></aside><pre id="3bcddb6c-37bb-803e-8111-d7937ad1eb11" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">result = sentiment_analysis_pipeline(sample_text)
+print(&quot;Sample Text:&quot;, sample_text)
+print(&quot;Sentiment Analysis Result:&quot;, result)</code></pre><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-8018-b164-c4935c5339a8" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-8019-a86f-d3e04f2dc396" class="" dir="auto">앞서 추출했던 IMDb 테스트 0번 문장을 파이프라인에 통과시켜 <strong>이 리뷰가 긍정(POSITIVE)인지 부정(NEGATIVE)인지 AI가 판단하도록</strong> 명령함.</p></div></aside><p id="3bcddb6c-37bb-8082-abea-fc693576cdd2" class="" dir="auto">Sentiment Analysis Result: [{&#x27;label&#x27;: &#x27;NEGATIVE&#x27;, &#x27;score&#x27;: 0.999616265296936}]</p><p id="3bcddb6c-37bb-8008-b245-d03f644ae9c8" class="" dir="auto"><strong>감성 분석 결과:</strong><code>[{&#x27;label&#x27;: &#x27;부정적(NEGATIVE)&#x27;, &#x27;score&#x27;: 0.999616265296936}]<br/>             </code><code><strong> 이 글은 99.96% 확률로 확실한 부정적 리뷰다</strong></code></p><aside class="block-color-gray_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="gray_background" style="white-space:pre-wrap;display:flex" id="3bcddb6c-37bb-807f-b858-f546d44b3a80" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3bcddb6c-37bb-803f-9c1c-d954ceb07a96" class="" dir="auto">원본 영화 리뷰 텍스트와 AI가 예측한 감성 분석 결과(라벨 및 확신도 점수)를 보기 좋게 출력함.</p></div></aside><h1 id="3bcddb6c-37bb-8024-9a8f-ee6ad7d0285b" class="block-color-orange_background" data-notion-highlight="orange_background" dir="auto">[추가 실습] 본인의 리뷰에 대한 감성 척도 확인</h1><h3 id="3bcddb6c-37bb-8073-88aa-f051f3fdba39" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">외국영화 / 영어 감상평 / distilbert-base-uncased-finetuned-sst-2-english 모델</h3><pre id="3bcddb6c-37bb-8014-b6ba-e9bb7b91eed3" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all"># 라이브러리 및 시각화 도구 불러오기
+from transformers import pipeline
+import matplotlib.pyplot as plt
+
+# 감성 분석 파이프라인 로드 (SST-2 데이터셋으로 학습된 DistilBERT 활용)
+# 가장 가볍고 정확한 모델 지정
+model_name = &quot;distilbert-base-uncased-finetuned-sst-2-english&quot;
+classifier = pipeline(&quot;sentiment-analysis&quot;, model=model_name)
+
+# 분석하고 싶은 영화 리뷰 영어로 직접 수정 입력
+movie_title = &quot;Michael&quot;
+my_review = &quot;Jaafar Jackson&#x27;s performance is incredibly spot-on. It feels like watching the King of Pop himself on stage.&quot;
+
+# AI 모델로 감성 분석 수행
+outputs = classifier(my_review)
+result = outputs[0]
+
+# 5. 결과 가공 및 감성 척도(Sentiment Scale) 계산
+# AI는 0~1 사이의 확률(Score)을 주고 이를 0~100% 척도로 변환함.
+label = result[&#x27;label&#x27;]
+confidence = result[&#x27;score&#x27;] * 100
+
+# 최종 감성 점수(Scale): 부정이면 마이너스(-), 긍정이면 플러스(+) 점수 부여
+# -100(극단적 부정) ~ 0(중립) ~ +100(극단적 긍정) 척도 생성
+if label == &quot;NEGATIVE&quot;:
+    sentiment_scale_score = -confidence
+else:
+    sentiment_scale_score = confidence
+
+# 결과 출력
+print(f&quot;[영화 제목]: {movie_title}&quot;)
+print(f&quot;[선택한 리뷰]: {my_review}&quot;)
+print(&quot;-&quot; * 50)
+print(f&quot;[AI 분석 결과]: 이 리뷰는 {confidence:.2f}%의 확률로 [{label}] 입니다.&quot;)
+print(f&quot;[정량적 감성 점수]: {sentiment_scale_score:.2f}점 (-100점 ~ +100점 범위)&quot;)
+print(&quot;-&quot; * 50)
+
+# 감성 척도 시각화
+plt.figure(figsize=(8, 2))
+# 감성 점수에 따라 색상 변경 (긍정은 하늘색, 부정은 코랄색)
+bar_color = &#x27;#4ea8de&#x27; if sentiment_scale_score &gt; 0 else &#x27;#e63946&#x27;
+
+# 가로 막대 그래프 그리기
+plt.barh([&#x27;Sentiment Scale&#x27;], [sentiment_scale_score], color=bar_color, height=0.5)
+plt.axvline(x=0, color=&#x27;black&#x27;, linewidth=1.5, linestyle=&#x27;--&#x27;) # 중립 기준선(0점)
+
+# 그래프 서식 설정
+plt.xlim(-100, 100)
+plt.xlabel(&#x27;Negative (-100)  &lt;---------  Neutral (0)  ---------&gt;  Positive (100)&#x27;)
+plt.title(f&quot;AI Sentiment Analysis Scale for &#x27;{movie_title}&#x27;&quot;)
+plt.grid(axis=&#x27;x&#x27;, linestyle=&#x27;:&#x27;, alpha=0.6)
+
+# 그래프 화면 표시
+plt.tight_layout()
+plt.show()</code></pre><h3 id="3bcddb6c-37bb-80ff-8496-de5f6042fccc" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">한국영화 / 한국어 감상평 / WhitePeak/bert-base-cased-Korean-sentiment 모델</h3><figure id="3bcddb6c-37bb-80d2-add8-dac48c197dbf" dir="ltr"><div class="source"><a href="NanumGothic.ttf" data-notion-file="NanumGothic.ttf" data-notion-file-alias="NanumGothic.ttf">NanumGothic.ttf</a></div></figure><p id="3bcddb6c-37bb-8058-a7be-d899bb92afee" class="" dir="auto"><a href="https://drive.google.com/file/d/1jYmxGmCzhreqP2NYy4niFsZ2tNts0t67/view?usp=sharing">https://drive.google.com/file/d/1jYmxGmCzhreqP2NYy4niFsZ2tNts0t67/view?usp=sharing</a>  </p><pre id="3bcddb6c-37bb-8044-b00a-dae966de585f" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all"># 한글 폰트 설치 및 환경 설정
+# 나눔 폰트 패키지 설치
+!sudo apt-get install -y fonts-nanum
+!fc-cache -fv
+
+# matplotlib 시스템 폰트 매니저 동기화 코드
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import os
+
+font_path = &#x27;NanumGothic.ttf&#x27;
+fm.fontManager.addfont(font_path)
+plt.rc(&#x27;font&#x27;, family=&#x27;NanumGothic&#x27;)
+
+# 마이너스 기호 깨짐 방지
+plt.rcParams[&#x27;axes.unicode_minus&#x27;] = False
+
+# 필요한 라이브러리 임포트
+from transformers import pipeline
+
+# 한국어 감성 분석에 특화된 사전 학습 모델 불러오기
+# 한국어 리뷰 데이터를 학습한 다국어 BERT 기반 모델 지정
+ko_model_name = &quot;WhitePeak/bert-base-cased-Korean-sentiment&quot;
+ko_classifier = pipeline(&quot;sentiment-analysis&quot;, model=ko_model_name)
+
+# 분석하고 싶은 한국 영화 비평 입력하기
+korean_movie = &quot;파묘&quot;
+korean_review = &quot;초반부 몰입감은 역대급이었는데, 후반부 전개가 살짝 아쉽지만 배우들의 연기력이 모든 걸 커버함!&quot;
+
+# 한글 감성 분석 수행
+outputs = ko_classifier(korean_review)
+result = outputs[0]
+
+# 결과 매핑 및 척도 계산
+# 해당 모델의 출력 형식(LABEL_1 = 긍정, LABEL_0 = 부정)에 맞춰 변환
+raw_label = result[&#x27;label&#x27;]
+confidence = result[&#x27;score&#x27;] * 100
+
+if raw_label == &quot;LABEL_1&quot; or raw_label == &quot;POSITIVE&quot;:
+    clean_label = &quot;긍정 (Positive)&quot;
+    sentiment_scale_score = confidence
+else:
+    clean_label = &quot;부정 (Negative)&quot;
+    sentiment_scale_score = -confidence
+
+# 텍스트 결과 출력
+print(f&quot;[영화 제목]: {korean_movie}&quot;)
+print(f&quot;[선택한 비평]: {korean_review}&quot;)
+print(&quot;-&quot; * 50)
+print(f&quot;[AI 분석 결과]: 이 비평은 {confidence:.2f}%의 확률로 [{clean_label}] 데이터임.&quot;)
+print(f&quot;[정량적 감성 점수]: {sentiment_scale_score:.2f}점 (-100점 ~ +100점 범위)&quot;)
+print(&quot;-&quot; * 50)
+
+# 한글 감성 척도 가로 막대 그래프 시각화
+plt.figure(figsize=(8, 2))
+bar_color = &#x27;#2a9d8f&#x27; if sentiment_scale_score &gt; 0 else &#x27;#e76f51&#x27; # 긍정은 청록, 부정은 주황
+
+plt.barh([&#x27;감성 척도 (Sentiment)&#x27;], [sentiment_scale_score], color=bar_color, height=0.5)
+plt.axvline(x=0, color=&#x27;black&#x27;, linewidth=1.5, linestyle=&#x27;--&#x27;) # 0점 기준선
+
+plt.xlim(-100, 100)
+plt.xlabel(&#x27;강한 부정 (-100)      &lt;---------      중립 (0)      ---------&gt;      강한 긍정 (100)&#x27;)
+plt.title(f&quot;영화 &#x27;{korean_movie}&#x27; 비평에 대한 AI 감성 분석 결과&quot;)
+plt.grid(axis=&#x27;x&#x27;, linestyle=&#x27;:&#x27;, alpha=0.6)
+
+plt.tight_layout()
+plt.show()</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

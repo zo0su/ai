@@ -1,0 +1,914 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[17차시] 손으로 쓴 숫자 분류_MNIST</title><meta name="data-notion-page-icon" content="✍🏻"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%E2%9C%8D%F0%9F%8F%BB%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><style>
+  html, body { background: #fff; }
+  body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 0 24px 80px;
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    color: rgb(55, 53, 47);
+  }
+  .page-cover-image {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-left: -24px;
+    display: block;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .page-header-icon { font-size: 78px; line-height: 1; margin-top: -42px; position: relative; }
+  .simple-table { width: 100%; }
+  .simple-table td, .simple-table th { min-width: 0; }
+  pre, code { font-family: Consolas, "Malgun Gothic", monospace; }
+  @media (max-width: 720px) {
+    .column-list { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head><body><nav style="margin:16px 0;font-family:Malgun Gothic,sans-serif"><a href="../" style="color:rgb(55,53,47)">수업 목록</a></nav><article id="3bcddb6c-37bb-8096-b1c9-f37f08263422" class="page sans" data-notion-page-icon="✍🏻"><header><img class="page-cover-image" src="images/cover.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="✍🏻"></span></div><h1 class="page-title" dir="auto">[17차시] 손으로 쓴 숫자 분류_MNIST</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><h1 id="3e3ddb6c-37bb-80af-8106-f2403a91ad5a" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">학습 목표</h1><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e3ddb6c-37bb-80fd-842d-ccf013e23e98" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h3 id="3e3ddb6c-37bb-80d5-bda2-de3288fc0327" class="" dir="auto">1. 지식 (Knowledge)</h3><ul id="3e3ddb6c-37bb-80c6-a88c-fc963be755ec" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>컴퓨터 비전(CV) 기초 원리 이해</strong><ul id="3e3ddb6c-37bb-80bb-8726-f003e58756d5" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이미지 이진화(Thresholding) 및 색상 공간 변환(BGR-RGB, Gray)의 필요성과 작동 방식을 설명할 수 있다.</li></ul></li></ul><ul id="3e3ddb6c-37bb-80b5-9368-fa34f843745b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>데이터 전처리(Preprocessing)의 중요성 파악</strong><ul id="3e3ddb6c-37bb-805a-b7f7-ff1975392cdd" class="bulleted-list" dir="auto"><li style="list-style-type:circle">머신러닝/딥러닝 모델(MNIST)에 데이터를 입력하기 전, 크기 맞춤(Resize) 및 여백 채우기(Padding) 등의 정제 과정이 필요한 이유를 명확히 이해한다.</li></ul></li></ul><h3 id="3e3ddb6c-37bb-80ae-9451-e884a85f2a6c" class="" dir="auto">2. 기술 (Skill)</h3><ul id="3e3ddb6c-37bb-802c-a483-db45709ef68a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>OpenCV 및 Python 라이브러리 활용</strong><ul id="3e3ddb6c-37bb-8039-beab-e85c9777357b" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><code>cv2</code>, <code>numpy</code>, <code>matplotlib</code> 라이브러리를 활용하여 이미지를 불러오고, 처리하고, 시각화하는 코드를 구현할 수 있다.</li></ul></li></ul><ul id="3e3ddb6c-37bb-808e-a038-e06103e08f9d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>객체 검출 및 윤곽선(Contour) 추출</strong><ul id="3e3ddb6c-37bb-80f7-9c76-d4f46458add9" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이미지 내 개별 객체(숫자)의 위치(Bounding Box)를 알고리즘 기반으로 탐지하고 정렬할 수 있다.</li></ul></li></ul></div></aside><figure id="3e3ddb6c-37bb-800d-9fac-cd4803017039" class="image" data-notion-image="images/image.png" dir="ltr"><a href="images/image.png"><img style="width:703.984375px" src="images/image.png"/></a></figure><h1 id="3e2ddb6c-37bb-805f-81f6-d91bb09a558d" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">인공지능 학습의 표준 벤치마크</h1><h2 id="3e2ddb6c-37bb-80f4-bd5a-fab22afef0b0" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">MNIST, CIFAR10, IMDB</h2><h3 id="3e2ddb6c-37bb-80f3-ac4d-d1183240d59d" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>1. MNIST (</strong><mark class="highlight-red" data-notion-highlight="red"><strong>M</strong></mark><strong>odified </strong><mark class="highlight-red" data-notion-highlight="red"><strong>N</strong></mark><strong>ational </strong><mark class="highlight-red" data-notion-highlight="red"><strong>I</strong></mark><strong>nstitute of </strong><mark class="highlight-red" data-notion-highlight="red"><strong>S</strong></mark><strong>tandards and </strong><mark class="highlight-red" data-notion-highlight="red"><strong>T</strong></mark><strong>echnology)</strong></h3><ul id="3e2ddb6c-37bb-80d6-861b-eed82c657ca1" class="bulleted-list" dir="auto"><li style="list-style-type:disc">딥러닝의 &#x27;Hello World&#x27;라 불리는 가장 기초적인 손글씨 숫자 데이터셋</li></ul><ul id="3e2ddb6c-37bb-8028-8002-fd539f6abff2" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>구성 성분:</strong> 0부터 9까지의 숫자로 된 <strong>70,000개</strong>의 흑백 이미지(학습용 60,000개, 테스트용 10,000개)</li></ul><ul id="3e2ddb6c-37bb-8078-8cb8-e81c940d8fe6" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>이미지 규격:</strong> 28 * 28 픽셀의 흑백(Grayscale) 데이터</li></ul><ul id="3e2ddb6c-37bb-806f-befb-e517551e1469" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>주요 용도:</strong> 이미지 분류 알고리즘의 기초 성능 검증 및 신경망 모델의 초기 학습용</li></ul><ul id="3e2ddb6c-37bb-802f-8baa-d87b5c9dcc34" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징:</strong> 배경과 글자 간의 대비가 뚜렷하며, 데이터 크기가 작아 연산 비용이 매우 낮음.</li></ul><div id="3e3ddb6c-37bb-802e-b696-e273722ce2b1" class="column-list" data-notion-column-list="" dir="auto"><div id="3e3ddb6c-37bb-800c-b21c-e0b995cfa335" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="3e2ddb6c-37bb-8055-821f-d25bd7a3c823" class="image" style="text-align:left" data-notion-image="images/image 1.png" dir="ltr"><a href="images/image 1.png"><img style="width:336px" src="images/image 1.png"/></a></figure></div><div id="3e3ddb6c-37bb-80d9-b1ca-fe4935a7babe" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="3e3ddb6c-37bb-8051-b85f-c894bd625144" class="image" data-notion-image="images/image 2.png" dir="ltr"><a href="images/image 2.png"><img style="width:384px" src="images/image 2.png"/></a></figure></div></div><h3 id="3e2ddb6c-37bb-8071-b612-d9afa08406ff" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>2. CIFAR-10 (Canadian Institute For Advanced Research)</strong></h3><ul id="3e2ddb6c-37bb-8029-bcb0-e9e5e7b20eae" class="bulleted-list" dir="auto"><li style="list-style-type:disc">사물 인식을 위한 대표적인 소형 컬러 이미지 데이터셋</li></ul><ul id="3e2ddb6c-37bb-80fa-b452-d43ea8cd9a81" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>구성 성분:</strong> 10개 클래스(비행기, 자동차, 새, 고양이, 사슴, 개, 개구리, 말, 배, 트럭)당 6,000개씩 총 <strong>60,000개</strong>의 컬러 이미지.</li></ul><ul id="3e2ddb6c-37bb-805a-9494-dd4f2b312e39" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>이미지 규격:</strong> 32 * 32 픽셀의 RGB 3채널 데이터</li></ul><ul id="3e2ddb6c-37bb-800c-b85b-e0edbe67d739" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>주요 용도:</strong> 합성곱 신경망(CNN) 성능 평가 및 사물 분류 알고리즘 연구</li></ul><ul id="3e2ddb6c-37bb-8032-a4c7-f31e60a02960" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징:</strong> 배경과 사물이 섞여 있어 MNIST보다 훨씬 높은 수준의 인지 능력을 요구함.</li></ul><ul id="3e2ddb6c-37bb-80e5-828b-fd35e607a1bc" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>파생 버전:</strong> 100개의 세부 클래스로 구성된 <strong>CIFAR-100</strong> 데이터셋도 존재함.</li></ul><figure id="3e2ddb6c-37bb-8049-8831-c13304ba3e9f" class="image" style="text-align:left" data-notion-image="images/image 3.png" dir="ltr"><a href="images/image 3.png"><img style="width:432px" src="images/image 3.png"/></a></figure><h3 id="3e2ddb6c-37bb-8010-b6d9-d2ee7a700a93" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto"><strong>3. IMDB (Internet Movie Database)</strong></h3><ul id="3e2ddb6c-37bb-804a-bb9a-e49a9b8e6444" class="bulleted-list" dir="auto"><li style="list-style-type:disc">자연어 처리(NLP) 및 텍스트 감성 분석의 표준 데이터셋</li></ul><ul id="3e2ddb6c-37bb-80d2-a8d9-ee917accbeab" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>구성 성분:</strong> 영화 리뷰 사이트에서 수집된 <strong>50,000개</strong>의 영어 텍스트 리뷰</li></ul><ul id="3e2ddb6c-37bb-8080-8b3c-ec107dd6ac4e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>데이터 분류:</strong> 긍정(Positive)과 부정(Negative)의 이진 분류(Binary Classification) 라벨링</li></ul><ul id="3e2ddb6c-37bb-80d0-94f3-d3e2ce5c8b1d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>주요 용도:</strong> 감성 분석(Sentiment Analysis), 텍스트 분류 모델 학습, 언어 모델링 테스트</li></ul><ul id="3e2ddb6c-37bb-80b3-b9e9-ed89d20c66ee" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징:</strong> 구어체 표현과 복잡한 문장 구조로 텍스트 전처리 및 의미 파악 능력을 평가하기에 적합함.</li></ul><figure id="3e3ddb6c-37bb-8037-afe0-dac2f0887467" class="image" data-notion-image="images/60ce770a-8620-4888-8b07-871e6581f75d.png" dir="ltr"><a href="images/60ce770a-8620-4888-8b07-871e6581f75d.png"><img style="width:720px" src="images/60ce770a-8620-4888-8b07-871e6581f75d.png"/></a></figure><figure id="3e4ddb6c-37bb-8063-9533-cb252a26578d" class="image" data-notion-image="images/51941f92-3f43-49d1-9ca6-291bfa529609.png" dir="ltr"><a href="images/51941f92-3f43-49d1-9ca6-291bfa529609.png"><img style="width:353.9437896645512px" src="images/51941f92-3f43-49d1-9ca6-291bfa529609.png"/></a></figure><figure id="3e3ddb6c-37bb-8049-802b-d372c67547ea" class="image" data-notion-image="images/13150c5f-7454-4822-afa7-ca2c33617665.png" dir="ltr"><a href="images/13150c5f-7454-4822-afa7-ca2c33617665.png"><img style="width:720px" src="images/13150c5f-7454-4822-afa7-ca2c33617665.png"/></a></figure><div id="3e3ddb6c-37bb-801e-8ab5-fd88f4861f4a" class="column-list" data-notion-column-list="" dir="auto"><div id="3e3ddb6c-37bb-80c9-b5e7-f9590715f894" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="3e3ddb6c-37bb-8052-b0f4-cf6ef8db0ff6" class="image" data-notion-image="images/1.png" dir="ltr"><a href="images/1.png"><img style="width:432px" src="images/1.png"/></a></figure></div><div id="3e3ddb6c-37bb-80cd-bc71-e88349ca690c" style="width:50%" class="column" data-notion-column-ratio="0.5" dir="auto"><figure id="3e3ddb6c-37bb-803e-83d2-e62a371b7f99" class="image" data-notion-image="images/image 4.png" dir="ltr"><a href="images/image 4.png"><img style="width:704px" src="images/image 4.png"/></a></figure></div></div><figure id="3e3ddb6c-37bb-8047-8be4-fe84c9c72e4d" class="image" data-notion-image="images/3754e822-a4a7-44d2-9c48-469a03687df4.png" dir="ltr"><a href="images/3754e822-a4a7-44d2-9c48-469a03687df4.png"><img style="width:720px" src="images/3754e822-a4a7-44d2-9c48-469a03687df4.png"/></a></figure><figure id="3e3ddb6c-37bb-80de-a218-ebc047ea28a2" class="image" data-notion-image="images/image 5.png" dir="ltr"><a href="images/image 5.png"><img style="width:703.984375px" src="images/image 5.png"/></a></figure><figure id="3e3ddb6c-37bb-8034-8321-e1b8029db936" class="image" data-notion-image="images/32c88c1a-c825-4d2e-a47e-500cb65b3562.png" dir="ltr"><a href="images/32c88c1a-c825-4d2e-a47e-500cb65b3562.png"><img style="width:536.2292609351433px" src="images/32c88c1a-c825-4d2e-a47e-500cb65b3562.png"/></a></figure><h3 id="3ecddb6c-37bb-80f5-9115-d230e3905930" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">분류 (Classification) 문제용 손실 함수</h3><h4 id="3ecddb6c-37bb-8027-ad90-e32e72d96da5" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">① Categorical Crossentropy (<code>categorical_crossentropy</code>)</h4><ul id="3ecddb6c-37bb-806f-913a-d5f9f888ee2d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개념</strong>: 다중 클래스 분류 문제에서 타깃 라벨이 <strong>원-핫 인코딩(One-Hot Encoding)</strong> 형태로 되어 있을 때 사용함. (예: <code>[0, 1, 0]</code>)</li></ul><ul id="3ecddb6c-37bb-80bb-b3e3-fab7ae3a20f7" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징</strong>: <code>sparse_categorical_crossentropy</code>와 기능 및 수학적 계산 방식은 동일하지만, 입력 라벨 형태의 차이만 존재함.</li></ul><ul id="3ecddb6c-37bb-8071-93e5-d1ee5315edfb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>수식</strong>: <span data-notion-inline-equation="L = -\sum_{i} y_i \log(\hat{y}_i)" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0497em;vertical-align:-0.2997em;"></span><span class="mord">−</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.162em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></li></ul><h4 id="3ecddb6c-37bb-8047-8eae-cac6fb9f8d25" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">② Binary Crossentropy (<code>binary_crossentropy</code>)</h4><ul id="3ecddb6c-37bb-8088-af89-c4386af5a0a7" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개념</strong>: <strong>이진 분류(Binary Classification)</strong> 문제(예: Pass/Fail, 스팸/정상)에 사용됨.</li></ul><ul id="3ecddb6c-37bb-80e9-9b65-dcdfbc25d050" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징</strong>: 출력층 활성화 함수로 주로 <strong>Sigmoid</strong>를 사용하며, 모델의 예측값(0~1 사이 확률)이 실제 클래스(0 또는 1)와 얼마나 가까운지 측정함.</li></ul><ul id="3ecddb6c-37bb-80ca-8ac2-d52e6bfd8c4b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>수식</strong>: <span data-notion-inline-equation="L = -[y \log(\hat{y}) + (1 - y) \log(1 - \hat{y})]" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">−</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="mclose">)]</span></span></span></span></span></li></ul><h3 id="3ecddb6c-37bb-803b-9575-fc9a76843dde" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">회귀 (Regression) 문제용 손실 함수</h3><h4 id="3ecddb6c-37bb-80b9-89d1-ef236f7521db" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">① 평균 제곱 오차 (MSE, Mean Squared Error)</h4><ul id="3ecddb6c-37bb-804f-8e8a-d6d4f7dc71fb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개념</strong>: 예측값과 실제값의 차이를 제곱하여 평균을 낸 손실 함수(<code>mean_squared_error</code>)</li></ul><ul id="3ecddb6c-37bb-8072-8f8f-ecfd569bac99" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징</strong>: 오차가 클수록 제곱으로 인해 패널티가 급격히 커지므로, 이상치(Outlier)에 민감함.</li></ul><ul id="3ecddb6c-37bb-80c8-b6cd-d33c3b836ea3" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>수식</strong>: <span data-notion-inline-equation="\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">MSE</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8043em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span></li></ul><h4 id="3ecddb6c-37bb-80de-8a94-fa9cdbc2b37f" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">② 평균 절대 오차 (MAE, Mean Absolute Error)</h4><ul id="3ecddb6c-37bb-8051-b57a-f0f275959453" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개념</strong>: 예측값과 실제값 차이의 절대값을 평균 낸 손실 함수(<code>mean_absolute_error</code>)</li></ul><ul id="3ecddb6c-37bb-8007-9934-d58672c42f1f" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징</strong>: MSE에 비해 이상치의 영향을 적게 받으며, 직관적인 오차 단위 측정이 가능함.</li></ul><ul id="3ecddb6c-37bb-80a9-9f27-ec2fedad3138" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>수식</strong>:  <span data-notion-inline-equation="\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} \vert{}y_i - \hat{y}_i\vert{}" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">MAE</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8043em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∣</span><span class="mord"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1944em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1944em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"></span></span></span></span></span></li></ul><h4 id="3ecddb6c-37bb-8019-a951-d1237ea9f7b0" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">③ Huber Loss</h4><ul id="3ecddb6c-37bb-8062-8602-ca543bca44ff" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개념</strong>: MSE와 MAE의 장점을 결합한 손실 함수</li></ul><ul id="3ecddb6c-37bb-80b2-85bf-fd9a911874e4" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>특징</strong>: 오차가 작은 구간에서는 MSE처럼 작동하여 미분 및 최적화가 용이하고, 오차가 큰 구간에서는 MAE처럼 작동하여 이상치의 영향을 줄여줌.</li></ul><ul id="3ecddb6c-37bb-80ed-91b6-c0746e73e3de" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>유래</strong>: 1964년에 처음 제안한 Swiss 통계학자 피터 휴버(Peter J. Huber)의 이름에서 유래함.</li></ul><table id="3ecddb6c-37bb-8014-961c-d10e61c683d8" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3ecddb6c-37bb-80ed-840d-cd39869d06b5" dir="ltr"><th id="BE;Z" class="simple-table-header-color simple-table-header"><strong>문제 유형</strong></th><th id="[xYa" class="simple-table-header-color simple-table-header"><strong>정답(Label) 형태</strong></th><th id="ehcT" class="simple-table-header-color simple-table-header"><strong>추천 손실 함수 (loss=)</strong></th></tr></thead><tbody><tr id="3ecddb6c-37bb-80f3-a9f9-e62170dd23be" dir="ltr"><td id="BE;Z" class=""><strong>이진 분류</strong></td><td id="[xYa" class=""><code>0</code> 또는 <code>1</code></td><td id="ehcT" class=""><code>binary_crossentropy</code></td></tr><tr id="3ecddb6c-37bb-804b-bfe2-c0742b3be695" dir="ltr"><td id="BE;Z" class=""><strong>다중 분류</strong></td><td id="[xYa" class="">정수형 (<code>0, 1, 2, ...</code>)</td><td id="ehcT" class=""><code>sparse_categorical_crossentropy</code><br/>   </td></tr><tr id="3ecddb6c-37bb-80c8-8081-fb547945600a" dir="ltr"><td id="BE;Z" class=""><strong>다중 분류</strong></td><td id="[xYa" class="">원-핫 인코딩 (<code>[1,0,0]</code>)</td><td id="ehcT" class=""><code>categorical_crossentropy</code><br/></td></tr><tr id="3ecddb6c-37bb-80f4-96dc-ff28d4bcd9fd" dir="ltr"><td id="BE;Z" class=""><strong>회귀 (일반)</strong></td><td id="[xYa" class="">연속형 실수값</td><td id="ehcT" class=""><code>mse</code> (Mean Squared Error)</td></tr><tr id="3ecddb6c-37bb-8039-85ab-ea7f0fc43be8" dir="ltr"><td id="BE;Z" class=""><strong>회귀 (이상치 있음)</strong></td><td id="[xYa" class="">연속형 실수값</td><td id="ehcT" class=""><code>mae</code> 또는 <code>huber</code></td></tr></tbody></table><figure id="3e3ddb6c-37bb-80d1-9d8a-e43e73c1bb4d" class="image" data-notion-image="images/80c858c1-f342-41b5-abdb-2e553430928b.png" dir="ltr"><a href="images/80c858c1-f342-41b5-abdb-2e553430928b.png"><img style="width:483.0434782608695px" src="images/80c858c1-f342-41b5-abdb-2e553430928b.png"/></a></figure><figure id="3e3ddb6c-37bb-8093-85e8-f8ef0ebf5bad" class="image" data-notion-image="images/5171a612-2aa6-460d-93a3-073faa433f29.png" dir="ltr"><a href="images/5171a612-2aa6-460d-93a3-073faa433f29.png"><img style="width:271.8987341772152px" src="images/5171a612-2aa6-460d-93a3-073faa433f29.png"/></a></figure><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e3ddb6c-37bb-80df-85c0-f9d232082f79" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h3 id="3e3ddb6c-37bb-80a0-9038-dd4543b1f905" class="" dir="auto"><mark class="highlight-red" data-notion-highlight="red"><strong>np.argmax( )</strong></mark></h3><table id="3e3ddb6c-37bb-8004-bb75-e38be33608af" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e3ddb6c-37bb-8063-a766-d7ea368a38cc" dir="ltr"><th id="_A_Y" class="simple-table-header-color simple-table-header" style="width:151.00000762939453px"><strong>구분</strong></th><th id="&gt;&lt;|L" class="simple-table-header-color simple-table-header" style="width:508.00001525878906px"><strong>핵심 내용</strong></th></tr></thead><tbody><tr id="3e3ddb6c-37bb-8081-b6b4-c66f7f51b622" dir="ltr"><td id="_A_Y" class="" style="width:151.00000762939453px"><strong>개념 정의</strong></td><td id="&gt;&lt;|L" class="" style="width:508.00001525878906px">배열 내 최댓값의 인덱스(위치 번호)를 반환하는 NumPy 함수</td></tr><tr id="3e3ddb6c-37bb-8017-b82b-da16a576cb0c" dir="ltr"><td id="_A_Y" class="" style="width:151.00000762939453px"><code><strong>np.max()</strong></code><strong>와의 차이</strong></td><td id="&gt;&lt;|L" class="" style="width:508.00001525878906px"><code>np.max()</code>는 최댓값 자체, <code>np.argmax()</code>는 최댓값이 존재하는 위치(인덱스) 반환</td></tr><tr id="3e3ddb6c-37bb-80c9-8757-eb5fb1cc0374" dir="ltr"><td id="_A_Y" class="" style="width:151.00000762939453px"><strong>딥러닝 활용 목적</strong></td><td id="&gt;&lt;|L" class="" style="width:508.00001525878906px">Softmax 출력 확률 배열에서 가장 높은 확률을 가진 클래스(인덱스) 추출</td></tr></tbody></table><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><pre id="3e3ddb6c-37bb-8068-ab49-d5e1f084fc8c" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">import numpy as np
+
+arr = np.array([10, 50, 30, 90, 20])
+
+print(np.max(arr))     # 90 (최대값)
+print(np.argmax(arr))  # 3  (최대값 90이 있는 인덱스 위치)</code></pre></div></aside><figure id="3e3ddb6c-37bb-80e5-af6f-f4816e513c33" class="image" data-notion-image="images/1b4db483-b275-4646-9e97-0bbc7aee2665.png" dir="ltr"><a href="images/1b4db483-b275-4646-9e97-0bbc7aee2665.png"><img style="width:720px" src="images/1b4db483-b275-4646-9e97-0bbc7aee2665.png"/></a></figure><h1 id="3bcddb6c-37bb-807b-a375-dc9581a38203" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">[추가 활동] 내가 쓴 숫자 분류해 보기</h1><h3 id="3e3ddb6c-37bb-80b8-a8f4-daffe7a108c0" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">1. 숫자 쓰기</h3><p id="3e3ddb6c-37bb-80b1-ae52-d8fdc497b72f" class="" dir="auto">① 윈도(windows)의 기본 프로그램인 ‘그림판’을 클릭해서 연다. </p><figure id="3e4ddb6c-37bb-803c-9b1b-c06205fc71dd" class="image" data-notion-image="images/1 1.png" dir="ltr"><a href="images/1 1.png"><img style="width:703.9896240234375px" src="images/1 1.png"/></a></figure><p id="3e3ddb6c-37bb-8027-9a93-edd368018497" class="" dir="auto">② 그림판의 ‘펜(붓)’ 기능을 이용해서 숫자 ‘13’을 쓰고 ‘13.png’로 저장한다.</p><figure id="3e4ddb6c-37bb-8092-8a3d-d21ec47979e7" class="image" data-notion-image="images/image 6.png" dir="ltr"><a href="images/image 6.png"><img style="width:703.9791870117188px" src="images/image 6.png"/></a></figure><h3 id="3e3ddb6c-37bb-800a-a99a-f907a08fcb34" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">2. MNIST 신경망 모델 파일 준비하기</h3><p id="3e3ddb6c-37bb-802c-8d70-f0b1d53db629" class="" dir="auto">MNIST 신경망 모델 파일을 준비한다. (mnist_model.h5)</p><h3 id="3e3ddb6c-37bb-8014-a575-cdcf5e6ca9f7" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">3. 구글 코랩 파일에 숫자와 신경망 모델 파일 업로드하기</h3><p id="3e3ddb6c-37bb-80d8-81b6-d5623f1b4a85" class="" dir="auto">① 크롬 브라우저에서 구글 계정으로 로그인한다.</p><p id="3e3ddb6c-37bb-80d6-99b8-cca438099b3f" class="" dir="auto">② 구글 코랩 파일 저장소에 신경망 모델 파일(mnist_model.h5)을 불러오고, 숫자 이미지(13.png) 파일을 업로드한다.</p><p id="3e3ddb6c-37bb-808e-a444-fa737f7c4719" class="" dir="auto">③ 신경망 모델명은 ‘new_model’로 한다. </p><h3 id="3e3ddb6c-37bb-806c-bd60-c50eb010b585" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">4. 내가 쓴 숫자 예측하기</h3><p id="3e3ddb6c-37bb-8070-8af1-fb3a4992e925" class="" dir="auto">코드를 실행(▶)시키면서 신경망 모델이 내가 쓴 숫자를 잘 예측하는지 확인해 보자.</p><p id="3e3ddb6c-37bb-80b5-b272-f38f02d20779" class="" dir="auto">① 이미지를 읽고 회색조로 변환한 후 화면에 표시한다.</p><p id="3e3ddb6c-37bb-80c1-b26a-c70bb2945eda" class="" dir="auto">② 숫자를 인식한다.</p><figure id="3e3ddb6c-37bb-80a7-b7a5-fceb2bee76a7" class="image" style="text-align:left" data-notion-image="images/image 7.png" dir="ltr"><a href="images/image 7.png"><img style="width:480px" src="images/image 7.png"/></a></figure><figure id="3e3ddb6c-37bb-80f4-a409-fd8b63ce1a0a" class="image" style="text-align:left" data-notion-image="images/image 8.png" dir="ltr"><a href="images/image 8.png"><img style="width:480px" src="images/image 8.png"/></a></figure><p id="3e3ddb6c-37bb-8016-bffe-e2a7c8d188a3" class="" dir="auto">③ 신경망 모델(new_model)로 숫자를 예측한다. 예측한 결과는 숫자 이미지 제목(title)에 표시된다.</p><figure id="3e3ddb6c-37bb-80b8-8506-f9e663c0b1b0" class="image" style="text-align:left" data-notion-image="images/image 9.png" dir="ltr"><a href="images/image 9.png"><img style="width:480px" src="images/image 9.png"/></a></figure><h3 id="3e3ddb6c-37bb-80fd-a6b4-c98ac2206889" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">5. 코딩하기</h3><pre id="3bcddb6c-37bb-8071-8d4d-c8351c7a291f" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">import cv2
+import matplotlib.pyplot as plt
+from tensorflow import keras
+
+# 1. 모델 및 이미지 로드
+new_model = keras.models.load_model(&#x27;mnist_model.h5&#x27;)
+image = cv2.imread(&#x27;13.png&#x27;)
+
+# 2. 이미지 정보 확인
+print(f&#x27;이미지 크기: {image.shape}&#x27;)
+
+# 3. 이미지 시각화 (원본 - BGR을 RGB로 변환)
+plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+plt.title(&#x27;Original (RGB)&#x27;)
+plt.show()
+
+# 4. 이미지 시각화 (그레이스케일 변환)
+grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+plt.imshow(grey, cmap=&#x27;gray&#x27;)
+plt.title(&#x27;Grayscale&#x27;)
+plt.show()</code></pre><figure id="3e3ddb6c-37bb-800a-be86-ddd2ffbeca43" class="image" data-notion-image="images/image 10.png" dir="ltr"><a href="images/image 10.png"><img style="width:704.0104370117188px" src="images/image 10.png"/></a></figure><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e3ddb6c-37bb-8085-9cc0-f07bd3c4db76" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e3ddb6c-37bb-805e-aa73-c306e760cfe7" class="" dir="auto"><code>(204, 711, 3)</code> 이미지의 (세로 길이, 가로 길이, 색상 채널 수)  <br/>• <strong>204</strong>: 이미지의 <strong>높이 (Height)</strong> / 세로 픽셀 수 (204픽셀)   <br/>• <strong>711</strong>: 이미지의 <strong>너비 (Width)</strong> / 가로 픽셀 수 (711픽셀)   <br/>• <strong>3</strong>: 이미지의 <strong>채널 수 (Channels) / RGB (Red, Green, Blue)</strong></p></div></aside><h3 id="3e3ddb6c-37bb-8033-a72d-ed4092932c20" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">6. 코딩하기</h3><h4 id="3e3ddb6c-37bb-8039-bf81-f0028b553be2" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">(1) 이미지 선명화 및 윤곽선 검출</h4><ul id="3e3ddb6c-37bb-80db-9be0-ee295c859b72" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>흑백 반전 (</strong><code><strong>cv2.threshold</strong></code><strong>)</strong>: 배경을 검은색(0), 글씨를 흰색(255)으로 명확히 구분하는 이진화 작업</li></ul><ul id="3e3ddb6c-37bb-80d6-8f89-f566c09862b4" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>윤곽선 검출 (</strong><code><strong>cv2.findContours</strong></code><strong>)</strong>: 흰색 영역(숫자)의 바깥 테두리 선 탐지</li></ul><h4 id="3e3ddb6c-37bb-8070-b0d3-cfe171f4a506" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">(2) 위치 정렬 및 숫자 영역 추출</h4><ul id="3e3ddb6c-37bb-808a-9765-d613002822fe" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>좌우 정렬 (</strong><code><strong>sorted</strong></code><strong>)</strong>: 탐지된 윤곽선들을 x좌표 기준으로 정렬하여 왼쪽 숫자부터 차례대로 처리</li></ul><ul id="3e3ddb6c-37bb-8098-8c0f-f10523489309" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>노이즈 제거 (</strong><code><strong>if w &gt; 100 ...</strong></code><strong>)</strong>: 일정 크기 이하의 작은 점이나 잡티 제외</li></ul><ul id="3e3ddb6c-37bb-80ba-a52e-fb27c43a1ff7" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>영역 표시 및 잘라내기 (</strong><code><strong>cv2.rectangle</strong></code><strong>, Crop)</strong>: 원본 이미지에 사각형 경계 표시 후 해당 숫자 영역만 싹둑 잘라냄.</li></ul><h4 id="3e3ddb6c-37bb-80d3-9fbe-c989d71e3f77" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">(3) AI 모델 맞춤형 규격화</h4><ul id="3e3ddb6c-37bb-800f-86ab-f1b539c89acf" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>크기 조절 (</strong><code><strong>cv2.resize</strong></code><strong>)</strong>: 잘라낸 숫자를 18×18 픽셀 크기로 일괄 축소(확대)</li></ul><ul id="3e3ddb6c-37bb-80bd-9bc7-dab06f5442d7" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>테두리 여백 추가 (</strong><code><strong>np.pad</strong></code><strong>)</strong>: 상하좌우 5픽셀씩 검은 여백을 붙여 최종 <strong>28×28 픽셀</strong> 크기 완성. (MNIST 모델 입력 요구 표준 규격 적용)</li></ul><h4 id="3e3ddb6c-37bb-80e8-af33-db3246fc377e" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">(4) 결과 시각화</h4><ul id="3e3ddb6c-37bb-8092-86d2-d58d85269f76" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>개수 및 상자 출력</strong>: 전체 숫자의 개수 출력 및 사각형이 표시된 원본 이미지 시각화</li></ul><ul id="3e3ddb6c-37bb-80f8-b6b9-ea2738f069bc" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>전처리 이미지 확인</strong>: 28×28 크기로 정돈된 개별 숫자 이미지들을 화면에 정렬하여 표시</li></ul><pre id="3bcddb6c-37bb-809b-a70c-e34593c967d4" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">import numpy as np
+
+# 1. 회색조 이미지를 이진 이미지로 변환
+ret, thresh = cv2.threshold(grey.copy(), 70, 255, cv2.THRESH_BINARY_INV)
+
+# 2. 이진 이미지에서 윤곽을 찾음
+contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+# 3. 윤곽 개수 출력
+print(&#x27;윤곽 개수:&#x27;, len(contours))
+
+# 4. 전처리된 숫자 저장용 빈 리스트 초기화
+preprocessed_digits = []
+
+# 5. 숫자 개수 카운터 초기화
+countImage = 0
+
+# 6. 각 윤곽에 대해 반복
+for c in contours:
+    # 7. 각 윤곽의 경계 상자 정보를 추출
+    x, y, w, h = cv2.boundingRect(c)
+
+    # 8. 작은 윤곽(노이즈 방지) 필터링
+    if w &gt; 10 and h &gt; 10:
+        # 9. 경계 상자 좌표 출력
+        print(&#x27;경계 상자:&#x27;, x, y, w, h)
+
+        # 10. 숫자 개수 증가
+        countImage += 1
+
+        # 11. 탐지된 숫자 주위에 사각형 그리기
+        cv2.rectangle(image, (x, y), (x + w, y + h), color=(255, 0, 0), thickness=2)
+
+        # 12. 이진 이미지에서 숫자 영역 추출
+        digit = thresh[y:y + h, x:x + w]
+
+        # 13. 숫자 이미지 크기 조정
+        resized_digit = cv2.resize(digit, (18, 18))
+
+        # 14. 크기 조정된 숫자 이미지에 0으로 패딩
+        padded_digit = np.pad(resized_digit, ((5, 5), (5, 5)), &#x27;constant&#x27;, constant_values=0)
+
+        # 15. 패딩된 숫자 이미지 모양 출력
+        #print(&#x27;패딩된 숫자 모양:&#x27;, padded_digit.shape)
+
+        # 16. 전처리된 숫자 리스트에 추가
+        preprocessed_digits.append(padded_digit)
+
+# 17. 탐지된 숫자 개수 출력
+print(&#x27;총 숫자:&#x27;, countImage)
+
+# 18. 그래프 크기 조정
+plt.rcParams[&#x27;figure.figsize&#x27;] = (4, 4)
+
+# 19. 원본 이미지에 경계 상자 표시하기
+plt.imshow(image, cmap=plt.cm.gray)
+plt.show()
+
+# 20. NumPy 배열로 변환하기
+inp = np.array(preprocessed_digits)
+
+# 21. 숫자 개별로 보여주기
+for i in range(len(inp)):
+    plt.imshow(inp[i], cmap=&#x27;gray&#x27;, interpolation=&#x27;none&#x27;)
+    plt.show()
+</code></pre><figure id="3e3ddb6c-37bb-8070-a124-ce30d08518c9" class="image" data-notion-image="images/image 11.png" dir="ltr"><a href="images/image 11.png"><img style="width:704px" src="images/image 11.png"/></a></figure><h2 id="3e3ddb6c-37bb-8003-9b0c-f4907af6347b" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">코드 세부 해설</h2><ul id="3e3ddb6c-37bb-804b-af40-d872fc547e49" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>import cv2</strong></code>: 이미지 처리 라이브러리인 OpenCV를 불러옴.</li></ul><ul id="3e3ddb6c-37bb-8038-95fd-f0baf1713f25" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>import matplotlib.pyplot as plt</strong></code>: 이미지나 그래프를 화면에 출력해 주는 라이브러리를 불러옴.</li></ul><ul id="3e3ddb6c-37bb-8082-9d50-cff1eabecd54" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>import numpy as np</strong></code>: 행렬 및 배열 연산을 쉽게 처리해 주는 수학 라이브러리를 불러옴.</li></ul><ul id="3e3ddb6c-37bb-8084-a7ee-e48a96d6beae" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>cv2.threshold(...)</strong></code>: 회색조 이미지(<code>grey</code>)에서 밝기 값이 70보다 크면 검은색(0), 작으면 흰색(255)으로 바꾸는 이진화 작업 (글자를 흰색으로 반전시킴)</li></ul><ul id="3e3ddb6c-37bb-8085-b2f1-f79345273581" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>_, thresh</strong></code>: 함수 결과 중 첫 번째 반환값(임계값)은 생략(<code>_</code>)하고, 변환된 이진화 이미지 결과물만 <code>thresh</code>에 저장</li></ul><ul id="3e3ddb6c-37bb-80cd-9dcb-e1daeaa0407c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>cv2.findContours(...)</strong></code>: 흰색 글자 영역의 가장 바깥쪽 테두리(윤곽선)들을 찾아냄.</li></ul><ul id="3e3ddb6c-37bb-800b-9f6a-d1fe629bc016" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>contours, _</strong></code>: 찾은 윤곽선 정보 목록을 <code>contours</code> 변수에 저장하고, 필요 없는 계층 구조 정보(<code>_</code>)는 무시</li></ul><ul id="3e3ddb6c-37bb-80cc-b963-d1f216795410" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>preprocessed_digits = []</strong></code>: 전처리를 마친 숫자 이미지들을 담아둘 빈 리스트 생성</li></ul><ul id="3e3ddb6c-37bb-80d7-ad41-d8ea6cfc329d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>image_draw = image.copy()</strong></code>: 원본 이미지에 사각형을 그리면 원본이 훼손되므로, 복사본 이미지를 새로 하나 만들어 둠.</li></ul><ul id="3e3ddb6c-37bb-80c6-ac68-c32f9cf84b86" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>sorted(...)</strong></code>: 추출된 윤곽선 위치들을 x좌표 기준(<code>cv2.boundingRect(c)[0]</code>)으로 오름차순 정렬하여, 왼쪽 숫자가 먼저 처리되도록 순서를 맞춤.</li></ul><ul id="3e3ddb6c-37bb-8093-9e9c-d12a42242bcb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>for c in contours:</strong></code>: 정렬된 윤곽선 목록에서 윤곽선(<code>c</code>)을 하나씩 꺼내어 아래 작업을 반복</li></ul><ul id="3e3ddb6c-37bb-80f5-94d9-ea4178f8a1f0" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>cv2.boundingRect(c)</strong></code>: 해당 윤곽선을 감싸는 감싸는 사각형의 시작 좌표(x, y)와 가로 폭(w), 세로 높이(h)를 구함.</li></ul><ul id="3e3ddb6c-37bb-80ae-8aff-fe7e87e462cf" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>if w &gt; 10 and h &gt; 10:</strong></code>: 가로와 세로 크기가 모두 10픽셀보다 큰 경우만 진짜 숫자로 판단. (작은 점이나 먼지 같은 노이즈 제거)</li></ul><ul id="3e3ddb6c-37bb-8072-b97f-ea8bbf0ea9a0" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>print(...)</strong></code>: 감지된 숫자의 위치 좌표와 크기를 화면에 텍스트로 출력</li></ul><ul id="3e3ddb6c-37bb-802f-8ac1-ea98ad1f9768" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>cv2.rectangle(...)</strong></code>: 사각형 그리기 함수로, 복사본 이미지(<code>image_draw</code>)의 숫자 위치 주변에 두께 2짜리 빨간색 사각형을 그림.</li></ul><ul id="3e3ddb6c-37bb-803e-be3d-f49e6df4ec4c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>digit = thresh[...]</strong></code>: 이진화 이미지에서 y부터 y+h까지, x부터 x+w까지의 숫자 영역만 딱 잘라냄.</li></ul><ul id="3e3ddb6c-37bb-8028-970f-de60fc7bac82" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>cv2.resize(...)</strong></code>: 잘라낸 숫자 이미지를 가로 18픽셀, 세로 18픽셀 크기로 확대 또는 축소.</li></ul><ul id="3e3ddb6c-37bb-8039-947c-ddef85a7076b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>np.pad(...)</strong></code>: 18×18 크기 이미지 상하좌우 둘레에 5픽셀씩 검은색(0) 여백을 붙여 <strong>28×28 픽셀</strong> 크기로 만듦. (MNIST AI 모델 입력 크기에 맞춤)</li></ul><ul id="3e3ddb6c-37bb-8035-84ab-eccc716158e1" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>preprocessed_digits.append(...)</strong></code>: 최종 완공된 28×28 숫자를 결과 리스트에 차곡차곡 추가</li></ul><ul id="3e3ddb6c-37bb-8072-b1f0-ed4561442a68" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>print(...)</strong></code>: 찾아낸 전체 숫자가 총 몇 개인지 개수를 출력</li></ul><ul id="3e3ddb6c-37bb-8008-9978-c4c6e60cba3a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.figure(...)</strong></code>: 그래프(그림) 틀을 가로 6, 세로 3인치 크기로 만듦.</li></ul><ul id="3e3ddb6c-37bb-80c4-b7fe-da23c6d00479" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.imshow(...)</strong></code>: 붉은 상자가 그려진 이미지를 BGR에서 RGB 색상 체계로 바꿔 화면에 띄움.</li></ul><ul id="3e3ddb6c-37bb-8003-b2a5-e8f8be131054" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.title(...)</strong></code>: 그림 상단에 ‘Detected Bounding Boxes’라는 제목을 붙임.</li></ul><ul id="3e3ddb6c-37bb-80c0-bf35-f8ef983b4b32" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.axis(&#x27;off&#x27;)</strong></code>: 테두리의 눈금 축(x축, y축)을 숨김.</li></ul><ul id="3e3ddb6c-37bb-800c-a79d-e9a02d5f3043" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.show()</strong></code>: 지금까지 설정한 그림을 화면에 실제로 출력함.</li></ul><ul id="3e3ddb6c-37bb-80fc-91b2-d57eb1e9f1e7" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.figure(...)</strong></code>: 잘라낸 숫자를 보여줄 그림 틀을 새로 만듦.</li></ul><ul id="3e3ddb6c-37bb-8088-aa3f-c89117e1ea7f" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>for i, digit_img in enumerate(...)</strong></code>: 전처리된 숫자 이미지들을 순번(<code>i</code>)과 함께 하나씩 꺼냄.</li></ul><ul id="3e3ddb6c-37bb-80d5-8c1e-e4cdc359a024" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.subplot(1, N, i + 1)</strong></code>: 한 화면을 1행 N열로 나누어, <code>i + 1</code>번째 위치에 그림 칸을 지정</li></ul><ul id="3e3ddb6c-37bb-806b-889d-d6b7889b8455" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.imshow(..., cmap=&#x27;gray&#x27;)</strong></code>: 해당 개별 숫자 이미지를 흑백 컬러맵으로 설정하여 띄움.</li></ul><ul id="3e3ddb6c-37bb-80ec-adac-f13d271895af" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.title(...)</strong></code>: 각 칸 상단에 ‘Digit 1’, ‘Digit 2’ 형태의 제목을 부착</li></ul><ul id="3e3ddb6c-37bb-80d8-b52f-e0b21d2d4cd3" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.axis(&#x27;off&#x27;)</strong></code>: 각 숫자 이미지의 눈금 축을 숨김.</li></ul><ul id="3e3ddb6c-37bb-80bb-915d-d9cd8273a9fb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.tight_layout()</strong></code>: 이미지 간격이 겹치지 않게 여백을 알아서 깔끔하게 정돈</li></ul><ul id="3e3ddb6c-37bb-8089-9516-f4284f629d29" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.show()</strong></code>: 전처리 완료된 모든 숫자를 한눈에 화면에 보여줌.</li></ul><h1 id="3e4ddb6c-37bb-8049-8c6f-f8ff45cef36a" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">[개별 추가 과제] MNIST 손글씨 인식 프로젝트</h1><table id="3e4ddb6c-37bb-804d-bead-eb9c4564387d" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e4ddb6c-37bb-8003-bd74-c228d1bbc695" dir="ltr"><th id="SxLv" class="simple-table-header-color simple-table-header" style="width:51px"><strong>학번</strong></th><th id="@rIC" class="simple-table-header-color simple-table-header" style="width:134.9375px"><strong>문제 유형</strong></th><th id="zydB" class="simple-table-header-color simple-table-header" style="width:818px"><strong>추가 실습 과제</strong></th><th id="fK@b" class="simple-table-header-color simple-table-header" style="width:739px"><strong>예상 실행 코드 및 실습 방법</strong></th></tr></thead><tbody><tr id="3e4ddb6c-37bb-80c6-b544-da2eca1d5607" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>01</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>파라미터 변경</strong></td><td id="zydB" class="" style="width:818px">반복 학습 횟수(<code>epochs</code>)를 10회에서 3회로 줄여보고 예측 정확도(<code>accuracy</code>) 비교해 보기</td><td id="fK@b" class="" style="width:739px"><code>model.fit(X_train, y_train, epochs=3)</code>   </td></tr><tr id="3e4ddb6c-37bb-800a-9ebf-fd19e0ba62b6" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>02</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>파라미터 변경</strong></td><td id="zydB" class="" style="width:818px">반복 학습 횟수(<code>epochs</code>)를 20회로 늘려보았을 때 accuracy와 loss의 변화 관찰하기</td><td id="fK@b" class="" style="width:739px"><code>model.fit(X_train, y_train, epochs=20)</code></td></tr><tr id="3e4ddb6c-37bb-80db-bca4-d1a257522899" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>03</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>시각화</strong></td><td id="zydB" class="" style="width:818px">내가 직접 쓴 숫자 이미지의 가로, 세로 픽셀 해상도 크기(<code>shape</code>) 출력해 보기</td><td id="fK@b" class="" style="width:739px"><code>print(image.shape)</code></td></tr><tr id="3e4ddb6c-37bb-806f-8145-edbae10b1bf0" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>04</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>이미지 전처리</strong></td><td id="zydB" class="" style="width:818px">회색조(Grayscale) 변환 시 임계값(<code>thresh</code>) 기준을 70에서 120으로 높여 글씨 두께 변화 보기</td><td id="fK@b" class="" style="width:739px"><code>_, thresh = cv2.threshold(grey, 120, 255, cv2.THRESH_BINARY_INV)</code></td></tr><tr id="3e4ddb6c-37bb-80e6-93a9-ca864ff6178c" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>05</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>이미지 전처리</strong></td><td id="zydB" class="" style="width:818px">숫자 주위에 검은색 여백을 추가하는 <code>np.pad</code>의 패딩 두께를 5에서 10으로 늘려보기</td><td id="fK@b" class="" style="width:739px"><code>padded_digit = np.pad(resized_digit, ((10, 10), (10, 10)), &#x27;constant&#x27;)</code></td></tr><tr id="3e4ddb6c-37bb-800b-93e0-df4aa724ee9a" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>06</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>데이터 탐색</strong></td><td id="zydB" class="" style="width:818px">MNIST 테스트 데이터 중 0번이 아닌 5번 데이터(<code>X_test[5]</code>)를 흑백 이미지로 출력해 보기</td><td id="fK@b" class="" style="width:739px"><code>plt.imshow(X_test[5], cmap=&#x27;gray&#x27;)</code></td></tr><tr id="3e4ddb6c-37bb-8052-ad4f-d58048b253b8" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>07</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>시각화</strong></td><td id="zydB" class="" style="width:818px">잘라낸 개별 숫자 박스들을 출력할 때 <code>cmap=&#x27;gray&#x27;</code> 대신 <code>cmap=&#x27;viridis&#x27;</code> 옵션 적용해 보기</td><td id="fK@b" class="" style="width:739px"><code>plt.imshow(digit_img, cmap=&#x27;viridis&#x27;)</code></td></tr><tr id="3e4ddb6c-37bb-80a6-9644-f26da6999fa1" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>08</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>데이터 변환</strong></td><td id="zydB" class="" style="width:818px">픽셀 정규화 단계를 나눗셈(<code>255.0</code>) 대신 생략해보고 학습했을 때 오차(loss) 비교하기</td><td id="fK@b" class="" style="width:739px"><code># X_train = X_train / 255.0</code> (주석 처리 후 실행)   </td></tr><tr id="3e4ddb6c-37bb-805b-a60d-c9530adfa1ba" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>09</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>모델 구조 변경</strong></td><td id="zydB" class="" style="width:818px">신경망 은닉층의 노드 수를 (128, 64)에서 (64, 32)로 줄여서 가볍게 만들어 보기</td><td id="fK@b" class="" style="width:739px"><code>model.add(Dense(64, activation=&#x27;relu&#x27;)) model.add(Dense(32, activation=&#x27;relu&#x27;))</code></td></tr><tr id="3e4ddb6c-37bb-809d-8791-e5f9540c05a0" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>10</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>이미지 전처리</strong></td><td id="zydB" class="" style="width:818px">원본 손글씨 이미지를 <strong>좌우 반전(</strong><code><strong>cv2.flip</strong></code><strong>)</strong> 시킨 후 숫자가 올바르게 인식되는지 확인하기</td><td id="fK@b" class="" style="width:739px"><code>flipped = cv2.flip(image, 1)</code></td></tr><tr id="3e4ddb6c-37bb-801c-96b5-f62a9eeb739d" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>11</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>코드 응용</strong></td><td id="zydB" class="" style="width:818px">넘파이 <code>np.argmax()</code>를 사용해서 AI가 예측한 확률 중 가장 높은 숫자가 몇 번인지 출력하기</td><td id="fK@b" class="" style="width:739px"><code>print(&#x27;예측한 숫자:&#x27;, np.argmax(predictions[0]))</code></td></tr><tr id="3e4ddb6c-37bb-80ff-a61d-c5533b0f26b1" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>12</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>활동 중심</strong></td><td id="zydB" class="" style="width:818px">흰 종이에 숫자를 2개가 아닌 <strong>3개(예: 1, 2, 3)</strong> 작성하여 이미지 업로드 후 경계 상자 개수 확인하기</td><td id="fK@b" class="" style="width:739px"><code>cv2.findContours()</code>로 검출된 윤곽선 개수 확인   </td></tr><tr id="3e4ddb6c-37bb-8068-bedb-ed3769dd6089" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>13</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>시각화</strong></td><td id="zydB" class="" style="width:818px">경계 상자(Bounding Box)를 그릴 때 상자 색상을 빨간색 대신 초록색 <code>(0, 255, 0)</code>으로 바꿔보기</td><td id="fK@b" class="" style="width:739px"><code>cv2.rectangle(image_draw, (x, y), (x+w, y+h), (0, 255, 0), 2)</code></td></tr><tr id="3e4ddb6c-37bb-80cd-bdac-fd1f64abbad5" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>14</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>모델 재호출 &amp; 평가</strong></td><td id="zydB" class="" style="width:818px">저장된 모델(<code>mnist_model.h5</code>)을 불러온 후 전체 데이터 대신 <strong>앞의 100개 테스트 데이터만 평가</strong>하여 전체 평가 결과와 정확도 변화 비교하기</td><td id="fK@b" class="" style="width:739px"><code>loaded_model = keras.models.load_model(&#x27;mnist_model.h5&#x27;)loaded_model.evaluate(X_test[:100], y_test[:100])</code></td></tr><tr id="3e4ddb6c-37bb-8098-aa72-c4a5003f954d" dir="ltr"><td id="SxLv" class="" style="width:51px"><strong>15</strong></td><td id="@rIC" class="" style="width:134.9375px"><strong>활동 중심</strong></td><td id="zydB" class="" style="width:818px">두꺼운 펜 대신 <strong>얇은 볼펜</strong>으로 숫자를 썼을 때 AI 모델이 올바르게 인식하는지 테스트하기</td><td id="fK@b" class="" style="width:739px">얇은 글씨체의 이진화 결과 및 인식 성능 비교</td></tr></tbody></table></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

@@ -1,0 +1,908 @@
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>[19차시] 합성곱 신경망(CNN) 실습</title><meta name="data-notion-page-icon" content="🏃🏻"/><link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%8F%83%F0%9F%8F%BB%3C%2Ftext%3E%3C%2Fsvg%3E"/><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style><style>
+  html, body { background: #fff; }
+  body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 0 24px 80px;
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    color: rgb(55, 53, 47);
+  }
+  .page-cover-image {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-left: -24px;
+    display: block;
+    height: 30vh;
+    min-height: 180px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+  .page-header-icon { font-size: 78px; line-height: 1; margin-top: -42px; position: relative; }
+  .simple-table { width: 100%; }
+  .simple-table td, .simple-table th { min-width: 0; }
+  pre, code { font-family: Consolas, "Malgun Gothic", monospace; }
+  @media (max-width: 720px) {
+    .column-list { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head><body><nav style="margin:16px 0;font-family:Malgun Gothic,sans-serif"><a href="../" style="color:rgb(55,53,47)">수업 목록</a></nav><article id="3bcddb6c-37bb-804e-b98a-d7d686731237" class="page sans" data-notion-page-icon="🏃🏻"><header><img class="page-cover-image" src="images/cover.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon" data-emoji="🏃🏻"></span></div><h1 class="page-title" dir="auto">[19차시] 합성곱 신경망(CNN) 실습</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><h1 id="3bcddb6c-37bb-8005-9568-ff1dfdfc831b" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">학습 목표</h1><div data-notion-highlight="gray_background" dir="auto"><ol type="1" id="3e4ddb6c-37bb-80c5-8c85-f4b4d4d2dba6" class="block-color-gray_background numbered-list" data-notion-highlight="gray_background" start="1"><li><strong>합성곱 신경망(CNN)의 핵심 개념(합성곱, 풀링, 완전연결층)을 이해할 수 있다.   </strong></li></ol></div><div data-notion-highlight="gray_background" dir="auto"><ol type="1" id="3e4ddb6c-37bb-80f1-8d60-f1b4c4295487" class="block-color-gray_background numbered-list" data-notion-highlight="gray_background" start="2"><li><strong>구글 코랩 환경에서 PyTorch/TensorFlow/Keras 라이브러리를 활용하여 CNN 모델을 구축하고 이미지 분류 실습을 수행할 수 있다.</strong></li></ol></div><h2 id="3e4ddb6c-37bb-80f7-a357-d46f9ece650f" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">합성곱 신경망(CNN) 모델</h2><ul id="3e4ddb6c-37bb-80d2-9ac9-d553b770d981" class="bulleted-list" dir="auto"><li style="list-style-type:disc">이미지의 공간 정보(위치, 형상 등)를 유지한 채 특징을 추출하여 객체나 형태를 인식하고 분류하는 대표적인 딥러닝 알고리즘</li></ul><ul id="3e4ddb6c-37bb-80ef-ae29-ecaebb6bc70b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>합성곱 층(Convolutional Layer):</strong> 필터(Filter/Kernel)를 이용해 이미지의 에지(Edge), 질감 등 대표적인 특징(Feature map)을 추출함.</li></ul><ul id="3e4ddb6c-37bb-80d8-b02b-d48ea2e40975" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>풀링 층(Pooling Layer):</strong> 이미지의 공간 크기를 줄여 계산량을 감소시키고 중요한 특징을 강화함.(예: Max Pooling)</li></ul><ul id="3e4ddb6c-37bb-8078-b78e-c8afdf830a1a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>완전연결 층(Fully Connected Layer):</strong> 추출된 특징들을 종합하여 최종적으로 이미지가 어떤 클래스에 속하는지 확률로 분류함.</li></ul><h1 id="3e4ddb6c-37bb-8043-b612-c0f4decdb540" class="block-color-blue_background" data-notion-highlight="blue_background" dir="auto">실습 과제</h1><h2 id="3e4ddb6c-37bb-808a-8621-e7293ca69327" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[1단계] 실습 환경 구성 및 패키지 불러오기</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e4ddb6c-37bb-80ae-861a-f71407d2ec66" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>구글 코랩에서 딥러닝 실습을 위해 필요한 파이썬 라이브러리(</strong><code><strong>torch</strong></code><strong>, </strong><code><strong>torchvision</strong></code><strong>, </strong><code><strong>matplotlib</strong></code><strong> 등)를 불러옴.</strong></li></ul></div><figure id="3e4ddb6c-37bb-80a6-943c-ce8e067c02f1" class="image" data-notion-image="images/image.png" dir="ltr"><a href="images/image.png"><img style="width:703.9815063476562px" src="images/image.png"/></a></figure><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-8045-bcbc-e11a4003f752" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e4ddb6c-37bb-805f-8644-f25ef39c70ec" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>import torch</code><ul id="3e4ddb6c-37bb-806b-9477-fa2c706a61f3" class="bulleted-list" dir="auto"><li style="list-style-type:circle">파이토치는 딥러닝 라이브러리를 불러오는 코드</li></ul><ul id="3e4ddb6c-37bb-80c7-aea5-d148f371b835" class="bulleted-list" dir="auto"><li style="list-style-type:circle">신경망을 만들고 학습시키는 데 사용함.</li></ul></li></ul><ul id="3e4ddb6c-37bb-80b7-8c96-f7180654ccbc" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>import torch.nn as nn</code><ul id="3e4ddb6c-37bb-801b-9b01-f55befc2c6ad" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><code>torch</code> 안에 있는 <code>nn</code> 모듈을 불러오고, 이름을 <code>nn</code>으로 줄여서 쓰겠다는 뜻임.</li></ul><ul id="3e4ddb6c-37bb-806c-8110-d8cd0edeb509" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><code>nn.Linear</code>, <code>nn.Conv2d</code> 같은 <strong>신경망 레이어</strong>들을 제공하는 모듈</li></ul></li></ul><ul id="3e4ddb6c-37bb-80e0-a6db-c82fe5cdabeb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>import torch.optim as optim</code><ul id="3e4ddb6c-37bb-8033-8b1c-d352940d0184" class="bulleted-list" dir="auto"><li style="list-style-type:circle">최적화(Optimizer) 관련 함수들을 모아둔 <code>optim</code> 모듈을 불러오고, 이름을 <code>optim</code>으로 사용함.</li></ul><ul id="3e4ddb6c-37bb-80e3-bdb9-c02d94a12682" class="bulleted-list" dir="auto"><li style="list-style-type:circle">예: <code>optim.SGD</code>, <code>optim.Adam</code> 등을 써서 모델을 학습할 때 파라미터를 업데이트함.</li></ul></li></ul><ul id="3e4ddb6c-37bb-8044-a02f-ea4ad0ffb78c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>import torchvision</code><ul id="3e4ddb6c-37bb-80a2-a387-cf36a2c4b16f" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이미지/비전 관련 데이터셋과 모델들을 다루는 라이브러리</li></ul><ul id="3e4ddb6c-37bb-8083-8e78-cbb8838b6963" class="bulleted-list" dir="auto"><li style="list-style-type:circle">예를 들어 MNIST, CIFAR10 같은 데이터셋을 쉽게 불러올 수 있음.</li></ul></li></ul><ul id="3e4ddb6c-37bb-801b-b7a4-e354f81ea9f5" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>import torchvision.transforms as transforms</code><ul id="3e4ddb6c-37bb-8039-beb2-d530e925f68e" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이미지 전처리(크기 조정, 정규화, 텐서로 변환 등)에 쓰이는 함수들을 모아둔 모듈</li></ul><ul id="3e4ddb6c-37bb-80cd-9ede-cd3661e5debb" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이름을 <code>transforms</code>로 줄여서 사용함.</li></ul><ul id="3e4ddb6c-37bb-80c4-9dc3-d728a1f1f407" class="bulleted-list" dir="auto"><li style="list-style-type:circle">예: <code>transforms.ToTensor()</code>, <code>transforms.Normalize(...)</code> 등</li></ul></li></ul><ul id="3e4ddb6c-37bb-803a-af50-d4610c5279c3" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>import matplotlib.pyplot as plt</code><ul id="3e4ddb6c-37bb-80e0-9713-fbc765cfbb75" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이미지를 화면에 그려주는 라이브러리 <code>matplotlib</code> 중 <code>pyplot</code> 모듈을 불러옴.</li></ul><ul id="3e4ddb6c-37bb-809f-a5e3-dfedbae9879f" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이름은 <code>plt</code>로 줄여 사용함.</li></ul><ul id="3e4ddb6c-37bb-8087-a865-f77135addfc5" class="bulleted-list" dir="auto"><li style="list-style-type:circle">예: <code>plt.imshow(image)</code>, <code>plt.plot(losses)</code> 등으로 시각화할 때 쓰임.</li></ul></li></ul></div></aside><h2 id="3e4ddb6c-37bb-8014-a4aa-e17ec87ec7de" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[2단계] 데이터셋 다운로드 및 전처리</h2><ul id="3e4ddb6c-37bb-80b3-92db-f6a19d182cf2" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>10가지 범주의 이미지 데이터로 구성된 CIFAR-10 데이터셋을 다운로드하고, 모델 입력에 맞게 정규화(Normalization) 전처리를 수행함.</strong></li></ul><ul id="3e4ddb6c-37bb-806b-b807-d2b034fc8370" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>CIFAR-10 데이터셋: 비행기, 자동차, 새, 고양이, 사슴, 개, 개구리, 말, 배, 트럭 등 10개 클래스로 구성된 </strong><span data-notion-inline-equation="32\times32" class="notion-text-equation-token" contenteditable="false"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">32</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">32</span></span></span></span></span><strong> 크기의 컬러 이미지 6만 장 데이터셋</strong></li></ul><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><pre id="3e4ddb6c-37bb-8003-9f55-f11a92321b8d" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all"># 이미지 전처리(텐서 변환 및 정규화) 정의
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
+
+# CIFAR-10 학습/테스트 데이터셋 다운로드
+trainset = torchvision.datasets.CIFAR10(root=&#x27;./data&#x27;, train=True, download=True, transform=transform)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
+
+testset = torchvision.datasets.CIFAR10(root=&#x27;./data&#x27;, train=False, download=True, transform=transform)
+testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
+
+classes = (&#x27;plane&#x27;, &#x27;car&#x27;, &#x27;bird&#x27;, &#x27;cat&#x27;, &#x27;deer&#x27;, &#x27;dog&#x27;, &#x27;frog&#x27;, &#x27;horse&#x27;, &#x27;ship&#x27;, &#x27;truck&#x27;)</code></pre><figure id="3e4ddb6c-37bb-8030-acd1-e24778999485" class="image" data-notion-image="images/image 1.png" dir="ltr"><a href="images/image 1.png"><img style="width:703.8310546875px" src="images/image 1.png"/></a></figure><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-807f-bd17-e6483d4ff64b" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e4ddb6c-37bb-8035-aa53-cc7c92fbbe3b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>transforms.Compose([...])</strong></code><ul id="3e4ddb6c-37bb-80cd-aacc-c05aca4bb5db" class="bulleted-list" dir="auto"><li style="list-style-type:circle">여러 개의 전처리 함수를 <strong>순서대로 묶어서 한 번에 적용</strong>할 수 있게 해주는 도구</li></ul></li></ul><ul id="3e4ddb6c-37bb-80f8-a445-df80de3f934c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>transforms.ToTensor()</strong></code><ul id="3e4ddb6c-37bb-8000-b5e7-d02673b2563c" class="bulleted-list" dir="auto"><li style="list-style-type:circle">이미지(numpy 배열)를 파이토치에서 사용하는 <strong>Tensor 형태</strong>로 바꿈.</li></ul><ul id="3e4ddb6c-37bb-804e-b8b4-fde8078f4ff9" class="bulleted-list" dir="auto"><li style="list-style-type:circle">픽셀 값이 0~255인 것을 <strong>0~1 사이의 값</strong>으로 나눠줌.</li></ul></li></ul><ul id="3e4ddb6c-37bb-807d-b152-f5e638bf2d53" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))</strong></code><ul id="3e4ddb6c-37bb-801c-9702-c520d6609e3a" class="bulleted-list" dir="auto"><li style="list-style-type:circle">각 채널(R, G, B)의 값을 <strong>정규화(normalize)</strong> 함. 0.5는 각각 채널의 평균과 표준편차임.</li></ul><ul id="3e4ddb6c-37bb-80b6-887d-cc7d50039a98" class="bulleted-list" dir="auto"><li style="list-style-type:circle">대략 <strong>1 ~ 1 사이 값</strong>이 되도록 맞춰줌.</li></ul><ul id="3e4ddb6c-37bb-804f-8235-d84ebff27a70" class="bulleted-list" dir="auto"><li style="list-style-type:circle">정규화는 <strong>학습이 더 안정적으로 잘 되도록</strong> 돕는 역할을 함.</li></ul></li></ul></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-8001-85a5-d978ee7835bb" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><ul id="3e4ddb6c-37bb-8014-90b8-f2ae7ad74371" class="bulleted-list" dir="auto"><li style="list-style-type:disc">CIFAR-10은 <strong>10가지 종류의 물체</strong>를 분류하는 데이터셋임.</li></ul><ul id="3e4ddb6c-37bb-808d-b9cb-cd3f3afd5b1f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">각 인덱스(0~9)에 해당하는 클래스 이름을 문자열로 저장해 둔 것<ul id="3e4ddb6c-37bb-80ea-bba0-de726368c3d9" class="bulleted-list" dir="auto"><li style="list-style-type:circle">0 → <code>&#x27;plane&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-8092-bcdc-d08d845fa536" class="bulleted-list" dir="auto"><li style="list-style-type:circle">1 → <code>&#x27;car&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-80f3-ab43-eef570be3607" class="bulleted-list" dir="auto"><li style="list-style-type:circle">2 → <code>&#x27;bird&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-80ed-a5eb-e615000ff6de" class="bulleted-list" dir="auto"><li style="list-style-type:circle">3 → <code>&#x27;cat&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-8028-84e0-de8cc043c356" class="bulleted-list" dir="auto"><li style="list-style-type:circle">4 → <code>&#x27;deer&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-80a3-9400-eb7752addd5a" class="bulleted-list" dir="auto"><li style="list-style-type:circle">5 → <code>&#x27;dog&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-80d8-bd22-f7bba97692c8" class="bulleted-list" dir="auto"><li style="list-style-type:circle">6 → <code>&#x27;frog&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-80ea-9581-f164ad97178c" class="bulleted-list" dir="auto"><li style="list-style-type:circle">7 → <code>&#x27;horse&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-8010-8e06-e80ba42d4c9b" class="bulleted-list" dir="auto"><li style="list-style-type:circle">8 → <code>&#x27;ship&#x27;</code></li></ul><ul id="3e4ddb6c-37bb-8010-a191-e45a5df01b95" class="bulleted-list" dir="auto"><li style="list-style-type:circle">9 → <code>&#x27;truck&#x27;</code></li></ul></li></ul></div></aside><h2 id="3e4ddb6c-37bb-806c-99e2-f779ecab839a" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[3단계] CNN 모델 구조 정의하기</h2><ul id="3e4ddb6c-37bb-808e-918b-d58a770c6c04" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Conv2D, ReLU, MaxPooling2D, Linear(Dense) 레이어를 쌓아 기본 CNN 모델 구조를 구현하기</strong></li></ul><pre id="3e4ddb6c-37bb-806c-927e-fce34673d703" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">class SimpleCNN(nn.Module):
+    def __init__(self):
+        super(SimpleCNN, self).__init__()
+        
+        # 합성곱 층 1: 입력 3채널 -&gt; 출력 16채널, 커널 3x3
+        self.conv1 = nn.Conv2d(3, 16, kernel_size=3, padding=1)
+        self.relu = nn.ReLU()
+        
+        # Max Pooling: 2x2
+        self.pool = nn.MaxPool2d(2, 2)
+        
+        # 합성곱 층 2: 입력 16채널 -&gt; 출력 32채널, 커널 3x3
+        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
+        
+        # 완전연결 층 (32 * 8 * 8 -&gt; 10개 클래스)
+        self.fc1 = nn.Linear(32 * 8 * 8, 128)
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = self.pool(self.relu(self.conv1(x))) # 특징 추출 및 크기 축소 (16x16)
+        x = self.pool(self.relu(self.conv2(x))) # 특징 추출 및 크기 축소 (8x8)
+        x = x.view(-1, 32 * 8 * 8)              # 1차원 펼치기 (Flatten)
+        x = self.relu(self.fc1(x))              # 은닉층
+        x = self.fc2(x)                         # 출력층
+        return x
+
+model = SimpleCNN().to(device)
+print(model)</code></pre><figure id="3e4ddb6c-37bb-802d-a9e1-cb9206563536" class="image" data-notion-image="images/image 2.png" dir="ltr"><a href="images/image 2.png"><img style="width:703.9352416992188px" src="images/image 2.png"/></a></figure><div data-notion-highlight="gray_background" dir="auto"><ul id="3e4ddb6c-37bb-8046-bc23-e057550f3231" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><code>SimpleCNN</code> 모델의 <strong>간단한 CNN 분류기 구조</strong>임을 보여줌.<ul id="3e4ddb6c-37bb-80fe-80b7-d6b8343e840c" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><strong>합성곱 층 2개(conv1, conv2)</strong></li></ul><ul id="3e4ddb6c-37bb-8047-ac49-c8dc1f4be081" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><strong>ReLU 활성화 함수 1개(relu)</strong></li></ul><ul id="3e4ddb6c-37bb-80dc-a2b9-cfef02ec5633" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><strong>Max Pooling 층 1개(pool)</strong></li></ul><ul id="3e4ddb6c-37bb-806c-b760-d2be6401bcdf" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><strong>완전연결 층 2개(fc1, fc2)</strong></li></ul></li></ul></div><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-8097-a1ca-c97425a0deae" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h4 id="3e4ddb6c-37bb-8006-a88b-fabccb03c843" class="" dir="auto"><code><strong>SimpleCNN</strong></code><strong> 클래스 정의 부분</strong></h4><ul id="3e4ddb6c-37bb-80c5-b50b-e7199c4f6bb6" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>class SimpleCNN(nn.Module):</code>파이토치의 신경망 기본 클래스 <code>nn.Module</code></li></ul><ul id="3e4ddb6c-37bb-8029-b24f-e3533884b825" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>def __init__(self):</code> <strong>초기화 메서드 정의</strong></li></ul><ul id="3e4ddb6c-37bb-80e9-9306-d2c6df590029" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>super(SimpleCNN, self).__init__()</code><br/>부모 클래스 <code>nn.Module</code>의 초기화 함수를 호출해서 <strong>신경망 모듈로서의 기본 설정 완료</strong></li></ul></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-80d5-8e81-c6b2a8dbf5f0" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h4 id="3e4ddb6c-37bb-804e-a71d-d7b00ce7b051" class="" dir="auto"><strong>합성곱 층 1, 활성화 함수, 풀링 층 정의 부분</strong></h4><ul id="3e4ddb6c-37bb-80f0-9eb6-d162d8adbf89" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>self.conv1 = nn.Conv2d(3, 16, kernel_size=3, padding=1)</code> <br/>입력 채널 수 3개(RGB), 출력 채널 수 16개, 커널 크기 3×3</li></ul><ul id="3e4ddb6c-37bb-809d-8d8e-ffbbdb4e6c4a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>self.relu = nn.ReLU()</code><br/>비선형성을 주기 위해 사용하는 <strong>ReLU 활성화 함수 정의</strong></li></ul><ul id="3e4ddb6c-37bb-8069-837b-e2130048552b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>self.pool = nn.MaxPool2d(2, 2)</code><br/><strong>가장 중요한 값만 남기는 다운샘플링 역할</strong></li></ul></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-80ec-96db-d14b2d4dc00c" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h4 id="3e4ddb6c-37bb-8070-8ed5-e953a320a70d" class="" dir="auto"><strong>합성곱 층 2, 완전연결 층 정의 부분</strong></h4><ul id="3e4ddb6c-37bb-808f-80c0-c8e6378f634f" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)</code><br/>입력 채널 수 16개, 출력 채널 수 32개, 커널 크기 3×3<br/>첫 번째 합성곱 층과 풀링을 거친 특징 맵을 받아서 <strong>더 풍부한 특징을 추출하는 역할</strong></li></ul><ul id="3e4ddb6c-37bb-80cc-8249-fd48c49decf9" class="bulleted-list" dir="auto"><li style="list-style-type:disc">CIFAR-10 이미지 크기 흐름<ul id="3e4ddb6c-37bb-801c-ba0e-c54ac223e728" class="bulleted-list" dir="auto"><li style="list-style-type:circle">처음 입력 크기: 32×32</li></ul><ul id="3e4ddb6c-37bb-808c-9cb6-f13bcf90f6d4" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><code>conv1</code> 후 크기: 여전히 32×32 (패딩 1, 커널 3, 스트라이드 1 기준)</li></ul><ul id="3e4ddb6c-37bb-8048-9a69-f4c57f8edb52" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><code>pool</code> 후 크기: 16×16</li></ul><ul id="3e4ddb6c-37bb-8001-9a94-dce25bc92c5c" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><code>conv2</code> 후 크기: 16×16</li></ul><ul id="3e4ddb6c-37bb-809d-a8a0-f0041e084ed7" class="bulleted-list" dir="auto"><li style="list-style-type:circle"><code>pool</code> 후 크기: 8×8 <br/>채널 수는 3 → 16 → 32로 변화, 공간 크기는 32 → 16 → 8로 감소</li></ul></li></ul><ul id="3e4ddb6c-37bb-80fc-92e1-ceb101577421" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>self.fc1 = nn.Linear(32 * 8 * 8, 128)</code><br/>입력 크기 32×8×8=2048을 받아서 출력 크기 128을 만드는 <strong>첫 번째 완전연결(은닉)층</strong><br/>2048차원 벡터를 <strong>128차원으로 요약하는 역할</strong></li></ul><ul id="3e4ddb6c-37bb-8009-9372-dacebc92d8f0" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>self.fc2 = nn.Linear(128, 10)</code><br/>입력 크기 128, 출력 크기 10을 가지는 <strong>두 번째 완전연결(출력)층<br/></strong>CIFAR-10의 10개 클래스를 위한 <strong>최종 점수 계산</strong></li></ul></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-804a-a92f-cfddcbc14285" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e4ddb6c-37bb-80ee-8cb5-f95c8b603f41" class="" dir="auto"><code><strong>forward</strong></code><strong> 메서드 정의 부분</strong></p><ul id="3e4ddb6c-37bb-8029-8065-f84806071bb1" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>def forward(self, x)</code><br/>입력값 <code>x</code>를 받아서 <strong>신경망이 실제로 계산을 수행하는 경로(순전파 과정)</strong></li></ul><ul id="3e4ddb6c-37bb-800b-a789-e3dd6dafa71a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>x = self.pool(self.relu(self.conv1(x)))</code><br/><code>conv1</code>으로 합성곱 연산을 수행한 뒤, <code>ReLU</code> 활성화 함수를 적용하고, <code>pool</code>로 최대 풀링의 <strong>첫 번째 특징 추출 및 크기 축소 단계</strong></li></ul><ul id="3e4ddb6c-37bb-80ba-903f-cf69bc5839cb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>x = self.pool(self.relu(self.conv2(x)))</code><br/><code>conv2</code> 합성곱, <code>ReLU</code> 활성화, <code>pool</code> 최대 풀링 적용한 <strong>두 번째 특징 추출 및 크기 축소 단계</strong></li></ul><ul id="3e4ddb6c-37bb-805f-af25-eb6740ecdc04" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>x = x.view(-1, 32 * 8 * 8)</code><br/>4차원 텐서(배치 크기, 채널, 높이, 너비)를 2차원 텐서(배치 크기, 특징 수)로 바꾸는 <strong>평탄화(Flatten) 연산 수행 후, </strong>32×8×8=2048인 <strong>1차원 특징 벡터 생성</strong></li></ul><ul id="3e4ddb6c-37bb-8050-9009-c84f78dedfc9" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>x = self.relu(self.fc1(x))</code><br/>완전연결 층 <code>fc1</code>을 통과시키고 <code>ReLU</code> 활성화 함수를 적용하는 <strong>은닉층 연산 수행</strong><br/>2048차원 입력을 128차원으로 변환한 뒤 비선형성을 추가하는 <strong>특징 요약 및 변환 과정</strong></li></ul><ul id="3e4ddb6c-37bb-80f9-8e65-fee7ff710129" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>x = self.fc2(x)</code><br/>완전연결 층 <code>fc2</code>를 통과시키는 <strong>출력층 연산 수행</strong><br/>각 입력 이미지에 대해 10개의 실수 값을 출력하는 <strong>클래스별 점수 계산 과정</strong></li></ul><ul id="3e4ddb6c-37bb-80a8-9ef8-c1e55e4130d3" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>return x</code><br/>최종 결과 텐서 <code>x</code>를 반환하는 <strong>모델 출력 반환 처리</strong><br/>나중에 손실 함수(<code>CrossEntropyLoss</code>)와 결합되어 <strong>분류 학습 과정에 사용되는 출력 값 제공</strong></li></ul></div></aside><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-80ce-8e26-f564898bb836" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><p id="3e4ddb6c-37bb-8011-b859-fe631134a644" class="" dir="auto"><strong>모델 생성 및 출력 부분</strong></p><ul id="3e4ddb6c-37bb-8069-849a-cfff35187d02" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>model = SimpleCNN().to(device)</code><br/><code>SimpleCNN</code> 클래스를 이용해 <strong>모델 인스턴스 생성</strong><br/><code>.to(device)</code> 호출을 통해 CPU 또는 GPU 중 현재 설정된 <code>device</code>로 <strong>모델 파라미터와 연산을 옮기기</strong></li></ul><ul id="3e4ddb6c-37bb-802f-98bb-e2de8bda9b6d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code>print(model)</code><br/>모델 구조를 터미널에 출력해서 <strong>각 층의 구성과 파라미터 정보를 확인</strong></li></ul></div></aside><p id="3e4ddb6c-37bb-802a-9282-c9e1eb87ca51" class="" dir="auto">
+</p><h2 id="3e4ddb6c-37bb-80a4-b6fb-cd3b739e7e5e" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[4단계] 모델 학습 및 평가</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e4ddb6c-37bb-804b-8162-cb352b481678" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>손실 함수(CrossEntropyLoss)와 최적화 알고리즘(Adam/SGD)을 정의하고 학습을 진행함.</strong></li></ul></div><pre id="3e4ddb6c-37bb-80ed-bf0b-f59e343668e1" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# 3 에포크(Epoch) 동안 학습 진행
+for epoch in range(3):
+    running_loss = 0.0
+    for i, data in enumerate(trainloader, 0):
+        inputs, labels = data[0].to(device), data[1].to(device)
+        
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        
+        running_loss += loss.item()
+        if i % 500 == 499:    # 500 미니배치마다 출력
+            print(f&#x27;[{epoch + 1}, {i + 1:5d}] 손실(loss): {running_loss / 500:.3f}&#x27;)
+            running_loss = 0.0
+
+print(&#x27;학습 완료!&#x27;)</code></pre><figure id="3e4ddb6c-37bb-809a-90d3-d057482bdac9" class="image" data-notion-image="images/image 3.png" dir="ltr"><a href="images/image 3.png"><img style="width:673.9815063476562px" src="images/image 3.png"/></a></figure><h2 id="3e4ddb6c-37bb-8062-8aeb-f9bb6b2ee232" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[5단계] 이미지 분류 결과 및 예측 시각화</h2><div data-notion-highlight="gray_background" dir="auto"><ul id="3e4ddb6c-37bb-80a6-b49d-e86cfdbce5cc" class="block-color-gray_background bulleted-list" data-notion-highlight="gray_background"><li style="list-style-type:disc"><strong>테스트 이미지에 대해 CNN 모델이 예측한 결과와 실제 라벨을 나란히 시각화하여 분류 성능을 확인함.</strong></li></ul></div><pre id="3e4ddb6c-37bb-80a2-bc0f-ef42363cf2f2" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">import numpy as np
+
+# 테스트 데이터 가져오기
+dataiter = iter(testloader)
+images, labels = next(dataiter)
+
+# 예측 수행
+outputs = model(images.to(device))
+_, predicted = torch.max(outputs, 1)
+
+# 시각화 함수
+def imshow(img):
+    img = img / 2 + 0.5     # 역정규화
+    npimg = img.numpy()
+    plt.figure(figsize=(10, 4))
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.axis(&#x27;off&#x27;)
+    plt.show()
+
+# 실제값 및 예측값 출력
+print(&#x27;실제 라벨 (GroundTruth): &#x27;, &#x27; &#x27;.join(f&#x27;{classes[labels[j]]:5s}&#x27; for j in range(4)))
+print(&#x27;예측 라벨 (Predicted)  : &#x27;, &#x27; &#x27;.join(f&#x27;{classes[predicted[j]]:5s}&#x27; for j in range(4)))
+imshow(torchvision.utils.make_grid(images[:4]))</code></pre><figure id="3e4ddb6c-37bb-80b9-bd74-e9b3eca67d7f" class="image" data-notion-image="images/image 4.png" dir="ltr"><a href="images/image 4.png"><img style="width:703.969970703125px" src="images/image 4.png"/></a></figure><h4 id="3e4ddb6c-37bb-8009-955d-f73ec923c99f" class="block-color-gray_background" data-notion-highlight="gray_background" dir="auto">코드 설명</h4><ul id="3e4ddb6c-37bb-807c-a3b2-c0e403c21af6" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>iter(testloader)</strong></code>: 데이터 로더(<code>testloader</code>)를 이터레이터(반복자) 객체로 변환함.</li></ul><ul id="3e4ddb6c-37bb-8042-b181-f04fb346b088" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>next(dataiter)</strong></code>: 첫 번째 데이터 배치(이미지들과 해당 실제 라벨들)를 가져와 <code>images</code>와 <code>labels</code> 변수에 각각 저장함. </li></ul><ul id="3e4ddb6c-37bb-8030-b102-fb03750cf379" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>images.to(device)</strong></code>: 이미지 데이터를 지정된 장치(CPU 또는 GPU/CUDA)로 이동시킨 후 학습된 모델에 전달하여 결과(<code>outputs</code>)를 얻음.</li></ul><ul id="3e4ddb6c-37bb-80d0-87e4-faea4c554cbb" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>_, predicted = torch.max(outputs, 1)</strong></code>: 각 이미지별로 가장 높은 확률/점수를 가진 클래스 인덱스를 추출함. 첫 번째 반환값(<code>_</code>)은 최대 점수값(사용하지 않으므로 생략), 두 번째 반환값(<code>predicted</code>)은 예측된 클래스의 인덱스 번호임.</li></ul><ul id="3e4ddb6c-37bb-80e9-b697-dd613ab585c7" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>img = img / 2 + 0.5</strong></code>: 학습 시 적용했던 정규화(<code>Normalize(mean=0.5, std=0.5)</code>)를 되돌려 원래 이미지 화질/색상으로 복원함.</li></ul><ul id="3e4ddb6c-37bb-80c5-9753-d265a7c2a16e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>npimg = img.numpy()</strong></code>: PyTorch 텐서(Tensor) 형태의 이미지 데이터를 NumPy 배열로 변환함.</li></ul><ul id="3e4ddb6c-37bb-803b-9ba8-eb91381e0e4b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.figure(figsize=(10, 4))</strong></code>: 출력할 그래프/이미지의 전체 크기를 설정함.</li></ul><ul id="3e4ddb6c-37bb-8055-8da1-d51daf1f5629" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>np.transpose(npimg, (1, 2, 0))</strong></code>: PyTorch 차원 순서인 <code>(채널, 세로, 가로)</code>를 Matplotlib 출력을 위한 <code>(세로, 가로, 채널)</code> 순서로 재배치함.</li></ul><ul id="3e4ddb6c-37bb-80fa-9398-e8e7f0388487" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.axis(&#x27;off&#x27;)</strong></code>: 이미지에 축(X, Y 축 눈금)을 표시하지 않도록 숨김.</li></ul><ul id="3e4ddb6c-37bb-8086-87ec-c4716c94b6af" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>plt.show()</strong></code>: 화면에 최종 이미지를 출력함.</li></ul><ul id="3e4ddb6c-37bb-80b2-ad94-e69404f376e3" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>첫 번째 </strong><code><strong>print</strong></code>: 배치 내 상위 4개 데이터의 <strong>실제 정답 라벨명</strong>(<code>classes</code> 리스트 참조)을 5자리 폭으로 정렬하여 출력함.</li></ul><ul id="3e4ddb6c-37bb-8099-9925-d4234c255803" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>두 번째 </strong><code><strong>print</strong></code>: 모델이 예측한 상위 4개 데이터의 <strong>예측 라벨명</strong>을 출력함.</li></ul><ul id="3e4ddb6c-37bb-8044-9f18-f0e54be3e27d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>torchvision.utils.make_grid(images[:4])</strong></code>: 처음 4개의 이미지 데이터를 하나의 격자(Grid) 형태 이미지로 묶어 결합함.</li></ul><ul id="3e4ddb6c-37bb-80e3-b882-e5df65815d69" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><code><strong>imshow(...)</strong></code>: 묶인 이미지를 앞서 정의한 <code>imshow</code> 함수로 전달하여 역정규화 후 화면에 시각화함.</li></ul><h2 id="3e4ddb6c-37bb-8034-999e-d1f49ff24bbb" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto"><strong>실제 라벨과 예측 라벨이 서로 다른 이유</strong></h2><aside class="block-color-yellow_background callout" data-notion-callout="" data-notion-callout-icon="💡" data-notion-callout-background="yellow_background" style="white-space:pre-wrap;display:flex" id="3e4ddb6c-37bb-80e6-9b9c-f31c1a4a6096" dir="ltr"><div style="font-size:1.5em"><span class="icon" data-emoji="💡"></span></div><div style="width:100%"><h4 id="3e4ddb6c-37bb-808e-93a8-dcbad81693cc" class="" dir="auto"><strong>모델이 아직 충분히 학습되지 않음</strong></h4><ul id="3e4ddb6c-37bb-8081-977e-cfd3029eed14" class="bulleted-list" dir="auto"><li style="list-style-type:disc">에포크 수가 많지 않거나학습 데이터 전부를 충분히 잘 활용하지 못한 상태에서 평가하면 <strong>모델 파라미터가 최적값 근처까지 가지 못한 상태</strong>일 가능성이 큼.</li></ul><ul id="3e4ddb6c-37bb-80c9-9571-c174e8ac6724" class="bulleted-list" dir="auto"><li style="list-style-type:disc">특히 SimpleCNN처럼 <strong>작고 간단한 모델</strong>은복잡한 패턴을 학습하는 능력이 제한적이라 CIFAR-10 전체에 대해 높은 정확도를 내기 어려운 특성이 있음.</li></ul><p id="3e4ddb6c-37bb-8045-91be-cf23b94fd6b4" class="" dir="auto">👉 결과: 이미지 특징을 제대로 학습하지 못해서 <strong>예측이 틀린 샘플(오차)</strong>가 자연스럽게 발생함.</p><hr id="3e4ddb6c-37bb-80ec-a241-c2553a7008d8" dir="auto"/><h4 id="3e4ddb6c-37bb-80c1-b66c-c0b8bdc9cac0" class="" dir="auto"><strong>모델 구조의 표현력 한계</strong></h4><p id="3e4ddb6c-37bb-80f6-a0f0-f11a2727c29f" class="" dir="auto">SimpleCNN 구조를 다시 떠올려 보면, 합성곱 2층 + 풀링 2번, 완전연결 2층(2048→128→10) 이라는 <strong>매우 간단한 구조</strong>임.</p><ul id="3e4ddb6c-37bb-8063-bdb6-fa91aed0d8a7" class="bulleted-list" dir="auto"><li style="list-style-type:disc">이런 모델은 복잡한 배경, 다양한 각도와 조명, 물체 모양이 비슷한 클래스(예: ship vs plane, cat vs dog)같은 상황에서 <strong>미세한 차이를 잘 구분하기 어려운 한계</strong>가 있음.</li></ul><ul id="3e4ddb6c-37bb-808e-ad15-f8aebdca68e9" class="bulleted-list" dir="auto"><li style="list-style-type:disc">그래서 실제로는 <strong>가볍고 빠르지만, 정확도는 약간 낮은 모델</strong>이 되는 경향이 있음.</li></ul><p id="3e4ddb6c-37bb-80a9-bc05-eb8a53af19d6" class="" dir="auto">👉 결과: 특히 서로 비슷하게 생긴 클래스들에서 <strong>오분류(잘못된 예측)</strong>가 자주 발생함.</p></div></aside><h2 id="3e4ddb6c-37bb-801c-b4e0-eeea56458292" class="block-color-teal_background" data-notion-highlight="teal_background" dir="auto">[개별 추가 과제]</h2><table id="3e4ddb6c-37bb-80b2-92f2-f2efb2e5cb0a" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3e4ddb6c-37bb-8013-95f0-e7579b88a9d5" dir="ltr"><th id="P[XQ" class="simple-table-header-color simple-table-header" style="width:56.988433837890625px"><strong>학번</strong></th><th id="[B`?" class="simple-table-header-color simple-table-header"><strong>문제 유형 </strong></th><th id="u]a&lt;" class="simple-table-header-color simple-table-header" style="width:528.9861450195312px"><strong>추가 실습 과제  </strong></th><th id="uCa?" class="simple-table-header-color simple-table-header" style="width:496.9884338378906px"><strong>예상 실행 코드  </strong></th></tr></thead><tbody><tr id="3e4ddb6c-37bb-80f4-9807-fc228fff15ed" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>01</strong></td><td id="[B`?" class="">옵션 변경   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">학습률(Learning Rate)을 0.001에서 0.01로 상향 후 학습 loss 변화 비교하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>optimizer = optim.Adam(model.parameters(), lr=0.01)</code></td></tr><tr id="3e4ddb6c-37bb-80f1-b4f6-d9dfc7f9e1dd" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>02</strong></td><td id="[B`?" class="">옵션 변경   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">Epoch 반복 횟수를 3회에서 5회로 변경하여 성능 변화 측정하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>for epoch in range(5):</code></td></tr><tr id="3e4ddb6c-37bb-800e-bbef-eb8794a7a1fc" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>03</strong></td><td id="[B`?" class="">모델 변경   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">Conv2d 레이어를 1개 더 추가(3층 구조)하여 네트워크 깊이 확장하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>self.conv3 = nn.Conv2d(32, 64, 3, padding=1)</code> 추가   </td></tr><tr id="3e4ddb6c-37bb-809e-aef7-dfe674438334" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>04</strong></td><td id="[B`?" class="">데이터 변경   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">배치 크기(batch_size)를 32에서 64로 변경하여 데이터 로더 재설정하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>trainloader = DataLoader(trainset, batch_size=64, ...)</code></td></tr><tr id="3e4ddb6c-37bb-80d9-92ca-f6931ecc728e" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>05</strong></td><td id="[B`?" class="">데이터 분석   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">전체 테스트 데이터셋에 대한 모델의 최종 정확도(Accuracy) 계산하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>correct / total * 100</code> 계산 코드 구현</td></tr><tr id="3e4ddb6c-37bb-80cc-a55e-cd7cf5b5454b" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>06</strong></td><td id="[B`?" class="">전처리   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">입력 이미지를 무작위 수평 반전(RandomHorizontalFlip) 데이터 증강 적용하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>transforms.RandomHorizontalFlip()</code> 추가</td></tr><tr id="3e4ddb6c-37bb-8022-8151-e2bdbddb55bf" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>07</strong></td><td id="[B`?" class="">데이터 필터링   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">특정 클래스(예: &#x27;cat&#x27;)에 대해서만 분류 정확도 구해보기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>if labels[j] == classes.index(&#x27;cat&#x27;): ...</code></td></tr><tr id="3e4ddb6c-37bb-80e9-b450-c6426a4fbed0" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>08</strong></td><td id="[B`?" class="">시각화   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">에포크별 Loss 감소 추이를 Matplotlib 꺾은선 그래프로 시각화하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>plt.plot(losses); plt.xlabel(&#x27;Epoch&#x27;); plt.ylabel(&#x27;Loss&#x27;)</code></td></tr><tr id="3e4ddb6c-37bb-80d3-83bf-c8d96adaf9dc" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>09</strong></td><td id="[B`?" class="">코드 구현   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">각 레이어를 통과할 때마다 변화하는 feature map의 Tensor Shape 출력해보기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>print(x.shape)</code>를 <code>forward()</code> 내부 각 단계마다 삽입</td></tr><tr id="3e4ddb6c-37bb-80c6-baa2-e5299ba86c26" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>10</strong></td><td id="[B`?" class="">이미지 처리   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">입력 이미지를 흑백(Grayscale) 변환 전처리 후 CNN 채널 수를 1로 변경하여 실행하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>transforms.Grayscale(num_output_channels=1)</code> 및 <code>Conv2d(1, 16, 3)</code></td></tr><tr id="3e4ddb6c-37bb-8075-bfc5-c7071a4db2f7" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>11</strong></td><td id="[B`?" class="">모델 변경   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">Max Pooling 대신 Average Pooling(<code>nn.AvgPool2d</code>)을 적용해보고 결과 비교하기   </td><td id="uCa?" class="" style="width:496.9884338378906px"><code>self.pool = nn.AvgPool2d(2, 2)</code></td></tr><tr id="3e4ddb6c-37bb-80ae-82b1-c02b5b3ae8e3" dir="ltr"><td id="P[XQ" class="" style="width:56.988433837890625px"><strong>12</strong></td><td id="[B`?" class="">시각화   </td><td id="u]a&lt;" class="" style="width:528.9861450195312px">혼동 행렬(Confusion Matrix)을 사용하여 10개 클래스별 오분류 비율 시각화하기</td><td id="uCa?" class="" style="width:496.9884338378906px"><code>from sklearn.metrics import confusion_matrix</code> 및 <code>sns.heatmap()</code> 사용</td></tr></tbody></table><p id="3e4ddb6c-37bb-80f3-80e3-dff5a4968a00" class="" dir="auto">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
